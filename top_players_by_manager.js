@@ -40,6 +40,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             .order("games", { ascending: false })
             .limit(20);
 
+        console.log("Erhaltene Daten:", data);
+        
         if (error) {
             console.error("Fehler beim Laden der Spieler:", error);
             return;
