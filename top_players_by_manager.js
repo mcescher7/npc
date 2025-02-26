@@ -33,11 +33,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
 
         const { data, error } = await supabaseClient
-            .from("transactions") 
-            .select("time, player_id, type, target")
+            .from("v_top_players") 
+            .select("player_name, games, total_points, years_played")
             .eq("manager_id", managerId)
-            .order("time", { ascending: true })
-            .limit(50);
+            .order("games", { ascending: false })
+            .limit(20);
 
         if (error) {
             console.error("Fehler beim Laden der Spieler:", error);
@@ -48,10 +48,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         data.forEach(player => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${player.time}</td>
-                <td>${player.player_id}</td>
-                <td>${player.type}</td>
-                <td>${player.target}</td>
+                <td>${player.player_name}</td>
+                <td>${player.games}</td>
+                <td>${player.total_points}</td>
+                <td>${player.years_played}</td>
             `;
             tableBody.appendChild(tr);
         });
