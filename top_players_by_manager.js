@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadManagers() {
         const { data, error } = await supabaseClient
             .from("managers")  // Ersetze mit deinem Tabellennamen
-            .select("id, name");
+            .select("manager_id, name");
 
         if (error) {
             console.error("Fehler beim Laden der Manager:", error);
