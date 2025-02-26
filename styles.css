@@ -15,7 +15,7 @@ nav {
     align-items: center;
 }
 
-/* Hamburger-Menü (drei Balken) */
+/* Hamburger-Menü */
 .menu-icon {
     display: flex;
     flex-direction: column;
@@ -34,7 +34,7 @@ nav {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: none; /* Anfangs ausgeblendet */
+    display: none;
     position: absolute;
     top: 50px;
     left: 0;
