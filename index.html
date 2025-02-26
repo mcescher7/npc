@@ -3,93 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Football Drafts</title>
+    <title>Fantasy Football</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
 </head>
 <body>
-    <h1>Fantasy Football Drafts</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Draft Date</th>
-                <th>Playoff Teams</th>
-                <th>Weeks</th>
-                <th>PPR</th>
-                <th>QB</th>
-                <th>RB</th>
-                <th>WR</th>
-                <th>TE</th>
-                <th>R/W</th>
-                <th>R/W/T</th>
-                <th>K</th>
-                <th>D/ST</th>
-                <th>Bench</th>
-                <th>IR</th>
-                <th>Waiver Type</th>
-                <th>Tiebreaker</th>
-                <th>Platform</th>
-                <th>Teams</th>
-            </tr>
-        </thead>
-        <tbody id="data-table">
-            <!-- Daten werden hier eingefügt -->
-        </tbody>
-    </table>
+    <!-- Navigation mit Hamburger-Menü -->
+    <nav>
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <ul class="menu" id="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="drafts.html">Drafts</a></li>
+            <li><a href="#">Statistiken</a></li>
+            <li><a href="#">Kontakt</a></li>
+        </ul>
+    </nav>
 
-    <!-- Supabase erst am Ende laden -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <h1>Willkommen zur Fantasy Football Seite</h1>
+    <p>Hier kannst du alle Drafts und Statistiken einsehen.</p>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async function() {
-            const SUPABASE_URL = "https://hcjinenoxuulhcoadmgh.supabase.co";
-            const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0";
-
-            // Supabase-Client erstellen
-            const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-            async function loadData() {
-                const { data, error } = await supabaseClient
-                    .from("seasons")
-                    .select("*")
-                    .limit(50);
-
-                if (error) {
-                    console.error("Fehler beim Laden der Daten:", error);
-                    return;
-                }
-
-                const tableBody = document.getElementById("data-table");
-                tableBody.innerHTML = "";
-
-                data.forEach(row => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${row.year}</td>
-                        <td>${row.draft_date}</td>
-                        <td>${row.playoff_teams}</td>
-                        <td>${row.weeks}</td>
-                        <td>${row.ppr}</td>
-                        <td>${row.qb}</td>
-                        <td>${row.rb}</td>
-                        <td>${row.wr}</td>
-                        <td>${row.te}</td>
-                        <td>${row["r/w"]}</td>
-                        <td>${row["r/w/t"]}</td>
-                        <td>${row.k}</td>
-                        <td>${row["d/st"]}</td>
-                        <td>${row.bench}</td>
-                        <td>${row.ir}</td>
-                        <td>${row.waiver_type}</td>
-                        <td>${row.tiebreaker}</td>
-                        <td>${row.platform}</td>
-                        <td>${row.teams}</td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-            }
-
-            await loadData();
-        });
-    </script>
 </body>
 </html>
