@@ -3,50 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supabase Tabelle</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>Fantasy Football Stats</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
-    <h2>Daten aus seasons</h2>
-    <table id="data-table">
+    <h1>Fantasy Football Stats</h1>
+    <table border="1">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Punkte</th>
+                <th>Position</th>
+                <th>Team</th>
+                <th>Points</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="data-table">
+            <!-- Daten werden hier eingefügt -->
+        </tbody>
     </table>
 
     <script>
+        const SUPABASE_URL = "https://hcjinenoxuulhcoadmgh.supabase.co"; // Deine Supabase-URL
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0"; // Dein neuer API-Schlüssel
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         async function loadData() {
-            const response = await fetch("https://hcjinenoxuulhcoadmgh.supabase.co/rest/v1/seasons", {
-                headers: {
-                    "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0",
-                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0",
-                    "Content-Type": "application/json"
-                }
-            });
-            const data = await response.json();
-            const tableBody = document.querySelector("#data-table tbody");
+            const { data, error } = await supabase
+                .from("seasons") // Ersetze mit deinem Tabellennamen
+                .select("*")
+                .limit(10); // Limitiert auf 10 Einträge
+
+            if (error) {
+                console.error("Fehler beim Laden der Daten:", error);
+                return;
+            }
+
+            const tableBody = document.getElementById("data-table");
+            tableBody.innerHTML = ""; // Alte Daten löschen
 
             data.forEach(row => {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${row.id}</td><td>${row.name}</td><td>${row.punkte}</td>`;
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td>${row.name}</td>
+                    <td>${row.position}</td>
+                    <td>${row.team}</td>
+                    <td>${row.points}</td>
+                `;
                 tableBody.appendChild(tr);
             });
         }
