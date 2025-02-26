@@ -27,10 +27,11 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Spieler-Daten abrufen, wenn ein Manager ausgewählt wird
     async function loadTopPlayers(managerId) {
-        if (!managerId) {
+        if (!managerId || isNaN(managerId)) { 
             tableBody.innerHTML = "";
             return;
-        }
+    }
+
 
         const { data, error } = await supabaseClient
             .from("v_top_players") 
@@ -59,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Event-Listener für Dropdown
     managerSelect.addEventListener("change", (event) => {
-        const managerId = event.target.value;
+        const managerId = parseInt(event.target.value, 10) || null;
         loadTopPlayers(managerId);
     });
 
