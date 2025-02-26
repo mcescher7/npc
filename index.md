@@ -1,17 +1,27 @@
----
-title: Nathan Peterman Cup
----
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supabase Tabelle</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h2>Daten aus Supabase</h2>
-    <table border="1" id="data-table">
+    <table id="data-table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -24,10 +34,11 @@ title: Nathan Peterman Cup
 
     <script>
         async function loadData() {
-            const response = await fetch("https://hcjinenoxuulhcoadmgh.supabase.co/rest/v1/seasons", {
+            const response = await fetch("https://xyzcompany.supabase.co/rest/v1/deine_tabelle", {
                 headers: {
-                    "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0",
-                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0"
+                    "apikey": "DEIN_ANON_KEY",
+                    "Authorization": "Bearer DEIN_ANON_KEY",
+                    "Content-Type": "application/json"
                 }
             });
             const data = await response.json();
@@ -44,4 +55,3 @@ title: Nathan Peterman Cup
     </script>
 </body>
 </html>
-
