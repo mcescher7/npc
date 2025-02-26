@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Football Drafts</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script defer src="drafts.js"></script>
+</head>
+<body>
+    <!-- Navigation mit Hamburger-Menü -->
+    <nav>
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <ul class="menu" id="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="drafts.html">Drafts</a></li>
+            <li><a href="#">Statistiken</a></li>
+            <li><a href="#">Kontakt</a></li>
+        </ul>
+    </nav>
+
+    <h1>Fantasy Football Drafts</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Draft Date</th>
+                <th>Playoff Teams</th>
+                <th>Weeks</th>
+                <th>PPR</th>
+                <th>QB</th>
+                <th>RB</th>
+                <th>WR</th>
+                <th>TE</th>
+                <th>R/W</th>
+                <th>R/W/T</th>
+                <th>K</th>
+                <th>D/ST</th>
+                <th>Bench</th>
+                <th>IR</th>
+                <th>Waiver Type</th>
+                <th>Tiebreaker</th>
+                <th>Platform</th>
+                <th>Teams</th>
+            </tr>
+        </thead>
+        <tbody id="data-table">
+            <!-- Daten von Supabase werden hier eingefügt -->
+        </tbody>
+    </table>
+
+</body>
+</html>
