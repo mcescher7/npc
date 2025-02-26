@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Event-Listener für Dropdown
     managerSelect.addEventListener("change", (event) => {
+        console.log("Dropdown geändert! Neuer Wert:", event.target.value); // 🔍 Debugging
         const managerId = parseInt(event.target.value, 10) || null;
         loadTopPlayers(managerId);
     });
