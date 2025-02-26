@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Players by Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script defer src="top_players_by_manager.js"></script>
+</head>
+<body>
+    <!-- Navigation mit Hamburger-Menü -->
+    <nav>
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <ul class="menu" id="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="drafts.html">Drafts</a></li>
+            <li><a href="top_players_by_manager.html">Top Players</a></li>
+        </ul>
+    </nav>
+
+    <h1>Top Players by Manager</h1>
+
+    <label for="manager-select">Wähle einen Manager:</label>
+    <select id="manager-select">
+        <option value="">Bitte wählen...</option>
+    </select>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Points</th>
+                <th>Position</th>
+                <th>Team</th>
+            </tr>
+        </thead>
+        <tbody id="data-table">
+            <!-- SQL-Ergebnisse werden hier eingefügt -->
+        </tbody>
+    </table>
+</body>
+</html>
