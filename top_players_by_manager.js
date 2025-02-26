@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         data.forEach(manager => {
             const option = document.createElement("option");
-            option.value = manager.id;
+            option.value = manager.manager_id;
             option.textContent = manager.name;
             managerSelect.appendChild(option);
         });
