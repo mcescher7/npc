@@ -8,7 +8,7 @@ body {
 
 /* Navigation */
 nav {
-    background: #333;
+    background: #006400;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -60,6 +60,10 @@ nav {
     color: white;
     display: block;
     padding: 10px;
+}
+
+.menu li a:hover {
+    background: #228B22; /* Ein helleres Grün, wenn über den Link gehovert wird */
 }
 
 /* Menü anzeigen, wenn aktiv */
