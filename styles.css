@@ -31,7 +31,7 @@ nav {
 .bar {
     width: 30px;
     height: 4px;
-    background: #006400;
+    background: white;
     margin: 4px 0;
 }
 
@@ -44,7 +44,7 @@ nav {
     position: absolute;
     top: 50px;
     left: 0;
-    background: #222;
+    background: #006400;
     width: 100%;
     flex-direction: column;
 }
