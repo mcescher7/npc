@@ -13,6 +13,11 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 /* Hamburger-Menü */
@@ -38,10 +43,12 @@ nav {
     position: absolute;
     top: 50px;
     left: 0;
-    background: #333;
+    background: #222;
     width: 100%;
+    flex-direction: column;
 }
 
+/* Menü-Liste */
 .menu li {
     padding: 15px;
     text-align: center;
@@ -51,9 +58,15 @@ nav {
     text-decoration: none;
     color: white;
     display: block;
+    padding: 10px;
 }
 
 /* Menü anzeigen, wenn aktiv */
 .menu.active {
-    display: block;
+    display: flex;
+}
+
+/* Hover-Effekt */
+.menu li a:hover {
+    background: #444;
 }
