@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadStandingsData() {
         const { data, error } = await supabaseClient
             .from("manager_alltime_records")
-            .select("ROW_NUMBER() OVER (ORDER BY wins desc, losses asc, points_for desc, points_against asc) as rank, *");
+            .select("*");
 
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
