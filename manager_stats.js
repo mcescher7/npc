@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const managerSelect = document.getElementById("manager-select");
-    const tableBody = document.getElementById("data-table");
+    //const tableBody = document.getElementById("data-table");
 
     // Manager-Dropdown befüllen
     async function loadManagers() {
@@ -38,8 +38,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             .eq("manager_id", managerId)
             .order("games", { ascending: false })
             .limit(20);
-
-        console.log("Erhaltene Daten:", data);
         
         if (error) {
             console.error("Fehler beim Laden der Spieler:", error);
@@ -59,10 +57,38 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
+    // Zweite Tabelle: Manager Matchups All-Time
+    async function loadManagerMatchups(managerId) {
+        //const managerId = managerSelect.value;
+        const { data, error } = await supabase
+            .from("manager_matchups_alltime")
+            .select("manager2_name, wins, losses, points_for, points_against")
+            .eq("manager_id", managerId)
+            .order("wins", { ascending: false })
+            .order("losses", { ascending: true });
+    
+        if (error) {
+            console.error("Fehler beim Laden der Matchups:", error);
+            return;
+        }
+    
+        const tableBody = document.getElementById("manager-matchups-table");
+        tableBody.innerHTML = data.map(row =>
+            `<tr>
+                <td>${row.manager2_name}</td>
+                <td>${row.wins}</td>
+                <td>${row.losses}</td>
+                <td>${row.points_for}</td>
+                <td>${row.points_against}</td>
+            </tr>`
+        ).join("");
+    }
+
     // Event-Listener für Dropdown
     managerSelect.addEventListener("change", (event) => {
         const managerId = parseInt(event.target.value, 10) || null;
         loadTopPlayers(managerId);
+        loadManagerMatchups(managerId);
     });
 
     await loadManagers();
