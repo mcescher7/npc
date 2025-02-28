@@ -4,8 +4,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const managerSelect = document.getElementById("manager-select");
-    //const tableBody = document.getElementById("data-table");
-
+    
     // Manager-Dropdown befüllen
     async function loadManagers() {
         const { data, error } = await supabaseClient
@@ -27,10 +26,12 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Spieler-Daten abrufen, wenn ein Manager ausgewählt wird
     async function loadTopPlayers(managerId) {
+        const tableBody = document.getElementById("top-players-table");
+
         if (!managerId || isNaN(managerId)) { 
             tableBody.innerHTML = "";
             return;
-    }
+        }
 
         const { data, error } = await supabaseClient
             .from("v_top_players") 
@@ -60,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Zweite Tabelle: Manager Matchups All-Time
     async function loadManagerMatchups(managerId) {
         //const managerId = managerSelect.value;
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from("manager_matchups_alltime")
             .select("manager2_name, wins, losses, points_for, points_against")
             .eq("manager_id", managerId)
