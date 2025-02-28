@@ -3,35 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Players by Manager</title>
+    <title>Manager Stats</title>
     <link rel="stylesheet" href="styles.css">
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script defer src="top_players_by_manager.js"></script>
+    <script defer src="manager_stats.js"></script>
 </head>
 <body>
     <div id="menu-container"></div>
     
-    <h1>Top Players by Manager</h1>
+    <h1>Manager Stats</h1>
 
     <label for="manager-select">Wähle einen Manager:</label>
     <select id="manager-select">
         <option value="">Bitte wählen...</option>
     </select>
 
+    <h2>Legenden</h2>
     <table border="1">
         <thead>
             <tr>
-                <th>player</th>
-                <th>games</th>
-                <th>points</th>
-                <th>years</th>
+                <th>Spieler</th>
+                <th>Spiele</th>
+                <th>Punkte</th>
+                <th>Jahre</th>
             </tr>
         </thead>
-        <tbody id="data-table">
+        <tbody id="top-players-table">
             <!-- SQL-Ergebnisse werden hier eingefügt -->
         </tbody>
     </table>
 
+    <h2>All-Time Records</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Gegner</th>
+                <th>W</th>
+                <th>L</th>
+                <th>PF</th>
+                <th>PA</th>
+            </tr>
+        </thead>
+        <tbody id="manager-matchups-table"></tbody>
+    </table>
+
     <script src="script.js"></script>
 </body>
-</html>    
+</html>
+
