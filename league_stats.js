@@ -4,7 +4,33 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadData() {
+    async function loadStandingsData() {
+        const { data, error } = await supabaseClient
+            .from("manager_alltime_records")
+            .select("ROW_NUMBER() OVER (ORDER BY wins desc, losses asc, points_for desc, points_against asc) as rank, *");
+
+        if (error) {
+            console.error("Fehler beim Laden der Daten:", error);
+            return;
+        }
+
+        const tableBody = document.getElementById("alltime-records-table");
+        tableBody.innerHTML = data.map(row =>
+            `<tr>
+                <td>${row.rank}</td>
+                <td>${row.name}</td>
+                <td>${row.seasons}</td>
+                <td>${row.wins}</td>
+                <td>${row.losses}</td>
+                <td>${row.w_l_perc}</td>
+                <td>${row.points_for}</td>
+                <td>${row.points_against}</td>
+            </tr>`
+        ).join("");
+        
+    }
+    
+    async function loadSeasonData() {
         const { data, error } = await supabaseClient
             .from("seasons")
             .select("*")
@@ -15,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
-        const tableBody = document.getElementById("data-table");
+        const tableBody = document.getElementById("seasons-table");
         tableBody.innerHTML = "";
 
         data.forEach(row => {
@@ -45,5 +71,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    await loadData();
+    await loadStandingsData();
+    await loadSeasonData();
 });
