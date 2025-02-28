@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.seasons}</td>
                 <td>${row.wins}</td>
                 <td>${row.losses}</td>
-                <td>${row.w_l_perc}</td>
-                <td>${row.points_for}</td>
-                <td>${row.points_against}</td>
+                <td>${row.w_l_perc.toFixed(3)}</td>
+                <td>${row.points_for.toFixed(2)}</td>
+                <td>${row.points_against.toFixed(2)}</td>
             </tr>`
         ).join("");
         
