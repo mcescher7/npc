@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const { data, error } = await supabaseClient
             .from("manager_matchups_alltime")
             .select("manager2_name, wins, losses, points_for, points_against")
-            .eq("manager_id", managerId)
+            .eq("manager1_id", managerId)
             .order("wins", { ascending: false })
             .order("losses", { ascending: true });
     
