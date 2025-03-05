@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const searchInput = document.getElementById('search-player');
     const suggestionsContainer = document.getElementById('player-suggestions');
+    const tableBody = document.getElementById("roster-changes-table");
 
     function formatDate(date) {
         const rowTime = new Date(date);
@@ -27,6 +28,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadCareerData(player = '') {
+        if (!player.trim()) {
+            tableBody.innerHTML = "";
+            return;
+        }
+
         const { data, error } = await supabaseClient
             .from("roster_changes")
             .select("*")
@@ -38,7 +44,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
-        const tableBody = document.getElementById("roster-changes-table");
         tableBody.innerHTML = data.map(row =>
             `<tr>
                 <td style="${setRowColor(row.type)}">${formatDate(row.time)}</td>
@@ -76,7 +81,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     searchInput.addEventListener("change", function () {
         loadCareerData(this.value);
+        searchInput.blur();
     });
 
-    await loadCareerData();
+    // tableBody.innerHTML = "";
 });
