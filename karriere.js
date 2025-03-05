@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         tableBody.innerHTML = data.map(row =>
             `<tr>
                 <td style="${setRowColor(row.type)}">${formatDate(row.time)}</td>
-                <td style="${setRowColor(row.type)}">${row.type}</td>
                 <td style="${setRowColor(row.type)}">${row.manager_name}</td>
                 <td style="${setRowColor(row.type)}">${row.target}</td>
             </tr>`
