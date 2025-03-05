@@ -14,7 +14,7 @@
           <a class="nav-link" href="manager_stats.html">Manager-Stats</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="rekorde.html">Rekorde</a>
+          <a class="nav-link" href="rekorde.html">Rekorde</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="karriere.html">Karriere</a>
@@ -25,18 +25,13 @@
 </nav>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-      // make all currently active items inactive
-      // (you can delete this block if you know that there are no active items when loading the page)
-      document.querySelectorAll("a.nav-link.active").forEach(li => {
-          li.classList.remove("active");
-          li.attributes.removeNamedItem("aria-current");
-      });
-  
-      // find the link to the current page and make it active
-      document.querySelectorAll(`a[href="${location.pathname}"].nav-link`).forEach(a => {
-          a.classList.add("active");
-          a.setAttribute("aria-current", "page");
-      });
+  // Dynamisch den aktiven Link basierend auf der URL setzen
+  const currentLocation = window.location.pathname;
+  const menuItems = document.querySelectorAll('.navbar-nav .nav-link');
+
+  menuItems.forEach(item => {
+    if (item.getAttribute('href') === currentLocation) {
+      item.classList.add('active');
+    }
   });
 </script>
