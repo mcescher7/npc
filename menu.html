@@ -23,3 +23,15 @@
     </div>
   </div>
 </nav>
+
+<script>
+  // JavaScript, um die aktive Klasse hinzuzufügen
+  const currentLocation = window.location.pathname;
+  const menuItems = document.querySelectorAll('.navbar-nav .nav-link');
+
+  menuItems.forEach(item => {
+    if (item.getAttribute('href') === currentLocation) {
+      item.classList.add('active');
+    }
+  });
+</script>
