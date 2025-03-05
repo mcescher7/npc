@@ -50,26 +50,28 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadPlayerSuggestions(query) {
-        // Abrufen der Spieler, die zur aktuellen Eingabe passen
         const { data, error } = await supabaseClient
             .from('roster_changes')
-            .select('player_name', { distinct: true })
-            .ilike('player_name', `${query}%`)
-            .limit(5);  // Maximale Anzahl an Vorschlägen
-
+            .select('player_name') // Nur die Spalte player_name auswählen
+            .ilike('player_name', `%${query}%`)
+            .order('player_name', { ascending: true }) // Damit DISTINCT funktioniert
+            .limit(10);  // Begrenzung auf max. 10 Vorschläge
+    
         if (error) {
             console.error("Fehler beim Laden der Vorschläge:", error);
             return;
         }
-
+    
+        // Nur eindeutige Werte extrahieren
+        const uniquePlayers = [...new Set(data.map(player => player.player_name))];
+    
         // Vorschläge im UI anzeigen
-        suggestionsContainer.innerHTML = data.map(player =>
-            `<div class="suggestion-item" data-player="${player.player_name}">${player.player_name}</div>`
+        suggestionsContainer.innerHTML = uniquePlayers.map(player =>
+            `<div class="suggestion-item" data-player="${player}">${player}</div>`
         ).join("");
-
+    
         // Event Listener für das Klicken auf einen Vorschlag
-        const suggestionItems = document.querySelectorAll('.suggestion-item');
-        suggestionItems.forEach(item => {
+        document.querySelectorAll('.suggestion-item').forEach(item => {
             item.addEventListener('click', function() {
                 searchInput.value = item.getAttribute('data-player'); // Eingabefeld mit Vorschlag füllen
                 suggestionsContainer.innerHTML = ''; // Vorschläge ausblenden
@@ -77,6 +79,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             });
         });
     }
+
 
     // Beim Eingeben in das Textfeld Vorschläge laden
     searchInput.addEventListener('input', function() {
