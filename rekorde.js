@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     const SUPABASE_URL = "https://hcjinenoxuulhcoadmgh.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0";
-
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function loadTopPerformances(position = "all") {
+        console.log("✅ loadTopPerformances wurde aufgerufen mit Position:", position);
         let query = supabaseClient.from("top_10_performances").select("*")
           .order("points", { ascending: false })
           .order("year", { ascending: true })
@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
             return;
+
+        console.log("📊 Geladene Daten:", data); // Prüfe die Daten in der Konsole
         }
 
         const tableBody = document.getElementById("top-performances-table");
@@ -39,12 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll(".btn-check").forEach(input => {
         input.addEventListener("change", (event) => {
-            console.log("Button geändert:", event.target.id);
-            const position = event.target.id; // Die ID des aktiven Radio-Buttons ermitteln
-            loadTopPerformances(position); // Die Daten für die gewählte Position laden
+            const position = event.target.id;
+            loadTopPerformances(position);
         });
     });
-
     
     loadTopPerformances();
 });
