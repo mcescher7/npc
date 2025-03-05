@@ -73,11 +73,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             `<option value="${player}"></option>`
         ).join("");
     }
-
-    searchInput.addEventListener("focus", function () {
-        this.value = "";
-        tableBody.innerHTML = "";
-    });
     
     searchInput.addEventListener("input", function () {
         loadPlayerSuggestions(this.value);
@@ -86,5 +81,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     searchInput.addEventListener("change", function () {
         loadCareerData(this.value);
         searchInput.blur();
+    });
+
+    searchInput.addEventListener("focus", function () {
+        this.value = "";
+        tableBody.innerHTML = "";
     });
 });
