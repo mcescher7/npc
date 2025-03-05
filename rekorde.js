@@ -37,15 +37,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    document.querySelectorAll(".filter-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active")); 
-            button.classList.add("active");
-            
-            loadTopPerformances(button.getAttribute("data-position"));
-        });
+   document.querySelectorAll(".btn-check").forEach(input => {
+    input.addEventListener("change", () => {
+        const position = input.id; // ID des gewählten Radio-Buttons auslesen
+        loadTopPerformances(position); // Daten für die gewählte Position laden
     });
-
+});
     
     loadTopPerformances();
 });
