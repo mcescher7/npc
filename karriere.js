@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         // Abrufen der Spieler, die zur aktuellen Eingabe passen
         const { data, error } = await supabaseClient
             .from('roster_changes')
-            .select('player_name')
+            .select('distinct player_name')
             .ilike('player_name', `${query}%`)
             .limit(5);  // Maximale Anzahl an Vorschlägen
 
