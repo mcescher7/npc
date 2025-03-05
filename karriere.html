@@ -13,7 +13,13 @@
     
     <div class="container mt-4">
         <h1>Karriere</h1>
-        <input type="text" id="search-player" class="form-control mb-3" placeholder="Spielername eingeben...">
+        <div class="search-container">
+            <!-- Das Eingabefeld für die Suche -->
+            <input type="text" id="search-player" placeholder="Spieler suchen...">
+            
+            <!-- Container für die Vorschläge -->
+            <div id="suggestions-container" class="suggestions-container"></div>
+        </div>
         
         <table class="table table-striped">
             <thead>
