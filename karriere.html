@@ -13,13 +13,8 @@
     
     <div class="container mt-4">
         <h1>Karriere</h1>
-        <div class="search-container">
-            <!-- Das Eingabefeld für die Suche -->
-            <input type="text" id="search-player" placeholder="Spieler suchen..." class="search-input">
-            
-            <!-- Container für die Vorschläge -->
-            <div id="suggestions-container" class="suggestions-container"></div>
-        </div>
+        <input type="text" id="search-player" class="form-control" list="player-suggestions" placeholder="Spieler suchen...">
+        <datalist id="player-suggestions"></datalist>
         
         <table class="table table-striped">
             <thead>
