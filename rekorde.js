@@ -37,12 +37,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-   document.querySelectorAll(".btn-check").forEach(input => {
-    input.addEventListener("change", () => {
-        const position = input.id; // ID des gewählten Radio-Buttons auslesen
-        loadTopPerformances(position); // Daten für die gewählte Position laden
+    document.querySelectorAll(".btn-check").forEach(input => {
+        input.addEventListener("change", (event) => {
+            const position = event.target.id; // Die ID des aktiven Radio-Buttons ermitteln
+            loadTopPerformances(position); // Die Daten für die gewählte Position laden
+        });
     });
-});
+
     
     loadTopPerformances();
 });
