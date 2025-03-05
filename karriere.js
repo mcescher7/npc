@@ -49,50 +49,35 @@ document.addEventListener("DOMContentLoaded", async function() {
         ).join("");       
     }
 
-    async function loadPlayerSuggestions(query) {
+       async function loadPlayerSuggestions(query) {
+        if (!query.trim()) return; // Falls das Feld leer ist, nichts tun
+    
         const { data, error } = await supabaseClient
             .from('roster_changes')
-            .select('player_name') // Nur die Spalte player_name auswählen
+            .select('player_name')
             .ilike('player_name', `%${query}%`)
-            .order('player_name', { ascending: true }) // Damit DISTINCT funktioniert
-            .limit(10);  // Begrenzung auf max. 10 Vorschläge
+            .order('player_name', { ascending: true });
+            
     
         if (error) {
             console.error("Fehler beim Laden der Vorschläge:", error);
             return;
         }
     
-        // Nur eindeutige Werte extrahieren
-        const uniquePlayers = [...new Set(data.map(player => player.player_name))];
+        // Doppelte Namen entfernen
+        const uniquePlayers = [...new Set(data.map(player => player.player_name?.trim()).filter(Boolean))];
     
-        // Vorschläge im UI anzeigen
+        // Vorschläge in das `datalist`-Element einfügen
+        const suggestionsContainer = document.getElementById("player-suggestions");
         suggestionsContainer.innerHTML = uniquePlayers.map(player =>
-            `<div class="suggestion-item" data-player="${player}">${player}</div>`
+            `<option value="${player}"></option>`
         ).join("");
-    
-        // Event Listener für das Klicken auf einen Vorschlag
-        document.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', function() {
-                searchInput.value = item.getAttribute('data-player'); // Eingabefeld mit Vorschlag füllen
-                suggestionsContainer.innerHTML = ''; // Vorschläge ausblenden
-                loadCareerData(item.getAttribute('data-player')); // Daten für den ausgewählten Spieler laden
-            });
-        });
     }
-
-
-    // Beim Eingeben in das Textfeld Vorschläge laden
-    searchInput.addEventListener('input', function() {
-        const player = searchInput.value.trim().toLowerCase();
-        if (player.length > 0) {
-            loadPlayerSuggestions(player); // Vorschläge laden
-        } else {
-            suggestionsContainer.innerHTML = ''; // Vorschläge ausblenden, wenn das Textfeld leer ist
-        }
+    
+    // Event-Listener für die Texteingabe
+    document.getElementById('search-player').addEventListener('input', function () {
+        loadPlayerSuggestions(this.value);
     });
-
-    // Den Container für Vorschläge im HTML definieren:
-    // <div id="suggestions-container" class="suggestions-container"></div>
 
     // Initiale Daten laden (optional, falls der Textfeld leer ist)
     await loadCareerData();
