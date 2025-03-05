@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
             return;
-
-        console.log("📊 Geladene Daten:", data); // Prüfe die Daten in der Konsole
         }
+        console.log("📊 Geladene Daten:", data); // Prüfe die Daten in der Konsole
+        
 
         const tableBody = document.getElementById("top-performances-table");
         tableBody.innerHTML = "";
