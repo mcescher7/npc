@@ -18,7 +18,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         const tableBody = document.getElementById("roster-changes-table");
         tableBody.innerHTML = data.map(row =>
             `<tr>
-                <td>${row.time}</td>
+                <td>${row.time.toLocaleString('de-DE', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                    }) + ' Uhr'}</td>
                 <td>${row.type}</td>
                 <td>${row.manager_name}</td>
                 <td>${row.target}</td>
