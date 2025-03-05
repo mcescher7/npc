@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     searchInput.addEventListener("focus", function () {
         this.value = "";
+        tableBody.innerHTML = "";
     });
     
     searchInput.addEventListener("input", function () {
@@ -86,6 +87,4 @@ document.addEventListener("DOMContentLoaded", async function() {
         loadCareerData(this.value);
         searchInput.blur();
     });
-
-    // tableBody.innerHTML = "";
 });
