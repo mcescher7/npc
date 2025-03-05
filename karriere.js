@@ -74,6 +74,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         ).join("");
     }
 
+    searchInput.addEventListener("focus", function () {
+        this.value = "";
+    });
+    
     searchInput.addEventListener("input", function () {
         loadPlayerSuggestions(this.value);
     });
