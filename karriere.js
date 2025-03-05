@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             year: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: false,
+            hour12: false, // Verhindert das 12-Stunden-Format
         }) + ' Uhr';
     }
 
@@ -40,11 +40,11 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const tableBody = document.getElementById("roster-changes-table");
         tableBody.innerHTML = data.map(row =>
-            `<tr style="${setRowColor(row.type)}">
-                <td>${formatDate(row.time)}</td>
-                <td>${row.type}</td>
-                <td>${row.manager_name}</td>
-                <td>${row.target}</td>
+            `<tr>
+                <td style="${setRowColor(row.type)}">${formatDate(row.time)}</td>
+                <td style="${setRowColor(row.type)}">${row.type}</td>
+                <td style="${setRowColor(row.type)}">${row.manager_name}</td>
+                <td style="${setRowColor(row.type)}">${row.target}</td>
             </tr>`
         ).join("");       
     }
