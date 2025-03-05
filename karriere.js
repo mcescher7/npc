@@ -13,8 +13,18 @@ document.addEventListener("DOMContentLoaded", async function() {
             year: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: false, // Verhindert das 12-Stunden-Format
+            hour12: false,
         }) + ' Uhr';
+    }
+
+    // Funktion zum Setzen der Schriftfarbe basierend auf dem Typ
+    function setRowColor(type) {
+        if (type === 'add') {
+            return 'color: darkgreen;';
+        } else if (type === 'drop') {
+            return 'color: darkred;';
+        }
+        return ''; // Standardfarbe, wenn der Typ weder 'add' noch 'drop' ist
     }
 
     async function loadCareerData(player = '') {
@@ -30,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const tableBody = document.getElementById("roster-changes-table");
         tableBody.innerHTML = data.map(row =>
-            `<tr>
+            `<tr style="${setRowColor(row.type)}">
                 <td>${formatDate(row.time)}</td>
                 <td>${row.type}</td>
                 <td>${row.manager_name}</td>
