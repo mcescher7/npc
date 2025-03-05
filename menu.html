@@ -23,21 +23,3 @@
     </div>
   </div>
 </nav>
-
-<script>
-console.log("Skript wird ausgeführt");
-
-const currentLocation = window.location.pathname;
-console.log("Aktueller Pfad:", currentLocation);
-
-const menuItems = document.querySelectorAll('.navbar-nav .nav-link');
-console.log("Menü-Links:", menuItems);
-
-menuItems.forEach(item => {
-  if (item.getAttribute('href') === currentLocation) {
-    item.classList.add('active');
-    console.log("Aktiver Link:", item);
-  }
-});
-
-</script>
