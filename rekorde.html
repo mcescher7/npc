@@ -16,15 +16,28 @@
     <div class="container mt-4">
         <h1 class="text-center">Top 10 Performances</h1>
 
-        <div class="text-center my-3">
-            <button class="btn btn-primary filter-btn" data-position="all">alle</button>
-            <button class="btn btn-secondary filter-btn" data-position="QB">QB</button>
-            <button class="btn btn-secondary filter-btn" data-position="RB">RB</button>
-            <button class="btn btn-secondary filter-btn" data-position="WR">WR</button>
-            <button class="btn btn-secondary filter-btn" data-position="TE">TE</button>
-            <button class="btn btn-secondary filter-btn" data-position="K">K</button>
-            <button class="btn btn-secondary filter-btn" data-position="DEF">D/ST</button>
-        </div>
+    <div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
+        <input type="radio" class="btn-check" name="position" id="all" autocomplete="off" checked>
+        <label class="btn btn-success" for="all">Alle</label>
+    
+        <input type="radio" class="btn-check" name="position" id="qb" autocomplete="off">
+        <label class="btn btn-success" for="qb">QB</label>
+    
+        <input type="radio" class="btn-check" name="position" id="rb" autocomplete="off">
+        <label class="btn btn-success" for="rb">RB</label>
+    
+        <input type="radio" class="btn-check" name="position" id="wr" autocomplete="off">
+        <label class="btn btn-success" for="wr">WR</label>
+    
+        <input type="radio" class="btn-check" name="position" id="te" autocomplete="off">
+        <label class="btn btn-success" for="te">TE</label>
+    
+        <input type="radio" class="btn-check" name="position" id="k" autocomplete="off">
+        <label class="btn btn-success" for="k">K</label>
+    
+        <input type="radio" class="btn-check" name="position" id="dst" autocomplete="off">
+        <label class="btn btn-success" for="dst">D/ST</label>
+    </div>
 
         <table class="table table-striped">
             <thead>
