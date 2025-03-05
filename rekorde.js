@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function loadTopPerformances(position = "all") {
-        console.log("✅ loadTopPerformances wurde aufgerufen mit Position:", position);
         let query = supabaseClient.from("top_10_performances").select("*")
           .order("points", { ascending: false })
           .order("year", { ascending: true })
@@ -19,9 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
             return;
-        }
-        console.log("📊 Geladene Daten:", data); // Prüfe die Daten in der Konsole
-        
+        }        
 
         const tableBody = document.getElementById("top-performances-table");
         tableBody.innerHTML = "";
