@@ -86,5 +86,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     searchInput.addEventListener("focus", function () {
         this.value = "";
         tableBody.innerHTML = "";
+        suggestionsContainer.innerHTML = "";
     });
 });
