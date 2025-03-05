@@ -31,7 +31,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         const { data, error } = await supabaseClient
             .from("roster_changes")
             .select("*")
-            .filter('player_name', 'ilike', player);
+            .filter('player_name', 'ilike', player)
+            .order("time");
 
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
