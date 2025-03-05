@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             .from("roster_changes")
             .select("*")
             .ilike('player_name', `%${player}%`)
-            .order('time', { ascending: false });
+            .order('time');
 
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
