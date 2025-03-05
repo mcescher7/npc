@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll(".btn-check").forEach(input => {
         input.addEventListener("change", (event) => {
+            console.log("Button geändert:", event.target.id);
             const position = event.target.id; // Die ID des aktiven Radio-Buttons ermitteln
             loadTopPerformances(position); // Die Daten für die gewählte Position laden
         });
