@@ -48,6 +48,7 @@ async function loadRecordPlayers(position = "all") {
         let query = supabaseClient.from("record_players").select("*")
             .order("games", { ascending: false })
             .order("total_points", { ascending: false })
+            .limit(10);
 
         if (position !== "all") {
             query = query.eq("position", position);
@@ -87,8 +88,8 @@ async function loadRecordPlayers(position = "all") {
     // === Event Listener für zweite Tabelle (record_players) ===
     document.querySelectorAll(".btn-group-record-players input[type=radio]").forEach(input => {
         input.addEventListener("change", (event) => {
-            const filter = event.target.id;
-            loadOtherRecords(filter);
+            const position = event.target.id;
+            loadRecordPlayers(position);
         });
     });
 
