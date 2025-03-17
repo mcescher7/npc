@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const { data, error } = await query;
 
         if (error) {
-            console.error("Fehler beim Laden der Daten:", error);
+            console.error("Fehler beim Laden der Daten von top_performances:", error);
             return;
         }        
 
@@ -43,5 +43,56 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     
+
+async function loadRecordPlayers(position = "all") {
+        let query = supabaseClient.from("record_players").select("*")
+            .order("games", { ascending: false })
+            .order("total_points", { ascending: false })
+
+        if (position !== "all") {
+            query = query.eq("position", position);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            console.error("Fehler beim Laden von record_players:", error);
+            return;
+        }
+
+        const tableBody = document.getElementById("record-players-table");
+        tableBody.innerHTML = "";
+
+        data.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${row.player_name}</td>
+                <td>${row.games}</td>
+                <td>${row.total_points}</td>
+                <td>${row.years_played}</td>
+                <td>${row.managers}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    // === Event Listener für erste Tabelle (top_performances) ===
+    document.querySelectorAll(".btn-group-top10 input[type=radio]").forEach(input => {
+        input.addEventListener("change", (event) => {
+            const position = event.target.id;
+            loadTopPerformances(position);
+        });
+    });
+
+    // === Event Listener für zweite Tabelle (record_players) ===
+    document.querySelectorAll(".btn-group-record-players input[type=radio]").forEach(input => {
+        input.addEventListener("change", (event) => {
+            const filter = event.target.id;
+            loadOtherRecords(filter);
+        });
+    });
+
+    // Initiale Ladung beider Tabellen
     loadTopPerformances();
+    loadRecordPlayers();
 });
