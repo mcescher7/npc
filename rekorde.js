@@ -72,16 +72,15 @@ async function loadRecordPlayers(position = "all") {
     // === Event Listener für erste Tabelle (top_performances) ===
     document.querySelectorAll('input[name="position-1"]').forEach(input => {
         input.addEventListener("change", (event) => {
-            const pos = event.target.id;
+            const pos = event.target.id.replace("-1", "");
             loadTopPerformances(pos);
-            loadRecordPlayers(pos);
         });
     });
 
     // === Event Listener für zweite Tabelle (record_players) ===
     document.querySelectorAll('input[name="position-2"]').forEach(input => {
         input.addEventListener("change", (event) => {
-            const pos = event.target.id;
+            const pos = event.target.id.replace("-2", "");
             loadRecordPlayers(pos);
         });
     });
