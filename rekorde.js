@@ -74,6 +74,7 @@ async function loadRecordPlayers(position = "all") {
         input.addEventListener("change", (event) => {
             const pos = event.target.id;
             loadTopPerformances(pos);
+            loadRecordPlayers(pos);
         });
     });
 
