@@ -34,15 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
             tableBody.appendChild(tr);
         });
-    }
-
-    document.querySelectorAll(".btn-check").forEach(input => {
-        input.addEventListener("change", (event) => {
-            const position = event.target.id;
-            loadTopPerformances(position);
-        });
-    });
-    
+    }  
 
 async function loadRecordPlayers(position = "all") {
         let query = supabaseClient.from("record_players").select("*")
@@ -80,7 +72,7 @@ async function loadRecordPlayers(position = "all") {
     // === Event Listener für erste Tabelle (top_performances) ===
     document.querySelectorAll(".btn-group-top10").forEach(input => {
         input.addEventListener("change", (event) => {
-            const pos = event.target.id.replace("-1", "");
+            const pos = event.target.id;
             loadTopPerformances(pos);
         });
     });
@@ -88,7 +80,7 @@ async function loadRecordPlayers(position = "all") {
     // === Event Listener für zweite Tabelle (record_players) ===
     document.querySelectorAll(".btn-group-record-players").forEach(input => {
         input.addEventListener("change", (event) => {
-            const pos = event.target.id.replace("-2", "");
+            const pos = event.target.id;
             loadRecordPlayers(pos);
         });
     });
