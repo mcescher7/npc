@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             `<tr>
                 <td>${row.team1}</td>
                 <td>${row.points1.toFixed(2)}</td>
-                <td>${-}</td>
+                <td>${"-"}</td>
                 <td>${row.points2.toFixed(2)}</td>
                 <td>${row.team2}</td>
             </tr>`
