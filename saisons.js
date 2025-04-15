@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadSeasons() {
         const { data, error } = await supabaseClient
             .from("seasons")
-            .select("year");
+            .select("year")
+            .order("year");
 
         if (error) {
             console.error("Fehler beim Laden der Saisons:", error);
@@ -38,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             .from("regular_season_standings") 
             .select("rank, name, teamname, w, l, pf, pa")
             .eq("year", year)
-            .order("rank", { ascending: false });
+            .order("rank");
         
         if (error) {
             console.error("Fehler beim Laden der Tabelle:", error);
@@ -53,20 +54,20 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${manager.teamname}</td>
                 <td>${manager.w}</td>
                 <td>${manager.l}</td>
-                <td>${manager.pf}</td>
-                <td>${manager.pa}</td>
+                <td>${manager.pf.toFixed(2)}</td>
+                <td>${manager.pa.toFixed(2)}</td>
             `;
             tableBody.appendChild(tr);
         });
     }
 
-    // Season-Dropdown befüllen
+    // Wochen-Dropdown befüllen
     async function loadWeeks(year) {
         const { data, error } = await supabaseClient
             .from("rosters")
             .select("week", {distinct: true})
             .eq("year", year)
-            .order('week', { ascending: true });;
+            .order('week', { ascending: true });
 
         if (error) {
             console.error("Fehler beim Laden der Wochen:", error);
@@ -97,8 +98,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         tableBody.innerHTML = data.map(row =>
             `<tr>
                 <td>${row.team1}</td>
-                <td>${row.points1}</td>
-                <td>${row.points2}</td>
+                <td>${row.points1.toFixed(2)}</td>
+                <td>${-}</td>
+                <td>${row.points2.toFixed(2)}</td>
                 <td>${row.team2}</td>
             </tr>`
         ).join("");
@@ -109,7 +111,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         const year = parseInt(event.target.value, 10) || null;
         loadRegSeason(year);
         loadWeeks(year);
-        //loadWeeklyMatchups(year);
     });
 
     weekSelect.addEventListener("change", (event) => {
