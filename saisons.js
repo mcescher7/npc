@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const { data, error } = await supabase
             .from("rosters")
-            .select("week", { distinct: true })
+            .select("week, , count()")
             .eq("year", year)
             .order("week", { ascending: true });
 
