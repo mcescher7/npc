@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         await loadRegSeason(year);
         await loadWeeks(year);
-        weeklyTableBody.innerHTML = ""; // Alte Matchups leeren
+        weeklyTableBody.innerHTML = "";
     });
 
     weekSelect.addEventListener("change", (e) => {
