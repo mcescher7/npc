@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         if (error) return logError("Laden der Saisons", error);
 
-        seasonSelect.innerHTML = '<option value="">Wähle eine Saison</option>';
+        seasonSelect.innerHTML = '<option value="">Bitte wählen...</option>';
         data.forEach(season => seasonSelect.appendChild(createOption(season.year, season.year)));
     }
 
@@ -68,16 +68,23 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // 🗓 Wochen laden
     async function loadWeeks(year) {
-        weekSelect.innerHTML = '<option value="">Wähle eine Woche</option>';
+        weekSelect.innerHTML = '<option value="">Bitte wählen...</option>';
 
         const { data, error } = await supabase
-            .from("rosters")
-            .select("week, , count()")
+            .from("seasons")
+            .select("weeks")
             .eq("year", year)
-            .order("week", { ascending: true });
+            .single();
 
-        if (error) return logError("Laden der Wochen", error);
-        data.forEach(week => weekSelect.appendChild(createOption(week.week, week.week)));
+        if (error || !data) return logError("Laden der Wochen", error);
+        
+        const weeks = data.weeks;
+        for (let i = 1; i <= weeks; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            weekSelect.appendChild(option);
+    }
     }
 
     // 🧾 Matchups laden
