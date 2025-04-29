@@ -133,43 +133,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 🚀 Initial Load
     await loadSeasons();
 
-if (typeof BracketsViewer !== "function") {
-        console.error("❌ BracketsViewer ist nicht geladen.");
-        return;
-    }    
+const { JsonDatabase } = require('brackets-json-db');
+const { BracketsManager } = require('brackets-manager');
 
-const viewer = new BracketsViewer({
-        selector: "#bracket"
-    });
+const storage = new JsonDatabase();
+const manager = new BracketsManager(storage);
 
-    const data = {
-        stages: [
-            {
-                id: 1,
-                name: "Playoffs",
-                type: "single_elimination",
-                settings: { size: 4 }
-            }
-        ],
-        matches: [
-            {
-                id: 1,
-                stage_id: 1,
-                round: 1,
-                number: 1,
-                opponents: [
-                    { position: 1, participant: { name: "Team A" } },
-                    { position: 2, participant: { name: "Team B" } }
-                ],
-                status: "completed",
-                result: [
-                    { position: 1, score: 24 },
-                    { position: 2, score: 18 }
-                ]
-            }
-        ]
-    };
+// Create an elimination stage for tournament `3`.
+await manager.create.stage({
+  tournamentId: 3,
+  name: 'Elimination stage',
+  type: 'double_elimination',
+  seeding: ['Team 1', 'Team 2', 'Team 3', 'Team 4'],
+  settings: { grandFinal: 'double' },
+});
 
-    await viewer.render(data);
+await manager.update.match({
+  id: 0, // First match of winner bracket (round 1)
+  opponent1: { score: 16, result: 'win' },
+  opponent2: { score: 12 },
+});
+
 
 });
