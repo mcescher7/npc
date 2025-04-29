@@ -8,10 +8,11 @@
 <body>
   <div id="bracket"></div>
 
-  <script type="module">
-    import BracketsViewer from 'https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js';
-
-    const viewer = new BracketsViewer({
+  <!-- Skript OHNE type="module" laden -->
+  <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
+  <script>
+    // Zugriff über window.BracketsViewer
+    const viewer = new window.BracketsViewer({
       selector: '#bracket',
     });
 
