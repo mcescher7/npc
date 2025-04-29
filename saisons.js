@@ -133,39 +133,43 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 🚀 Initial Load
     await loadSeasons();
 
-    if (!window.Bravos || !window.Bravos.BracketsViewer) {
-        console.error("BracketsViewer ist nicht geladen.");
+if (typeof BracketsViewer !== "function") {
+        console.error("❌ BracketsViewer ist nicht geladen.");
         return;
-    }
+    }    
 
-    const viewer = new window.Bravos.BracketsViewer({
-        selector: "#bracket",
-        style: {
-            roundHeader: {
-                background: "#f0f0f0",
-                color: "#000",
-            },
-        },
+const viewer = new BracketsViewer({
+        selector: "#bracket"
     });
 
-    const exampleData = {
+    const data = {
         stages: [
             {
                 id: 1,
                 name: "Playoffs",
                 type: "single_elimination",
-                seeding: [ [1, 2], [3, 4] ],
-                settings: {
-                    size: 4,
-                }
+                settings: { size: 4 }
             }
         ],
         matches: [
-            { id: 1, stage_id: 1, round: 1, number: 1, opponents: [ { position: 1, participant: { name: "Team A" } }, { position: 2, participant: { name: "Team B" } } ], status: "completed", result: [{ position: 1, score: 20 }, { position: 2, score: 10 }] },
-            { id: 2, stage_id: 1, round: 1, number: 2, opponents: [ { position: 1, participant: { name: "Team C" } }, { position: 2, participant: { name: "Team D" } } ], status: "completed", result: [{ position: 1, score: 15 }, { position: 2, score: 25 }] },
-            { id: 3, stage_id: 1, round: 2, number: 1, opponents: [ { position: 1, participant: { name: "Team A" } }, { position: 2, participant: { name: "Team D" } } ], status: "pending", result: [] },
+            {
+                id: 1,
+                stage_id: 1,
+                round: 1,
+                number: 1,
+                opponents: [
+                    { position: 1, participant: { name: "Team A" } },
+                    { position: 2, participant: { name: "Team B" } }
+                ],
+                status: "completed",
+                result: [
+                    { position: 1, score: 24 },
+                    { position: 2, score: 18 }
+                ]
+            }
         ]
     };
 
-    await viewer.render(exampleData);
+    await viewer.render(data);
+
 });
