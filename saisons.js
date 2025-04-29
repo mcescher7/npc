@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 🚀 Initial Load
     await loadSeasons();
 
-const data = {
+    const data = {
         stages: [
             {
                 id: 0,
@@ -149,6 +149,11 @@ const data = {
                 id: 0,
                 stage_id: 0,
                 round: { number: 1 },
+                child_count: 0,
+                group_id: 0,
+                status: 3,
+                match_game_id: null,
+                games: [],
                 opponent1: { id: 1, score: 30, result: 'win' },
                 opponent2: { id: 2, score: 20, result: 'loss' },
             },
@@ -156,6 +161,11 @@ const data = {
                 id: 1,
                 stage_id: 0,
                 round: { number: 1 },
+                child_count: 0,
+                group_id: 0,
+                status: 3,
+                match_game_id: null,
+                games: [],
                 opponent1: { id: 3, score: 10, result: 'loss' },
                 opponent2: { id: 4, score: 40, result: 'win' },
             },
@@ -163,6 +173,11 @@ const data = {
                 id: 2,
                 stage_id: 0,
                 round: { number: 2 },
+                child_count: 0,
+                group_id: 0,
+                status: 3,
+                match_game_id: null,
+                games: [],
                 opponent1: { id: 1, score: 42, result: 'win' },
                 opponent2: { id: 4, score: 33, result: 'loss' },
             }
