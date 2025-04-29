@@ -6,9 +6,11 @@
     <title>Nathan Peterman Cup</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
     <script defer src="script.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script defer src="saisons.js"></script>
+    <script defer src="saisons.js"></script>    
 </head>
 <body>
     <div id="menu-container"></div>
@@ -42,6 +44,10 @@
                 </tbody>
             </table>
         </div>
+
+        <h1 class="text-center">Playoff-Bracket</h1>
+        <div id="bracket"></div>
+
 
         <h2>Ergebnisse</h2>
          <label for="week-select" class="form-label">Wähle eine Woche:</label>
