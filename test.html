@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Turnierbaum</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.css">
+</head>
+<body>
+  <div id="bracket"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
+  <script>
+    const viewer = new BracketsViewer.default({
+      selector: '#bracket',
+    });
+
+    const data = {
+      stage: { id: 1, name: "Turnier", type: "single_elimination" },
+      matches: [
+        { id: 1, stage_id: 1, round_id: 1, participant1_id: 1, participant2_id: 2, status: "completed", winner_id: 1 },
+        { id: 2, stage_id: 1, round_id: 1, participant1_id: 3, participant2_id: 4, status: "completed", winner_id: 4 },
+        { id: 3, stage_id: 1, round_id: 2, participant1_id: 1, participant2_id: 4, status: "pending" }
+      ],
+      participants: [
+        { id: 1, name: "Team A" },
+        { id: 2, name: "Team B" },
+        { id: 3, name: "Team C" },
+        { id: 4, name: "Team D" }
+      ]
+    };
+
+    viewer.render(data);
+  </script>
+</body>
+</html>
