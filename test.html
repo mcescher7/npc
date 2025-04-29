@@ -8,9 +8,10 @@
 <body>
   <div id="bracket"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
-  <script>
-    const viewer = new BracketsViewer.default({
+  <script type="module">
+    import BracketsViewer from 'https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js';
+
+    const viewer = new BracketsViewer({
       selector: '#bracket',
     });
 
