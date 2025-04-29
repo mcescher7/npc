@@ -133,6 +133,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 🚀 Initial Load
     await loadSeasons();
 
+    if (!window.Bravos || !window.Bravos.BracketsViewer) {
+        console.error("BracketsViewer ist nicht geladen.");
+        return;
+    }
+
     const viewer = new window.Bravos.BracketsViewer({
         selector: "#bracket",
         style: {
