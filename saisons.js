@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 🚀 Initial Load
     await loadSeasons();
 
-const viewer = new BracketsViewer({
+const viewer = new window.BracketsViewer({
         selector: '#bracket',
     });
 
