@@ -133,11 +133,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 🚀 Initial Load
     await loadSeasons();
 
-const viewer = new window.BracketsViewer({
-        selector: '#bracket',
-    });
-
-    const data = {
+const data = {
         stages: [
             {
                 id: 0,
@@ -146,23 +142,44 @@ const viewer = new window.BracketsViewer({
                 type: 'single_elimination',
                 number: 1,
                 settings: {},
-            }
+            },
         ],
         matches: [
             {
                 id: 0,
                 stage_id: 0,
                 round: { number: 1 },
-                opponent1: { id: 1, score: 20, result: 'win' },
-                opponent2: { id: 2, score: 10, result: 'loss' },
+                opponent1: { id: 1, score: 30, result: 'win' },
+                opponent2: { id: 2, score: 20, result: 'loss' },
+            },
+            {
+                id: 1,
+                stage_id: 0,
+                round: { number: 1 },
+                opponent1: { id: 3, score: 10, result: 'loss' },
+                opponent2: { id: 4, score: 40, result: 'win' },
+            },
+            {
+                id: 2,
+                stage_id: 0,
+                round: { number: 2 },
+                opponent1: { id: 1, score: 42, result: 'win' },
+                opponent2: { id: 4, score: 33, result: 'loss' },
             }
         ],
         participants: [
             { id: 1, name: 'Team A' },
             { id: 2, name: 'Team B' },
+            { id: 3, name: 'Team C' },
+            { id: 4, name: 'Team D' },
         ]
     };
 
-    viewer.render(data);
+    window.bracketsViewer.render({
+        stages: data.stages,
+        matches: data.matches,
+        participants: data.participants,
+        selector: '#bracket',
+    });
 
 });
