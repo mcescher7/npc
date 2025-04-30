@@ -167,8 +167,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     for (let r = 1; r <= maxRounds; r++) {
         // Rundennummer links
         const leftLabel = document.createElement("div");
-        leftLabel.className = "draft-round-label";
-        leftLabel.textContent = `Runde ${r}`;
+        leftLabel.className = "round-label";
+        leftLabel.textContent = r;
         board.appendChild(leftLabel);
 
         let picks = data.filter(p => p.round === r);
@@ -188,8 +188,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Rundennummer rechts
         const rightLabel = document.createElement("div");
-        rightLabel.className = "draft-round-label";
-        rightLabel.textContent = `Runde ${r}`;
+        rightLabel.className = "round-label";
+        rightLabel.textContent = r;
         board.appendChild(rightLabel);
     }
 }
