@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     for (let r = 1; r <= maxRounds; r++) {
         // Rundennummer links
         const leftLabel = document.createElement("div");
-        leftLabel.className = "round-label";
+        leftLabel.className = "round-label-left";
         leftLabel.textContent = (r % 2 === 1) ? `${r} →` : `${r} ←`;
         board.appendChild(leftLabel);
 
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Rundennummer rechts
         const rightLabel = document.createElement("div");
-        rightLabel.className = "round-label";
+        rightLabel.className = "round-label-right";
         rightLabel.textContent = (r % 2 === 1) ? `→ ${r}` : `← ${r}`;
         board.appendChild(rightLabel);
     }
