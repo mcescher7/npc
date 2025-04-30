@@ -120,6 +120,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         await loadRegSeason(year);
         await loadWeeks(year);
+        await loadDraftBoard(year);
         weeklyTableBody.innerHTML = "";
     });
 
