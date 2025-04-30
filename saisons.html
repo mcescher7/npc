@@ -29,6 +29,16 @@
     grid-template-columns: repeat(10, 110px);
 }
 
+.draft-round-label {
+    writing-mode: vertical-rl;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.75rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 0.2rem 0;
+}
+
 .draft-cell {
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -38,6 +48,23 @@
     text-align: center;
     font-size: 0.8rem;
     min-height: 60px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.draft-cell .last-name {
+    font-weight: bold;
+}
+
+.draft-cell .pick-no {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 0.6rem;
+    font-weight: bold;
+    opacity: 0.7;
 }
 
 .draft-cell span {
