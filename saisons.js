@@ -143,7 +143,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         .from("draft_board")
         .select("round, pick_no, teamname, first_name, last_name, position")
         .eq("year", year)
-        .order("round")
         .order("pick_no");
 
     if (error) {
@@ -151,23 +150,27 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    // Teams und max. Runden bestimmen
     const teams = [...new Set(data.map(p => p.teamname))];
     const maxRounds = Math.max(...data.map(p => p.round));
+    board.className = `draft-board-grid cols-${teams.length + 2}`; // +2 für Rundennummern
 
-    // Grid-Spalten setzen
-    board.className = `draft-board-grid cols-${teams.length}`;
-
-    // Teamnamen oben
+    // Kopfzeile: leere Ecke + Teamnamen + leere Ecke
+    board.appendChild(document.createElement("div")); // Leerfeld oben links
     teams.forEach(team => {
         const header = document.createElement("div");
         header.className = "draft-team-header";
         header.textContent = team;
         board.appendChild(header);
     });
+    board.appendChild(document.createElement("div")); // Leerfeld oben rechts
 
-    // Pro Runde Picks zuweisen
     for (let r = 1; r <= maxRounds; r++) {
+        // Rundennummer links
+        const leftLabel = document.createElement("div");
+        leftLabel.className = "draft-round-label";
+        leftLabel.textContent = `Runde ${r}`;
+        board.appendChild(leftLabel);
+
         let picks = data.filter(p => p.round === r);
         if (r % 2 === 0) picks.reverse(); // Snake-Draft
 
@@ -176,12 +179,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             const posClass = ["QB", "RB", "WR", "TE", "K", "DEF"].includes(pick.position) ? pick.position : "other";
             div.className = `draft-cell ${posClass}`;
             div.innerHTML = `
+                <div class="pick-no">#${pick.pick_no}</div>
                 <span>${pick.first_name}</span>
-                <span>${pick.last_name}</span>
+                <span class="last-name">${pick.last_name}</span>
             `;
             board.appendChild(div);
         });
+
+        // Rundennummer rechts
+        const rightLabel = document.createElement("div");
+        rightLabel.className = "draft-round-label";
+        rightLabel.textContent = `Runde ${r}`;
+        board.appendChild(rightLabel);
     }
 }
+
 
 });
