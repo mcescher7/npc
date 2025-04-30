@@ -26,23 +26,20 @@
 
 /* Anzahl der Spalten wird per JS gesetzt */
 .draft-board-grid.cols-8 {
-    grid-template-columns: repeat(8, 110px);
+    grid-template-columns: 50px repeat(6, 110px) 50px;    
 }
 .draft-board-grid.cols-10 {
-    grid-template-columns: repeat(10, 110px);
+    grid-template-columns: 50px repeat(8, 110px) 50px;
 }
 .draft-board-grid.cols-12 {
-    grid-template-columns: repeat(12, 110px);
+    grid-template-columns: 50px repeat(10, 110px) 50px;
 }
 
-.draft-round-label {
-    writing-mode: vertical-rl;
+.round-label {
     text-align: center;
     font-weight: bold;
-    font-size: 0.75rem;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    padding: 0.2rem 0;
+    padding: 0.25rem 0;
+    background-color: #f0f0f0;
 }
 
 .draft-cell {
