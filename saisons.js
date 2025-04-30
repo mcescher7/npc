@@ -152,9 +152,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const teams = [...new Set(data.map(p => p.teamname))];
     const maxRounds = Math.max(...data.map(p => p.round));
-
-    board.style.gridTemplateColumns = `repeat(${teams.length + 2}, 1fr)`;
-
+    board.className = `draft-board-grid cols-${teams.length + 2}`; // +2 für Rundennummern
 
     // Kopfzeile: leere Ecke + Teamnamen + leere Ecke
     board.appendChild(document.createElement("div")); // Leerfeld oben links
