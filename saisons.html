@@ -36,10 +36,19 @@
 }
 
 .round-label {
-    text-align: center;
+    width: 60px;
     font-weight: bold;
-    padding: 0.25rem 0;
-    background-color: #f0f0f0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.round-label:first-child {
+    justify-content: flex-end; /* rechtsbündig */
+}
+
+.round-label:last-child {
+    justify-content: flex-start; /* linksbündig */
 }
 
 .draft-cell {
