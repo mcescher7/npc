@@ -138,9 +138,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function loadDraftBoard(year) {
     const board = document.getElementById("draft-board");
     board.innerHTML = ""; // Reset
-    document.getElementById("draft-year-label").textContent = year;
 
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabase
         .from("draft_board")
         .select("year, round, pick_no, teamname, player, position")
         .eq("year", year)
