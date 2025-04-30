@@ -133,68 +133,56 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 🚀 Initial Load
     await loadSeasons();
 
-    const data = {
-        stages: [
-            {
-                id: 0,
-                tournament_id: 0,
-                name: 'Playoffs',
-                type: 'single_elimination',
-                number: 1,
-                settings: {},
-            },
-        ],
-        matches: [
-            {
-                id: 0,
-                stage_id: 0,
-                round: { number: 1 },
-                child_count: 0,
-                group_id: 0,
-                status: 3,
-                match_game_id: null,
-                games: [],
-                opponent1: { id: 1, score: 30, result: 'win' },
-                opponent2: { id: 2, score: 20, result: 'loss' },
-            },
-            {
-                id: 1,
-                stage_id: 0,
-                round: { number: 1 },
-                child_count: 0,
-                group_id: 0,
-                status: 3,
-                match_game_id: null,
-                games: [],
-                opponent1: { id: 3, score: 10, result: 'loss' },
-                opponent2: { id: 4, score: 40, result: 'win' },
-            },
-            {
-                id: 2,
-                stage_id: 0,
-                round: { number: 2 },
-                child_count: 0,
-                group_id: 0,
-                status: 3,
-                match_game_id: null,
-                games: [],
-                opponent1: { id: 1, score: 42, result: 'win' },
-                opponent2: { id: 4, score: 33, result: 'loss' },
-            }
-        ],
-        participants: [
-            { id: 1, name: 'Team A' },
-            { id: 2, name: 'Team B' },
-            { id: 3, name: 'Team C' },
-            { id: 4, name: 'Team D' },
-        ]
-    };
+    // Draft
+    async function loadDraftBoard(year) {
+    const board = document.getElementById("draft-board");
+    board.innerHTML = ""; // Reset
+    document.getElementById("draft-year-label").textContent = year;
 
-    window.bracketsViewer.render({
-        stages: data.stages,
-        matches: data.matches,
-        participants: data.participants,
-        selector: '#bracket',
+    const { data, error } = await supabaseClient
+        .from("drafts")
+        .select("year, round, pick_no, teamname, player, position")
+        .eq("year", year)
+        .order("round", { ascending: true })
+        .order("pick_no", { ascending: true });
+
+    if (error) {
+        console.error("Fehler beim Laden des Drafts:", error);
+        return;
+    }
+
+    const grouped = {};
+    data.forEach(pick => {
+        if (!grouped[pick.round]) grouped[pick.round] = [];
+        grouped[pick.round].push(pick);
     });
+
+    for (const round of Object.keys(grouped)) {
+        const rowLabel = document.createElement("div");
+        rowLabel.className = "col-12 fw-bold mt-3";
+        rowLabel.innerText = `Runde ${round}`;
+        board.appendChild(rowLabel);
+
+        const row = document.createElement("div");
+        row.className = "row mb-2";
+
+        grouped[round].forEach(pick => {
+            const col = document.createElement("div");
+            col.className = "col-md-2 col-sm-4 col-6";
+            const positionClass = ["QB", "RB", "WR", "TE", "K", "DEF"].includes(pick.position) ? pick.position : "other";
+
+            col.innerHTML = `
+                <div class="draft-cell ${positionClass}">
+                    <div>${pick.pick_no}. ${pick.player}</div>
+                    <div class="small">${pick.teamname}</div>
+                </div>
+            `;
+            row.appendChild(col);
+        });
+
+        board.appendChild(row);
+    }
+}
+
 
 });
