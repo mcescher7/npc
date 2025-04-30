@@ -138,10 +138,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function loadDraftBoard(year) {
     const board = document.getElementById("draft-board");
     board.innerHTML = "";
+    document.getElementById("draft-year-label").textContent = year;
 
-    const { data, error } = await supabase
-        .from("draft_board")
-        .select("year, round, pick_no, teamname, player, position")
+    const { data, error } = await supabaseClient
+        .from("drafts")
+        .select("round, pick_no, teamname, first_name, last_name, position")
         .eq("year", year)
         .order("round")
         .order("pick_no");
@@ -151,49 +152,39 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    // Gruppieren nach Runde
-    const grouped = {};
-    data.forEach(pick => {
-        if (!grouped[pick.round]) grouped[pick.round] = [];
-        grouped[pick.round].push(pick);
+    // Teams und max. Runden bestimmen
+    const teams = [...new Set(data.map(p => p.teamname))];
+    const maxRounds = Math.max(...data.map(p => p.round));
+
+    // Grid-Spalten setzen
+    board.className = `draft-board-grid cols-${teams.length}`;
+
+    // Teamnamen oben
+    teams.forEach(team => {
+        const header = document.createElement("div");
+        header.className = "draft-team-header";
+        header.textContent = team;
+        board.appendChild(header);
     });
 
-    // Teamnamen aus erster Runde extrahieren
-    const firstRound = grouped[1] || [];
-    const teamNames = firstRound.map(p => p.teamname);
+    // Pro Runde Picks zuweisen
+    for (let r = 1; r <= maxRounds; r++) {
+        let picks = data.filter(p => p.round === r);
+        if (r % 2 === 0) picks.reverse(); // Snake-Draft
 
-    // Teamnamen-Zeile
-    const header = document.createElement("div");
-    header.className = "draft-header";
-    teamNames.forEach(name => {
-        const div = document.createElement("div");
-        div.innerText = name;
-        header.appendChild(div);
-    });
-    board.appendChild(header);
-
-    // Für jede Runde Zeile rendern
-    for (const [roundKey, picks] of Object.entries(grouped)) {
-        const round = parseInt(roundKey, 10);
-        const row = document.createElement("div");
-        row.className = "draft-row";
-
-        // Rückwärtsreihenfolge bei geraden Runden
-        const orderedPicks = round % 2 === 0 ? [...picks].reverse() : picks;
-
-        orderedPicks.forEach(pick => {
+        picks.forEach(pick => {
             const div = document.createElement("div");
             const posClass = ["QB", "RB", "WR", "TE", "K", "DEF"].includes(pick.position) ? pick.position : "other";
-
             div.className = `draft-cell ${posClass}`;
             div.innerHTML = `
-                ${pick.pick_no}. ${pick.player}
+                <span>${pick.first_name}</span>
+                <span>${pick.last_name}</span>
             `;
-            row.appendChild(div);
+            board.appendChild(div);
         });
-
-        board.appendChild(row);
     }
+}
+
 }
 
 
