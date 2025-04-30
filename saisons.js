@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Rundennummer links
         const leftLabel = document.createElement("div");
         leftLabel.className = "round-label";
-        leftLabel.textContent = r;
+        leftLabel.textContent = (r % 2 === 1) ? `${r} →` : `${r}`;
         board.appendChild(leftLabel);
 
         let picks = data.filter(p => p.round === r);
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Rundennummer rechts
         const rightLabel = document.createElement("div");
         rightLabel.className = "round-label";
-        rightLabel.textContent = r;
+        rightLabel.textContent = (r % 2 === 1) ? `${r}` : `← ${r}`;
         board.appendChild(rightLabel);
     }
 }
