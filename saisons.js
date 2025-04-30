@@ -138,10 +138,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function loadDraftBoard(year) {
     const board = document.getElementById("draft-board");
     board.innerHTML = "";
-    document.getElementById("draft-year-label").textContent = year;
 
-    const { data, error } = await supabaseClient
-        .from("drafts")
+    const { data, error } = await supabase
+        .from("draft_board")
         .select("round, pick_no, teamname, first_name, last_name, position")
         .eq("year", year)
         .order("round")
