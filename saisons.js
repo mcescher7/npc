@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const { data, error } = await supabase
         .from("draft_board")
-        .select("round, pick_no, teamname, first_name, last_name, position")
+        .select("round, pick_no, teamname, first_name, last_name, position, keeper_id")
         .eq("year", year)
         .order("pick_no");
 
@@ -178,7 +178,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             const div = document.createElement("div");
             const posClass = ["QB", "RB", "WR", "TE", "K", "DEF"].includes(pick.position) ? pick.position : "other";
             div.className = `draft-cell ${posClass}`;
+            const keeperMark = pick.keeper_id !== null ? `<div class="keeper-mark">K</div>` : "";
             div.innerHTML = `
+                ${keeperMark}
                 <div class="pick-no">#${pick.pick_no}</div>
                 <span>${pick.first_name}</span>
                 <span class="last-name">${pick.last_name}</span>
