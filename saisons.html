@@ -11,6 +11,25 @@
     <script defer src="script.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script defer src="saisons.js"></script>    
+    <style>
+        .draft-cell {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: center;
+            min-height: 80px;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+        }
+        .QB { background-color: #007bff; }      /* Blau */
+        .RB { background-color: #28a745; }      /* Grün */
+        .WR { background-color: #ffc107; color: black; }  /* Gelb */
+        .TE { background-color: #6f42c1; }      /* Lila */
+        .K {  background-color: #17a2b8; }      /* Türkis */
+        .DEF { background-color: #343a40; }     /* Dunkelgrau */
+        .other { background-color: #6c757d; }   /* Grau */
+    </style>
 </head>
 <body>
     <div id="menu-container"></div>
@@ -24,6 +43,12 @@
                 <option value="">Bitte wählen...</option>
             </select>
         </div>
+
+        <h2>Draft<span id="draft-year-label"></span></h2>
+        <div id="draft-board" class="row"></div>
+
+        <h2>Playoffs (WIP)</h2>
+        <div id="bracket"></div>
 
         <h2>Regular Season</h2>
         <div class="table-responsive">
@@ -44,10 +69,6 @@
                 </tbody>
             </table>
         </div>
-
-        <h2>Playoffs</h2>
-        <div id="bracket"></div>
-
 
         <h2>Ergebnisse</h2>
          <label for="week-select" class="form-label">Wähle eine Woche:</label>
