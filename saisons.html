@@ -12,23 +12,61 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script defer src="saisons.js"></script>    
     <style>
+              #draft-scroll-wrapper {
+            overflow-x: auto;
+            white-space: nowrap;
+            border: 1px solid #ccc;
+            padding-bottom: 1rem;
+        }
+        
+        .draft-board {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 800px;
+        }
+        
+        .draft-row {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: flex-start;
+        }
+        
         .draft-cell {
             border: 1px solid #ddd;
-            padding: 0.5rem;
+            border-radius: 6px;
+            padding: 0.4rem;
             text-align: center;
-            min-height: 80px;
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: white;
+            min-width: 110px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+            flex-shrink: 0;
         }
-        .QB { background-color: #007bff; }      /* Blau */
-        .RB { background-color: #28a745; }      /* Grün */
-        .WR { background-color: #ffc107; color: black; }  /* Gelb */
-        .TE { background-color: #6f42c1; }      /* Lila */
-        .K {  background-color: #17a2b8; }      /* Türkis */
-        .DEF { background-color: #343a40; }     /* Dunkelgrau */
-        .other { background-color: #6c757d; }   /* Grau */
+        
+        .draft-header {
+            display: flex;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+        
+        .draft-header div {
+            min-width: 110px;
+            flex-shrink: 0;
+        }
+        
+        /* Farben nach Position */
+        .QB { background-color: #007bff; }
+        .RB { background-color: #28a745; }
+        .WR { background-color: #ffc107; color: black; }
+        .TE { background-color: #6f42c1; }
+        .K { background-color: #17a2b8; }
+        .DEF { background-color: #343a40; }
+        .other { background-color: #6c757d; }
+
     </style>
 </head>
 <body>
