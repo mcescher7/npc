@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("draft-year-label").textContent = year;
 
     const { data, error } = await supabaseClient
-        .from("drafts")
+        .from("draft_board")
         .select("year, round, pick_no, teamname, player, position")
         .eq("year", year)
         .order("round", { ascending: true })
