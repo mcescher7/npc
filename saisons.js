@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Playoffs
     async function loadBracket(year) {
   const { data, error } = await supabase
-    .from('playoff_games')
+    .from('playoff_matches')
     .select('*')
     .eq('year', year)
     .order('round')
