@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const seasonSelect = document.getElementById("season-select");
     const weekSelect = document.getElementById("week-select");
+    const bracketDiv = document.getElementById("playoff-bracket");
     const regTableBody = document.getElementById("regular-season-table");
     const weeklyTableBody = document.getElementById("weekly-results-table");
 
@@ -118,6 +119,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const year = parseInt(e.target.value, 10);
         if (!year) return;
 
+        await loadBracket(year);
         await loadRegSeason(year);
         await loadWeeks(year);
         await loadDraftBoard(year);
@@ -194,6 +196,54 @@ document.addEventListener("DOMContentLoaded", async function () {
         rightLabel.textContent = (r % 2 === 1) ? `→ ${r}` : `← ${r}`;
         board.appendChild(rightLabel);
     }
+}
+
+    // Playoffs
+    async function loadBracket(year) {
+  const { data, error } = await supabase
+    .from('playoff_games')
+    .select('*')
+    .eq('year', year)
+    .order('round')
+    .order('slot');
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  renderBracket(data);
+}
+
+function renderBracket(games) {
+  const rounds = ['QF', 'SF', 'F'];
+  const labels = { QF: 'Viertelfinale', SF: 'Halbfinale', F: 'Finale' };
+
+  bracketDiv.innerHTML = '';
+
+  for (const round of rounds) {
+    const column = document.createElement('div');
+    column.className = 'col bracket-col';
+
+    const title = document.createElement('h5');
+    title.textContent = labels[round];
+    column.appendChild(title);
+
+    const roundGames = games.filter(g => g.round === round);
+    for (const game of roundGames) {
+      const div = document.createElement('div');
+      div.className = 'match bg-light border rounded p-2 mb-3';
+      div.innerHTML = `
+        <strong>${game.w_name || 'TBD'}</strong><br>
+        <small>vs. ${game.l_name || 'TBD'}</small><br>
+        <small>Punkte: ${game.w_points ?? '-'} : ${game.l_points ?? '-'}</small><br>
+        <small>Woche ${game.week}</small>
+      `;
+      column.appendChild(div);
+    }
+
+    bracketDiv.appendChild(column);
+  }
 }
 
 
