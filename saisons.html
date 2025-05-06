@@ -111,6 +111,18 @@
     font-size: 0.77rem;
     padding: 0.23rem;
 }
+
+ .bracket-col {
+      min-width: 180px;
+    }
+    .match {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
     </style>
 </head>
 <body>
@@ -127,7 +139,26 @@
         </div>
 
         <h2>Playoffs (WIP)</h2>
-        <div id="bracket"></div>
+        <div class="row">
+    <div class="col bracket-col">
+      <h5>Viertelfinale</h5>
+      <div class="match">Team 1<br><small>Woche 15</small></div>
+      <div class="match">Team 2<br><small>Woche 15</small></div>
+      <div class="match">Team 3<br><small>Woche 15</small></div>
+      <div class="match">Team 4<br><small>Woche 15</small></div>
+    </div>
+
+    <div class="col bracket-col">
+      <h5>Halbfinale</h5>
+      <div class="match">Sieger 1<br><small>Woche 16</small></div>
+      <div class="match">Sieger 2<br><small>Woche 16</small></div>
+    </div>
+
+    <div class="col bracket-col">
+      <h5>Finale</h5>
+      <div class="match">Champion<br><small>Woche 17</small></div>
+    </div>
+  </div>
 
         <h2>Regular Season</h2>
         <div class="table-responsive">
