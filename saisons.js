@@ -216,16 +216,24 @@ async function loadBracket(year) {
     return
   }
 
-  // Viertelfinals sortieren nach gewünschter Reihenfolge
+  // Sortierung: gewünschte QF-Reihenfolge
   const qfOrder = [1, 4, 3, 2]
+
   const sortedData = data.slice().sort((a, b) => {
     const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
+
     if (a.round !== b.round) {
       return roundOrder[a.round] - roundOrder[b.round]
     }
+
+    // In QF nach vordefinierter qfOrder
     if (a.round === 'QF') {
-      return qfOrder.indexOf(a.w_rank) - qfOrder.indexOf(b.w_rank)
+      const aRank = a.w_rank
+      const bRank = b.w_rank
+      return qfOrder.indexOf(aRank) - qfOrder.indexOf(bRank)
     }
+
+    // In SF/F einfach nach Seed
     return a.w_rank - b.w_rank
   })
 
@@ -248,7 +256,6 @@ async function loadBracket(year) {
     const winnerPointsClass = 'text-success fw-bold'
     const loserPointsClass = 'text-danger'
 
-    // Zeilenaufbau
     const teamLine = (rank, name, points, isWinner) => `
       <div class="d-flex justify-content-between">
         <span><small class="text-muted">${rank}</small> ${name}</span>
@@ -274,13 +281,10 @@ async function loadBracket(year) {
       )
 
       if (isSemi && rank2HadBye) {
-        // Im Halbfinale: Rank 2 immer unten, wenn Bye
         div.innerHTML = (game.w_rank === 2)
           ? teamLine(game.l_rank, game.l_name, lPoints, false) + teamLine(game.w_rank, game.w_name, wPoints, true)
           : teamLine(game.w_rank, game.w_name, wPoints, true) + teamLine(game.l_rank, game.l_name, lPoints, false)
       } else {
-        // Höherer Seed steht oben
-        const higherIsWinner = game.w_rank < game.l_rank
         const top = game.w_rank < game.l_rank
           ? teamLine(game.w_rank, game.w_name, wPoints, true)
           : teamLine(game.l_rank, game.l_name, lPoints, false)
@@ -294,7 +298,7 @@ async function loadBracket(year) {
 
     container.appendChild(div)
 
-    // Champion (Finalsieger)
+    // Champion-Anzeige
     if (game.round === 'F') {
       const champion = document.getElementById('champion')
       champion.innerHTML = `
@@ -305,6 +309,5 @@ async function loadBracket(year) {
     }
   })
 }
-
 
 });
