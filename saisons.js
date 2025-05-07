@@ -217,7 +217,28 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
-     data.forEach(game => {
+        const rounds = {
+          QF: [],
+          SF: [],
+          F: []
+        };
+        
+        data.forEach(game => {
+          if (rounds[game.round]) {
+            rounds[game.round].push(game);
+          }
+        });
+
+        rounds.SF.sort((a, b) => {
+          const midA = ((a.w_slot ?? 0) + (a.l_slot ?? 0)) / 2;
+          const midB = ((b.w_slot ?? 0) + (b.l_slot ?? 0)) / 2;
+          return midA - midB;
+        });
+
+
+
+     ['QF', 'SF', 'F'].forEach(round => {
+          rounds[round].forEach(game => {
       const roundId =
         game.round === 'QF' ? 'quarterfinals' :
         game.round === 'SF' ? 'semifinals' :
@@ -275,6 +296,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         `
       }
     })
+         })
   }
 
 });
