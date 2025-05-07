@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         game.round === 'SF' ? 'semifinals' :
         game.round === 'F'  ? 'finals' : null
 
-      const isBye = !game.l_id
+      const isBye = game.l_id === null
 
       if (roundId) {
         const container = document.getElementById(roundId)
