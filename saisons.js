@@ -225,6 +225,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       const isBye = game.l_id === null
 
+    console.log(`isBye: ${isBye}, w_id: ${game.w_id}, l_id: ${game.l_id}`);
+
+
       if (roundId) {
         const container = document.getElementById(roundId)
         const div = document.createElement('div')
