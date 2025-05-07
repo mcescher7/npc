@@ -202,111 +202,103 @@ document.addEventListener("DOMContentLoaded", async function () {
 async function loadBracket(year) {
   // Container zuerst leeren
   ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
-    const container = document.getElementById(id);
-    if (container) container.innerHTML = '';
-  });
+    const container = document.getElementById(id)
+    if (container) container.innerHTML = ''
+  })
 
   const { data, error } = await supabase
     .from('playoff_matches')
     .select('*')
-    .eq('year', year);
+    .eq('year', year)
 
   if (error) {
-    console.error(error);
-    return;
+    console.error(error)
+    return
   }
 
-  // Viertelfinals nach Wunsch sortieren
-  const qfOrder = [1, 4, 3, 2];
-  const qfGames = data
-    .filter(g => g.round === 'QF')
-    .sort((a, b) =>
-      qfOrder.indexOf(Math.min(a.w_rank, a.l_rank ?? 999)) -
-      qfOrder.indexOf(Math.min(b.w_rank, b.l_rank ?? 999))
-    );
+  // Viertelfinals sortieren nach gewünschter Reihenfolge
+  const qfOrder = [1, 4, 3, 2]
+  const sortedData = data.slice().sort((a, b) => {
+    const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
+    if (a.round !== b.round) {
+      return roundOrder[a.round] - roundOrder[b.round]
+    }
+    if (a.round === 'QF') {
+      return qfOrder.indexOf(a.w_rank) - qfOrder.indexOf(b.w_rank)
+    }
+    return a.w_rank - b.w_rank
+  })
 
-  // Map für Slot-Positionen (für Halbfinale)
-  const qfSlotMap = new Map();
-  qfGames.forEach((game, index) => {
-    qfSlotMap.set(game.w_id, index);
-    if (game.l_id) qfSlotMap.set(game.l_id, index);
-  });
-
-  // Halbfinals sortieren wie QF-Slots der Teilnehmer
-  const sfGames = data.filter(g => g.round === 'SF').sort((a, b) => {
-    const aMin = Math.min(qfSlotMap.get(a.w_id) ?? 99, qfSlotMap.get(a.l_id) ?? 99);
-    const bMin = Math.min(qfSlotMap.get(b.w_id) ?? 99, qfSlotMap.get(b.l_id) ?? 99);
-    return aMin - bMin;
-  });
-
-  // Finale anhängen
-  const fGames = data.filter(g => g.round === 'F');
-  const allGames = [...qfGames, ...sfGames, ...fGames];
-
-  // Darstellung je Match
-  const renderMatch = (game, containerId) => {
-    const container = document.getElementById(containerId);
-    const div = document.createElement('div');
-    div.className = 'card my-2 p-2 text-start';
-
-    const isBye = game.l_name === null;
-    const team1IsHigher = isBye || game.w_rank < game.l_rank;
-
-    const teamTop = team1IsHigher ? {
-      name: game.w_name,
-      rank: game.w_rank,
-      points: game.w_points,
-      isWinner: true
-    } : {
-      name: game.l_name ?? 'BYE',
-      rank: game.l_rank ?? '–',
-      points: game.l_points ?? null,
-      isWinner: false
-    };
-
-    const teamBottom = team1IsHigher ? {
-      name: game.l_name ?? 'BYE',
-      rank: game.l_rank ?? '–',
-      points: game.l_points ?? null,
-      isWinner: game.l_name ? false : null
-    } : {
-      name: game.w_name,
-      rank: game.w_rank,
-      points: game.w_points,
-      isWinner: true
-    };
-
-    const formatTeam = ({ name, rank, points, isWinner }) => `
-      <div>
-        <small class="text-muted">${rank}</small> ${name}
-        ${points !== null ? `<span class="float-end ${isWinner === true ? 'text-success' : isWinner === false ? 'text-danger' : 'text-secondary'}">${points.toFixed(2)}</span>` : ''}
-      </div>
-    `;
-
-    div.innerHTML = formatTeam(teamTop) + formatTeam(teamBottom);
-    container.appendChild(div);
-  };
-
-  // Runden rendern
-  allGames.forEach(game => {
+  sortedData.forEach(game => {
     const roundId =
       game.round === 'QF' ? 'quarterfinals' :
       game.round === 'SF' ? 'semifinals' :
-      game.round === 'F'  ? 'finals' : null;
+      game.round === 'F'  ? 'finals' : null
 
-    if (roundId) renderMatch(game, roundId);
-  });
+    const isBye = game.l_name === null
+    const container = roundId ? document.getElementById(roundId) : null
+    if (!container) return
 
-  // Champion rendern
-  const final = fGames[0];
-  if (final) {
-    const champion = document.getElementById('champion');
-    champion.innerHTML = `
-      <h4 class="text-warning fw-bold">
-        <small class="text-muted">${final.w_rank}</small> ${final.w_name}
-      </h4>
-    `;
-  }
+    const div = document.createElement('div')
+    div.className = 'card my-2 p-2 text-start d-flex flex-column'
+
+    const wPoints = game.w_points?.toFixed(2) ?? ''
+    const lPoints = game.l_points?.toFixed(2) ?? ''
+
+    // Punktzeile
+    const winnerLine = `
+      <div class="d-flex justify-content-between ${'text-success fw-bold'}">
+        <span><small class="text-muted">${game.w_rank}</small> ${game.w_name}</span>
+        <span>${wPoints}</span>
+      </div>`
+
+    const loserLine = `
+      <div class="d-flex justify-content-between ${'text-danger'}">
+        <span><small class="text-muted">${game.l_rank}</small> ${game.l_name}</span>
+        <span>${lPoints}</span>
+      </div>`
+
+    if (isBye) {
+      div.innerHTML = `
+        <div class="d-flex justify-content-between">
+          <span><small class="text-muted">${game.w_rank}</small> ${game.w_name}</span>
+          <span>${wPoints}</span>
+        </div>
+        <div class="d-flex justify-content-between text-secondary">
+          <span><small class="text-muted">–</small> BYE</span>
+          <span>–</span>
+        </div>
+      `
+    } else {
+      // Sonderfall für Halbfinale mit Seed 2 und Bye
+      const isSemi = game.round === 'SF'
+      const rank2HadBye = (
+        game.round === 'SF' &&
+        ((game.w_rank === 2 && game.w_slot === null) || (game.l_rank === 2 && game.l_slot === null))
+      )
+
+      if (isSemi && rank2HadBye) {
+        // Team mit Rank 2 immer unten, wenn es vorher ein BYE hatte
+        div.innerHTML = (game.w_rank === 2) ? loserLine + winnerLine : winnerLine + loserLine
+      } else {
+        // Höherer Seed steht oben
+        div.innerHTML = (game.w_rank < game.l_rank) ? winnerLine + loserLine : loserLine + winnerLine
+      }
+    }
+
+    container.appendChild(div)
+
+    // Champion (Finalsieger)
+    if (game.round === 'F') {
+      const champion = document.getElementById('champion')
+      champion.innerHTML = `
+        <h4 class="text-warning fw-bold">
+          <small class="text-muted">${game.w_rank}</small> ${game.w_name}
+        </h4>
+      `
+    }
+  })
 }
+
 
 });
