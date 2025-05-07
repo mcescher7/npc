@@ -217,33 +217,57 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
-      data.forEach(game => {
+     data.forEach(game => {
       const roundId =
         game.round === 'QF' ? 'quarterfinals' :
         game.round === 'SF' ? 'semifinals' :
         game.round === 'F'  ? 'finals' : null
 
+      const isBye = !game.l_id
+
       if (roundId) {
         const container = document.getElementById(roundId)
         const div = document.createElement('div')
-        div.className = 'card my-2 p-2 text-center'
+        div.className = 'card my-2 p-2 text-start'
 
-        const winnerIsManager = game.w_points > game.l_points
-        const winnerClass = 'text-success fw-bold'
-        const loserClass  = 'text-danger'
+        if (isBye) {
+          div.innerHTML = `
+            <div><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
+            <div><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
+          `
+        } else {
+          const winnerIsManager = game.w_points > game.l_points
+          const winnerClass = 'text-success fw-bold'
+          const loserClass  = 'text-danger'
 
-        div.innerHTML = `
-          <div class="${winnerClass}">${game.w_rank}. ${game.w_name} ${game.w_points ?? ''}</div>
-          <div class="${loserClass}">${game.l_rank}. ${game.l_name} ${game.l_points ?? ''}</div>
-        `
+          const wPoints = game.w_points?.toFixed(2) ?? ''
+          const lPoints = game.l_points?.toFixed(2) ?? ''
+
+          div.innerHTML = `
+            <div class="${winnerClass}">
+              <small class="text-muted">${game.w_rank}</small> ${game.w_name}<br>
+              <div>${wPoints}</div>
+            </div>
+            <div class="${loserClass}">
+              <small class="text-muted">${game.l_rank}</small> ${game.l_name}<br>
+              <div>${lPoints}</div>
+            </div>
+          `
+        }
+
         container.appendChild(div)
       }
 
+      // Champion
       if (game.round === 'F') {
         const champion = document.getElementById('champion')
-        champion.innerHTML = `<h4 class="text-success">${game.w_rank}. ${game.w_name}</h4>`
+        champion.innerHTML = `
+          <h4 class="text-warning fw-bold">
+            <small class="text-muted">${game.w_rank}</small> ${game.w_name}
+          </h4>
+        `
       }
     })
-}
+  }
 
 });
