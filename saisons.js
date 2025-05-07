@@ -236,26 +236,30 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (isBye) {
           div.innerHTML = `
             <div><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
-            <div><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
+            <div><small class="text-muted"></small> <span class="text-secondary">BYE</span></div>
           `
         } else {
           const winnerIsManager = game.w_points > game.l_points
-          const winnerClass = 'text-success fw-bold'
+          const winnerClass = 'text-success'
           const loserClass  = 'text-danger'
 
           const wPoints = game.w_points?.toFixed(2) ?? ''
           const lPoints = game.l_points?.toFixed(2) ?? ''
 
-          div.innerHTML = `
-            <div class="${winnerClass}">
-              <small class="text-muted">${game.w_rank}</small> ${game.w_name}<br>
-              <div>${wPoints}</div>
+        div.innerHTML = `
+          <div class="d-flex justify-content-between">
+            <div>
+              <small class="text-muted">${game.w_rank}</small> ${game.w_name}
             </div>
-            <div class="${loserClass}">
-              <small class="text-muted">${game.l_rank}</small> ${game.l_name}<br>
-              <div>${lPoints}</div>
+            <div class="${winnerClass}">${wPoints}</div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div>
+              <small class="text-muted">${game.l_rank}</small> ${game.l_name}
             </div>
-          `
+            <div class="${loserClass}">${lPoints}</div>
+          </div>
+        `
         }
 
         container.appendChild(div)
