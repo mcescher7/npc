@@ -228,8 +228,8 @@ async function loadBracket(year) {
 
     // In QF nach vordefinierter qfOrder
     if (a.round === 'QF') {
-      const aRank = a.w_rank
-      const bRank = b.w_rank
+        const aRank = Math.min(a.w_rank, a.l_rank ?? 99)
+        const bRank = Math.min(b.w_rank, b.l_rank ?? 99)
       return qfOrder.indexOf(aRank) - qfOrder.indexOf(bRank)
     }
 
