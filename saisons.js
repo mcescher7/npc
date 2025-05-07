@@ -216,9 +216,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 }
 
 function renderBracket(data) {
-  if (error) {
-    console.error('Fehler beim Laden der Daten:', error)
-  } else {
     data.forEach(game => {
       const round = game.round.toLowerCase()
       const container = document.getElementById(
@@ -242,7 +239,6 @@ function renderBracket(data) {
         champion.innerHTML = `<h4 class="text-success">${game.w_name}</h4>`
       }
     })
-  }
 }
 
 
