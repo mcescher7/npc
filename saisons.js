@@ -217,7 +217,7 @@ async function loadBracket(year) {
   }
 
   // Viertelfinals nach Wunsch sortieren
-  const qfOrder = [1, 3, 4, 2];
+  const qfOrder = [1, 4, 3, 2];
   const qfGames = data
     .filter(g => g.round === 'QF')
     .sort((a, b) =>
@@ -232,18 +232,16 @@ async function loadBracket(year) {
     if (game.l_id) qfSlotMap.set(game.l_id, index);
   });
 
-  // Halbfinals an passende Stelle einfügen
-  const sfGames = data.filter(g => g.round === 'SF');
-  sfGames.forEach(sf => {
-    const slot1 = qfSlotMap.get(sf.w_id);
-    const slot2 = qfSlotMap.get(sf.l_id);
-    const insertIndex = Math.floor((Math.min(slot1, slot2) + Math.max(slot1, slot2)) / 2) + 1;
-    qfGames.splice(insertIndex, 0, sf);
+  // Halbfinals sortieren wie QF-Slots der Teilnehmer
+  const sfGames = data.filter(g => g.round === 'SF').sort((a, b) => {
+    const aMin = Math.min(qfSlotMap.get(a.w_id) ?? 99, qfSlotMap.get(a.l_id) ?? 99);
+    const bMin = Math.min(qfSlotMap.get(b.w_id) ?? 99, qfSlotMap.get(b.l_id) ?? 99);
+    return aMin - bMin;
   });
 
   // Finale anhängen
   const fGames = data.filter(g => g.round === 'F');
-  const allGames = [...qfGames, ...fGames];
+  const allGames = [...qfGames, ...sfGames, ...fGames];
 
   // Darstellung je Match
   const renderMatch = (game, containerId) => {
@@ -310,6 +308,5 @@ async function loadBracket(year) {
     `;
   }
 }
-
 
 });
