@@ -245,24 +245,21 @@ async function loadBracket(year) {
     const wPoints = game.w_points?.toFixed(2) ?? ''
     const lPoints = game.l_points?.toFixed(2) ?? ''
 
-    // Punktzeile
-    const winnerLine = `
-      <div class="d-flex justify-content-between ${'text-success fw-bold'}">
-        <span><small class="text-muted">${game.w_rank}</small> ${game.w_name}</span>
-        <span>${wPoints}</span>
-      </div>`
+    const winnerPointsClass = 'text-success fw-bold'
+    const loserPointsClass = 'text-danger'
 
-    const loserLine = `
-      <div class="d-flex justify-content-between ${'text-danger'}">
-        <span><small class="text-muted">${game.l_rank}</small> ${game.l_name}</span>
-        <span>${lPoints}</span>
+    // Zeilenaufbau
+    const teamLine = (rank, name, points, isWinner) => `
+      <div class="d-flex justify-content-between">
+        <span><small class="text-muted">${rank}</small> ${name}</span>
+        <span class="${isWinner ? winnerPointsClass : loserPointsClass}">${points}</span>
       </div>`
 
     if (isBye) {
       div.innerHTML = `
         <div class="d-flex justify-content-between">
           <span><small class="text-muted">${game.w_rank}</small> ${game.w_name}</span>
-          <span>${wPoints}</span>
+          <span class="${winnerPointsClass}">${wPoints}</span>
         </div>
         <div class="d-flex justify-content-between text-secondary">
           <span><small class="text-muted">–</small> BYE</span>
@@ -270,19 +267,28 @@ async function loadBracket(year) {
         </div>
       `
     } else {
-      // Sonderfall für Halbfinale mit Seed 2 und Bye
       const isSemi = game.round === 'SF'
       const rank2HadBye = (
-        game.round === 'SF' &&
+        isSemi &&
         ((game.w_rank === 2 && game.w_slot === null) || (game.l_rank === 2 && game.l_slot === null))
       )
 
       if (isSemi && rank2HadBye) {
-        // Team mit Rank 2 immer unten, wenn es vorher ein BYE hatte
-        div.innerHTML = (game.w_rank === 2) ? loserLine + winnerLine : winnerLine + loserLine
+        // Im Halbfinale: Rank 2 immer unten, wenn Bye
+        div.innerHTML = (game.w_rank === 2)
+          ? teamLine(game.l_rank, game.l_name, lPoints, false) + teamLine(game.w_rank, game.w_name, wPoints, true)
+          : teamLine(game.w_rank, game.w_name, wPoints, true) + teamLine(game.l_rank, game.l_name, lPoints, false)
       } else {
         // Höherer Seed steht oben
-        div.innerHTML = (game.w_rank < game.l_rank) ? winnerLine + loserLine : loserLine + winnerLine
+        const higherIsWinner = game.w_rank < game.l_rank
+        const top = game.w_rank < game.l_rank
+          ? teamLine(game.w_rank, game.w_name, wPoints, true)
+          : teamLine(game.l_rank, game.l_name, lPoints, false)
+        const bottom = game.w_rank < game.l_rank
+          ? teamLine(game.l_rank, game.l_name, lPoints, false)
+          : teamLine(game.w_rank, game.w_name, wPoints, true)
+
+        div.innerHTML = top + bottom
       }
     }
 
