@@ -254,7 +254,7 @@ const sortedData = data.slice().sort((a, b) => {
     const wPoints = game.w_points?.toFixed(2) ?? ''
     const lPoints = game.l_points?.toFixed(2) ?? ''
 
-    const winnerPointsClass = 'text-success fw-bold'
+    const winnerPointsClass = 'text-success'
     const loserPointsClass = 'text-danger'
 
     const teamLine = (rank, name, points, isWinner) => `
@@ -271,7 +271,7 @@ const sortedData = data.slice().sort((a, b) => {
         </div>
         <div class="d-flex justify-content-between text-secondary">
           <span><small class="text-muted">–</small> BYE</span>
-          <span>–</span>
+          <span></span>
         </div>
       `
     } else {
