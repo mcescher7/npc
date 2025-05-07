@@ -223,9 +223,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         game.round === 'SF' ? 'semifinals' :
         game.round === 'F'  ? 'finals' : null
 
-      const isBye = game.l_id === null
+      const isBye = game.l_name === null
 
-    console.log(`isBye: ${isBye}, w_id: ${game.w_id}, l_id: ${game.l_id}`);
+    console.log(`isBye: ${isBye}, w_name: ${game.w_name}, l_name: ${game.l_name}`);
 
 
       if (roundId) {
