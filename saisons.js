@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (isBye) {
           div.innerHTML = `
             <div><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
-            <div><small class="text-muted"></small> <span class="text-secondary">BYE</span></div>
+            <div><small class="text-muted"> </small> <span class="text-secondary">BYE</span></div>
           `
         } else {
           const winnerIsManager = game.w_points > game.l_points
