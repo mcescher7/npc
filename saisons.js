@@ -217,57 +217,50 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
-     data.forEach(game => {
-      const roundId =
-        game.round === 'QF' ? 'quarterfinals' :
-        game.round === 'SF' ? 'semifinals' :
-        game.round === 'F'  ? 'finals' : null
+data.forEach(game => {
+  const isBye = game.l_id === null;
+  const isChampion = game.round === 'F' && game.slot === 1;
 
-      const isBye = game.l_id === null
+  let wClass = 'text-success';
+  let lClass = 'text-danger';
 
-      if (roundId) {
-        const container = document.getElementById(roundId)
-        const div = document.createElement('div')
-        div.className = 'card my-2 p-2 text-start'
+  if (isChampion) wClass += ' text-warning fw-bold';
 
-        if (isBye) {
-          div.innerHTML = `
-            <div><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
-            <div><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
-          `
-        } else {
-          const winnerIsManager = game.w_points > game.l_points
-          const winnerClass = 'text-success fw-bold'
-          const loserClass  = 'text-danger'
+  const wSeed = `<small class="text-muted me-1">${game.w_rank}</small>`;
+  const lSeed = game.l_rank !== null ? `<small class="text-muted me-1">${game.l_rank}</small>` : '';
 
-          const wPoints = game.w_points?.toFixed(2) ?? ''
-          const lPoints = game.l_points?.toFixed(2) ?? ''
+  const wPoints = game.w_points?.toFixed(2) ?? '';
+  const lPoints = game.l_points?.toFixed(2) ?? '';
 
-          div.innerHTML = `
-            <div class="${winnerClass}">
-              <small class="text-muted">${game.w_rank}</small> ${game.w_name}<br>
-              <div>${wPoints}</div>
-            </div>
-            <div class="${loserClass}">
-              <small class="text-muted">${game.l_rank}</small> ${game.l_name}<br>
-              <div>${lPoints}</div>
-            </div>
-          `
-        }
+  let html = '';
 
-        container.appendChild(div)
-      }
+  if (isBye) {
+    html = `
+      <div class="${wClass}">
+        ${wSeed}${game.w_name} <span class="float-end">${wPoints}</span>
+      </div>
+      <div class="text-secondary">
+        <small class="text-muted">–</small> BYE
+      </div>
+    `;
+  } else {
+    html = `
+      <div class="${wClass}">
+        ${wSeed}${game.w_name} <span class="float-end">${wPoints}</span>
+      </div>
+      <div class="${lClass}">
+        ${lSeed}${game.l_name} <span class="float-end">${lPoints}</span>
+      </div>
+    `;
+  }
 
-      // Champion
-      if (game.round === 'F') {
-        const champion = document.getElementById('champion')
-        champion.innerHTML = `
-          <h4 class="text-warning fw-bold">
-            <small class="text-muted">${game.w_rank}</small> ${game.w_name}
-          </h4>
-        `
-      }
-    })
+  const container = document.getElementById(`round-${game.round.toLowerCase()}`);
+  const div = document.createElement('div');
+  div.className = 'card my-2 p-2 text-start';
+  div.innerHTML = html;
+  container.appendChild(div);
+})
+
   }
 
 });
