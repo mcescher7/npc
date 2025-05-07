@@ -200,46 +200,50 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Playoffs
     async function loadBracket(year) {
+
+        // Container zuerst leeren
+    ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
+      const container = document.getElementById(id)
+      if (container) container.innerHTML = ''
+    })
+        
   const { data, error } = await supabase
     .from('playoff_matches')
     .select('*')
-    .eq('year', year)
-    .order('round')
-    .order('slot');
+    .eq('year', year);
 
   if (error) {
     console.error(error);
     return;
   }
 
-  renderBracket(data);
-}
+      data.forEach(game => {
+      const roundId =
+        game.round === 'QF' ? 'quarterfinals' :
+        game.round === 'SF' ? 'semifinals' :
+        game.round === 'F'  ? 'finals' : null
 
-function renderBracket(data) {
-    data.forEach(game => {
-      const round = game.round.toLowerCase()
-      const container = document.getElementById(
-        round === 'qf' ? 'quarterfinals' :
-        round === 'sf' ? 'semifinals' :
-        round === 'f' ? 'finals' : ''
-      )
-      if (container) {
+      if (roundId) {
+        const container = document.getElementById(roundId)
         const div = document.createElement('div')
-        div.className = 'card my-2 p-2'
+        div.className = 'card my-2 p-2 text-center'
+
+        const winnerIsManager = game.w_points > game.l_points
+        const winnerClass = 'text-success fw-bold'
+        const loserClass  = 'text-danger'
+
         div.innerHTML = `
-          <strong>${game.w_name}</strong> (${game.w_points ?? ''})<br>
-          <small>vs.</small><br>
-          <strong>${game.l_name}</strong> (${game.l_points ?? ''})
+          <div class="${winnerClass}">${game.w_rank}. ${game.w_name} ${game.w_points ?? ''}</div>
+          <div class="${loserClass}">${game.l_rank}. ${game.l_name} ${game.l_points ?? ''}</div>
         `
         container.appendChild(div)
       }
 
       if (game.round === 'F') {
         const champion = document.getElementById('champion')
-        champion.innerHTML = `<h4 class="text-success">${game.w_name}</h4>`
+        champion.innerHTML = `<h4 class="text-success">${game.w_rank}. ${game.w_name}</h4>`
       }
     })
 }
-
 
 });
