@@ -215,34 +215,33 @@ document.addEventListener("DOMContentLoaded", async function () {
   renderBracket(data);
 }
 
-function renderBracket(games) {
-  const rounds = ['QF', 'SF', 'F'];
-  const labels = { QF: 'Viertelfinale', SF: 'Halbfinale', F: 'Finale' };
+function renderBracket(data) {
+  if (error) {
+    console.error('Fehler beim Laden der Daten:', error)
+  } else {
+    data.forEach(game => {
+      const round = game.round.toLowerCase()
+      const container = document.getElementById(
+        round === 'qf' ? 'quarterfinals' :
+        round === 'sf' ? 'semifinals' :
+        round === 'f' ? 'finals' : ''
+      )
+      if (container) {
+        const div = document.createElement('div')
+        div.className = 'card my-2 p-2'
+        div.innerHTML = `
+          <strong>${game.w_name}</strong> (${game.w_points ?? ''})<br>
+          <small>vs.</small><br>
+          <strong>${game.l_name}</strong> (${game.l_points ?? ''})
+        `
+        container.appendChild(div)
+      }
 
-  bracketDiv.innerHTML = '';
-
-  for (const round of rounds) {
-    const column = document.createElement('div');
-    column.className = 'col bracket-col';
-
-    const title = document.createElement('h5');
-    title.textContent = labels[round];
-    column.appendChild(title);
-
-    const roundGames = games.filter(g => g.round === round);
-    for (const game of roundGames) {
-      const div = document.createElement('div');
-      div.className = 'match bg-light border rounded p-2 mb-3';
-      div.innerHTML = `
-        <strong>${game.w_name || 'TBD'}</strong><br>
-        <small>vs. ${game.l_name || 'TBD'}</small><br>
-        <small>Punkte: ${game.w_points ?? '-'} : ${game.l_points ?? '-'}</small><br>
-        <small>Woche ${game.week}</small>
-      `;
-      column.appendChild(div);
-    }
-
-    bracketDiv.appendChild(column);
+      if (game.round === 'F') {
+        const champion = document.getElementById('champion')
+        champion.innerHTML = `<h4 class="text-success">${game.w_name}</h4>`
+      }
+    })
   }
 }
 
