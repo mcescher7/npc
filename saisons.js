@@ -216,27 +216,15 @@ async function loadBracket(year) {
     return
   }
 
-  // Sortierung: gewünschte QF-Reihenfolge
-const qfOrder = [1, 4, 3, 2]
+  // Sortierung
+const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
 
 const sortedData = data.slice().sort((a, b) => {
-  const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
-
   if (a.round !== b.round) {
     return roundOrder[a.round] - roundOrder[b.round]
   }
-
-  // In QF nach vordefinierter qfOrder
-  if (a.round === 'QF') {
-    const aSeed = a.w_rank
-    const bSeed = b.w_rank
-    return qfOrder.indexOf(aSeed) - qfOrder.indexOf(bSeed)
-  }
-
-  // In SF/F: höherer Seed zuerst (kleinere Zahl = besser)
-  return a.w_rank - b.w_rank
+  return a.slot - b.slot
 })
-
 
   sortedData.forEach(game => {
     const roundId =
