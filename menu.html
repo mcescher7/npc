@@ -26,15 +26,3 @@
     </div>
   </div>
 </nav>
-
-<script>
-  // Aktuellen Dateinamen extrahieren (z. B. "saisons.html")
-  const currentPage = location.pathname.split('/').pop();
-
-  // Alle Links im Menü durchgehen und bei Übereinstimmung "active" setzen
-  document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-    if (link.getAttribute('href') === currentPage) {
-      link.classList.add('active');
-    }
-  });
-</script>
