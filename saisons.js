@@ -216,13 +216,21 @@ async function loadBracket(year) {
     return
   }
 
-  // Sortierung
-const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
-
-const sortedData = data.slice().sort((a, b) => {
-    if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round]
-    return a.slot - b.slot
-  })
+    const qfColumn = document.getElementById('quarterfinals')
+    const hasQuarterfinals = data.some(g => g.round === 'QF')
+    
+    if (qfColumn) {
+      qfColumn.classList.toggle('d-none', !hasQuarterfinals)
+    }
+    
+    
+      // Sortierung
+    const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
+    
+    const sortedData = data.slice().sort((a, b) => {
+        if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round]
+        return a.slot - b.slot
+      })
 
   sortedData.forEach(game => {
     const roundId =
