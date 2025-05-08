@@ -220,11 +220,9 @@ async function loadBracket(year) {
 const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
 
 const sortedData = data.slice().sort((a, b) => {
-  if (a.round !== b.round) {
-    return roundOrder[a.round] - roundOrder[b.round]
-  }
-  return a.slot - b.slot
-})
+    if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round]
+    return a.slot - b.slot
+  })
 
   sortedData.forEach(game => {
     const roundId =
@@ -237,7 +235,8 @@ const sortedData = data.slice().sort((a, b) => {
     if (!container) return
 
     const div = document.createElement('div')
-    div.className = 'card my-2 p-2 text-start d-flex flex-column'
+    div.className = 'card my-2 p-2 text-start'
+    div.style.maxWidth = '220px'
 
     const wPoints = game.w_points?.toFixed(2) ?? ''
     const lPoints = game.l_points?.toFixed(2) ?? ''
@@ -245,44 +244,41 @@ const sortedData = data.slice().sort((a, b) => {
     const winnerPointsClass = 'text-success'
     const loserPointsClass = 'text-danger'
 
-    const teamLine = (rank, name, points, isWinner) => `
-      <div class="d-flex justify-content-between">
-        <span><small class="text-muted">${rank}</small> ${name}</span>
-        <span class="${isWinner ? winnerPointsClass : loserPointsClass}">${points}</span>
-      </div>`
-
     if (isBye) {
       div.innerHTML = `
-        <div class="d-flex justify-content-between">
-          <span><small class="text-muted">${game.w_rank}</small> ${game.w_name}</span>
-          <span class="${winnerPointsClass}">${wPoints}</span>
-        </div>
-        <div class="d-flex justify-content-between text-secondary">
-          <span><small class="text-muted">–</small> BYE</span>
-          <span></span>
-        </div>
+        <div><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
+        <div><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
       `
     } else {
-      const isSemi = game.round === 'SF'
-      const rank2HadBye = (
-        isSemi &&
-        ((game.w_rank === 2 && game.w_slot === null) || (game.l_rank === 2 && game.l_slot === null))
-      )
+      // Seed oben: immer das Team mit niedrigerem Rank
+      const topSeed = (game.w_rank < game.l_rank) ? 'w' : 'l'
+      const bottomSeed = topSeed === 'w' ? 'l' : 'w'
 
-      if (isSemi && rank2HadBye) {
-        div.innerHTML = (game.w_rank === 2)
-          ? teamLine(game.l_rank, game.l_name, lPoints, false) + teamLine(game.w_rank, game.w_name, wPoints, true)
-          : teamLine(game.w_rank, game.w_name, wPoints, true) + teamLine(game.l_rank, game.l_name, lPoints, false)
-      } else {
-        const top = game.w_rank < game.l_rank
-          ? teamLine(game.w_rank, game.w_name, wPoints, true)
-          : teamLine(game.l_rank, game.l_name, lPoints, false)
-        const bottom = game.w_rank < game.l_rank
-          ? teamLine(game.l_rank, game.l_name, lPoints, false)
-          : teamLine(game.w_rank, game.w_name, wPoints, true)
+      const topRank = game[`${topSeed}_rank`]
+      const topName = game[`${topSeed}_name`]
+      const topPoints = (game[`${topSeed}_points`] ?? 0).toFixed(2)
 
-        div.innerHTML = top + bottom
-      }
+      const bottomRank = game[`${bottomSeed}_rank`]
+      const bottomName = game[`${bottomSeed}_name`]
+      const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2)
+
+      const topClass = (game.w_rank === topRank) ? 'text-success' : 'text-danger'
+      const bottomClass = (game.w_rank === bottomRank) ? 'text-success' : 'text-danger'
+
+      // Finale: Gewinner fett + gold
+      const topNameClass = (game.round === 'F' && game.w_rank === topRank) ? 'text-warning fw-bold' : ''
+      const bottomNameClass = (game.round === 'F' && game.w_rank === bottomRank) ? 'text-warning fw-bold' : ''
+
+      div.innerHTML = `
+        <div>
+          <small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span>
+          <span class="${topClass} float-end">${topPoints}</span>
+        </div>
+        <div>
+          <small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span>
+          <span class="${bottomClass} float-end">${bottomPoints}</span>
+        </div>
+      `
     }
 
     container.appendChild(div)
