@@ -236,7 +236,7 @@ const sortedData = data.slice().sort((a, b) => {
 
     const div = document.createElement('div')
     div.className = 'card my-2 p-2 text-start'
-    div.style.maxWidth = '220px'
+    div.style.maxWidth = '250px'
 
     const wPoints = game.w_points?.toFixed(2) ?? ''
     const lPoints = game.l_points?.toFixed(2) ?? ''
@@ -282,16 +282,6 @@ const sortedData = data.slice().sort((a, b) => {
     }
 
     container.appendChild(div)
-
-    // Champion-Anzeige
-    if (game.round === 'F') {
-      const champion = document.getElementById('champion')
-      champion.innerHTML = `
-        <h4 class="text-warning fw-bold">
-          <small class="text-muted">${game.w_rank}</small> ${game.w_name}
-        </h4>
-      `
-    }
   })
 }
 
