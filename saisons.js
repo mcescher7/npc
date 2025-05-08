@@ -250,9 +250,17 @@ const sortedData = data.slice().sort((a, b) => {
         <div><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
       `
     } else {
-      // Seed oben: immer das Team mit niedrigerem Rank
-      const topSeed = (game.w_rank < game.l_rank) ? 'w' : 'l'
-      const bottomSeed = topSeed === 'w' ? 'l' : 'w'
+        let topSeed, bottomSeed
+        const wSlot = game.w_slot
+        const lSlot = game.l_slot
+        
+        if (wSlot !== null && lSlot !== null) {
+          topSeed = wSlot < lSlot ? 'w' : 'l'
+        } else {
+          topSeed = game.w_rank < game.l_rank ? 'w' : 'l'
+        }
+        
+        bottomSeed = topSeed === 'w' ? 'l' : 'w'
 
       const topRank = game[`${topSeed}_rank`]
       const topName = game[`${topSeed}_name`]
