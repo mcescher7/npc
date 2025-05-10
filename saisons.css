@@ -109,3 +109,9 @@
       border-radius: 0.5rem;
       text-align: center;
     }
+
+.bracket-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 1rem;
+}
