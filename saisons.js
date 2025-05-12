@@ -255,16 +255,16 @@ async function loadBracket(year) {
     if (isBye) {
       div.innerHTML = `
   <div class="d-flex justify-content-between">
-    <div>
+    <div class="me-2 flex-grow-1">
       <small class="text-muted">${game.w_rank}</small> ${game.w_name}
     </div>
-    <span class="text-muted">–</span>
+    <span class="text-muted"></span>
   </div>
   <div class="d-flex justify-content-between">
-    <div>
+    <div class="me-2 flex-grow-1">
       <small class="text-muted">–</small> <span class="text-secondary">BYE</span>
     </div>
-    <span class="text-muted">–</span>
+    <span class="text-muted"></span>
   </div>
 `
     } else {
@@ -295,22 +295,21 @@ async function loadBracket(year) {
       const topNameClass = (game.round === 'F' && game.w_rank === topRank) ? 'text-warning fw-bold' : ''
       const bottomNameClass = (game.round === 'F' && game.w_rank === bottomRank) ? 'text-warning fw-bold' : ''
 
-     div.innerHTML = `
+    div.innerHTML = `
   <div class="d-flex justify-content-between">
-    <div>
-      <small class="text-muted">${topRank}</small>
-      <span class="${topNameClass}">${topName}</span>
+    <div class="me-2 flex-grow-1">
+      <small class="text-muted">${topRank}</small> ${topName}
     </div>
     <span class="${topClass}">${topPoints}</span>
   </div>
   <div class="d-flex justify-content-between">
-    <div>
-      <small class="text-muted">${bottomRank}</small>
-      <span class="${bottomNameClass}">${bottomName}</span>
+    <div class="me-2 flex-grow-1">
+      <small class="text-muted">${bottomRank}</small> ${bottomName}
     </div>
     <span class="${bottomClass}">${bottomPoints}</span>
   </div>
 `
+
     }
 
     container.appendChild(div)
