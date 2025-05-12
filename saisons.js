@@ -254,9 +254,19 @@ async function loadBracket(year) {
 
     if (isBye) {
       div.innerHTML = `
-        <div><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
-        <div><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
-      `
+  <div class="d-flex justify-content-between">
+    <div>
+      <small class="text-muted">${game.w_rank}</small> ${game.w_name}
+    </div>
+    <span class="text-muted">–</span>
+  </div>
+  <div class="d-flex justify-content-between">
+    <div>
+      <small class="text-muted">–</small> <span class="text-secondary">BYE</span>
+    </div>
+    <span class="text-muted">–</span>
+  </div>
+`
     } else {
         let topSeed, bottomSeed
         const wSlot = game.w_slot
@@ -285,16 +295,22 @@ async function loadBracket(year) {
       const topNameClass = (game.round === 'F' && game.w_rank === topRank) ? 'text-warning fw-bold' : ''
       const bottomNameClass = (game.round === 'F' && game.w_rank === bottomRank) ? 'text-warning fw-bold' : ''
 
-      div.innerHTML = `
-        <div>
-          <small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span>
-          <span class="${topClass} float-end">${topPoints}</span>
-        </div>
-        <div>
-          <small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span>
-          <span class="${bottomClass} float-end">${bottomPoints}</span>
-        </div>
-      `
+     div.innerHTML = `
+  <div class="d-flex justify-content-between">
+    <div>
+      <small class="text-muted">${topRank}</small>
+      <span class="${topNameClass}">${topName}</span>
+    </div>
+    <span class="${topClass}">${topPoints}</span>
+  </div>
+  <div class="d-flex justify-content-between">
+    <div>
+      <small class="text-muted">${bottomRank}</small>
+      <span class="${bottomNameClass}">${bottomName}</span>
+    </div>
+    <span class="${bottomClass}">${bottomPoints}</span>
+  </div>
+`
     }
 
     container.appendChild(div)
