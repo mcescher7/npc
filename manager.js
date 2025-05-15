@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (!row || !managerId) return;
 
         const opponentId = row.dataset.opponent_id;
-        if (opponent) {
+        if (opponentId) {
             showMatchDetails(managerId, opponentId);
         }
     });
