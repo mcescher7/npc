@@ -90,6 +90,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function showMatchDetails(managerId, opponentId) {
+	console.log("Lade Matches für:", managerId, "vs", opponentId);
+	    
         const { data, error } = await supabaseClient
             .from("matchups")
             .select("year, week, manager_points, opponent_points")
