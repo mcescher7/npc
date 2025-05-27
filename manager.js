@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-	// Spieler-Daten abrufen, wenn ein Manager ausgewählt wird
     async function loadTopPlayers(managerId) {
         const tableBody = document.getElementById("top-players-table");
 
@@ -59,11 +58,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-	// Zweite Tabelle: Manager Matchups All-Time
     async function loadManagerMatchups(managerId) {
         const { data, error } = await supabaseClient
             .from("manager_matchups_alltime")
-            .select("manager2_name, wins, losses, points_for, points_against")
+            .select("manager2_id, manager2_name, wins, losses, points_for, points_against")
             .eq("manager1_id", managerId)
             .order("wins", { ascending: false })
             .order("losses", { ascending: true });
@@ -77,6 +75,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         tableBody.innerHTML = "";
         data.forEach(row => {
             const tr = document.createElement("tr");
+            tr.dataset.opponent_id = row.manager2_id;
+            tr.dataset.opponent_name = row.manager2_name;
             tr.innerHTML = `
                 <td>${row.manager2_name}</td>
                 <td>${row.wins}</td>
@@ -84,21 +84,20 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.points_for}</td>
                 <td>${row.points_against}</td>
             `;
-            tr.dataset.opponent_id = row.manager2_id;
             tableBody.appendChild(tr);
         });
     }
 
-    async function showMatchDetails(managerId, opponentId) {
-	console.log("Lade Matches für:", managerId, "vs", opponentId);
-	    
+    async function showMatchDetails(managerId, opponentId, opponentName) {
+        console.log("Lade Matches für:", managerId, "vs", opponentId);
+
         const { data, error } = await supabaseClient
             .from("matchups")
             .select("year, week, manager_points, opponent_points")
             .eq("manager_id", managerId)
             .eq("opponent_id", opponentId)
             .order("year", { ascending: true })
-			.order("week", { ascending: true });
+            .order("week", { ascending: true });
 
         const contentDiv = document.getElementById("match-details-content");
 
@@ -110,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const rows = data.map(match => `
                 <tr>
                     <td>${match.year}</td>
-					<td>${match.week}</td>
+                    <td>${match.week}</td>
                     <td>${match.manager_points}</td>
                     <td>${match.opponent_points}</td>
                 </tr>
@@ -143,9 +142,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (!row || !managerId) return;
 
         const opponentId = row.dataset.opponent_id;
-	console.log("opponentId =", opponentId, "row =", row);
+        const opponentName = row.dataset.opponent_name;
+
         if (opponentId) {
-            showMatchDetails(managerId, opponentId);
+            showMatchDetails(managerId, opponentId, opponentName);
         }
     });
 
