@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const regTableBody = document.getElementById("regular-season-table");
     const weeklyTableBody = document.getElementById("weekly-results-table");
 
-    // 🔧 Hilfsfunktionen
     const createOption = (value, text) => {
         const option = document.createElement("option");
         option.value = value;
@@ -25,20 +24,30 @@ document.addEventListener("DOMContentLoaded", async function () {
         element.innerHTML = `<tr><td colspan="${cols}" class="text-center">Keine Daten vorhanden</td></tr>`;
     };
 
-    // 📅 Saisons laden
     async function loadSeasons() {
         const { data, error } = await supabase
             .from("seasons")
             .select("year")
-            .order("year");
+            .order("year", { ascending: true });
 
         if (error) return logError("Laden der Saisons", error);
+        seasonSelect.innerHTML = "";
 
-        seasonSelect.innerHTML = '<option value="">Bitte wählen...</option>';
-        data.forEach(season => seasonSelect.appendChild(createOption(season.year, season.year)));
+        data.forEach(season => {
+            seasonSelect.appendChild(createOption(season.year, season.year));
+        });
+
+        if (data.length > 0) {
+            const newestYear = data[data.length - 1].year;
+            seasonSelect.value = newestYear;
+
+            await loadBracket(newestYear);
+            await loadRegSeason(newestYear);
+            await loadWeeks(newestYear); 
+            await loadDraftBoard(newestYear);
+        }
     }
 
-    // 📊 Tabelle laden
     async function loadRegSeason(year) {
         regTableBody.innerHTML = "";
         if (!year || isNaN(year)) return;
@@ -67,9 +76,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-    // 🗓 Wochen laden
     async function loadWeeks(year) {
-        weekSelect.innerHTML = '<option value="">Bitte wählen...</option>';
+        weekSelect.innerHTML = "";
 
         const { data, error } = await supabase
             .from("seasons")
@@ -78,20 +86,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             .single();
 
         if (error || !data) return logError("Laden der Wochen", error);
-        
+
         const weeks = data.weeks;
         for (let i = 1; i <= weeks; i++) {
-            const option = document.createElement("option");
-            option.value = i;
-            option.textContent = i;
-            weekSelect.appendChild(option);
-    }
+            weekSelect.appendChild(createOption(i, i));
+        }
+
+        if (weeks > 0) {
+            weekSelect.value = weeks;
+            await loadWeeklyMatchups(year, weeks);
+        }
     }
 
-    // 🧾 Matchups laden
     async function loadWeeklyMatchups(year, week) {
         weeklyTableBody.innerHTML = "";
-
         if (!year || !week) return;
 
         const { data, error } = await supabase
@@ -114,7 +122,156 @@ document.addEventListener("DOMContentLoaded", async function () {
         `).join("");
     }
 
-    // 🧠 Events
+    async function loadDraftBoard(year) {
+        const board = document.getElementById("draft-board");
+        board.innerHTML = "";
+
+        const { data, error } = await supabase
+            .from("draft_board")
+            .select("round, pick_no, teamname, first_name, last_name, position, keeper_id")
+            .eq("year", year)
+            .order("pick_no");
+
+        if (error) return logError("Laden des Draft Boards", error);
+
+        const teams = [...new Set(data.map(p => p.teamname))];
+        const maxRounds = Math.max(...data.map(p => p.round));
+        board.className = `draft-board-grid cols-${teams.length + 2}`;
+
+        board.appendChild(document.createElement("div"));
+        teams.forEach(team => {
+            const header = document.createElement("div");
+            header.className = "draft-team-header";
+            header.textContent = team;
+            board.appendChild(header);
+        });
+        board.appendChild(document.createElement("div"));
+
+        for (let r = 1; r <= maxRounds; r++) {
+            const leftLabel = document.createElement("div");
+            leftLabel.className = "round-label-left";
+            leftLabel.textContent = (r % 2 === 1) ? `${r} →` : `${r} ←`;
+            board.appendChild(leftLabel);
+
+            let picks = data.filter(p => p.round === r);
+            if (r % 2 === 0) picks.reverse();
+
+            picks.forEach(pick => {
+                const div = document.createElement("div");
+                const posClass = ["QB", "RB", "WR", "TE", "K", "DEF"].includes(pick.position) ? pick.position : "other";
+                div.className = `draft-cell ${posClass}`;
+                const keeperMark = pick.keeper_id !== null ? `<div class="keeper-mark">K</div>` : "";
+                div.innerHTML = `
+                    ${keeperMark}
+                    <div class="pick-no">#${pick.pick_no}</div>
+                    <span>${pick.first_name}</span>
+                    <span class="last-name">${pick.last_name}</span>
+                `;
+                board.appendChild(div);
+            });
+
+            const rightLabel = document.createElement("div");
+            rightLabel.className = "round-label-right";
+            rightLabel.textContent = (r % 2 === 1) ? `→ ${r}` : `← ${r}`;
+            board.appendChild(rightLabel);
+        }
+    }
+
+    async function loadBracket(year) {
+        ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
+            const container = document.getElementById(id);
+            if (container) container.innerHTML = "";
+        });
+
+        const { data, error } = await supabase
+            .from("playoff_matches")
+            .select("*")
+            .eq("year", year);
+
+        if (error) return logError("Laden des Brackets", error);
+
+        const roundOrder = { "QF": 1, "SF": 2, "F": 3 };
+        const sortedData = data.slice().sort((a, b) => {
+            if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round];
+            return a.slot - b.slot;
+        });
+
+        const qfColumn = document.getElementById("quarterfinals");
+        const hasQuarterfinals = data.some(g => g.round === "QF");
+        if (qfColumn) {
+            qfColumn.classList.toggle("d-none", !hasQuarterfinals);
+        }
+
+        sortedData.forEach(game => {
+            const roundId = game.round === "QF" ? "quarterfinals" :
+                            game.round === "SF" ? "semifinals" :
+                            game.round === "F" ? "finals" : null;
+
+            const container = roundId ? document.getElementById(roundId) : null;
+            if (!container) return;
+
+            const div = document.createElement("div");
+            div.className = "card my-2 p-2 text-start";
+            div.style.maxWidth = "250px";
+
+            const isBye = game.l_name === null;
+
+            if (isBye) {
+                div.innerHTML = `
+                <div class="d-flex justify-content-between">
+                    <div class="me-2 flex-grow-1">
+                        <small class="text-muted">${game.w_rank}</small> ${game.w_name}
+                    </div>
+                    <span class="text-muted"></span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="me-2 flex-grow-1">
+                        <small class="text-muted">–</small> <span class="text-secondary">BYE</span>
+                    </div>
+                    <span class="text-muted"></span>
+                </div>`;
+            } else {
+                let topSeed, bottomSeed;
+                const wSlot = game.w_slot;
+                const lSlot = game.l_slot;
+                topSeed = (wSlot !== null && lSlot !== null) ? (wSlot < lSlot ? "w" : "l") :
+                          (game.w_rank < game.l_rank ? "w" : "l");
+                bottomSeed = topSeed === "w" ? "l" : "w";
+
+                const topRank = game[`${topSeed}_rank`];
+                const topName = game[`${topSeed}_name`];
+                const topPoints = (game[`${topSeed}_points`] ?? 0).toFixed(2);
+
+                const bottomRank = game[`${bottomSeed}_rank`];
+                const bottomName = game[`${bottomSeed}_name`];
+                const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2);
+
+                const topClass = (game.w_rank === topRank) ? "text-success" : "text-danger";
+                const bottomClass = (game.w_rank === bottomRank) ? "text-success" : "text-danger";
+
+                const topNameClass = (game.round === "F" && game.w_rank === topRank) ? "text-warning fw-bold" : "";
+                const bottomNameClass = (game.round === "F" && game.w_rank === bottomRank) ? "text-warning fw-bold" : "";
+
+                div.innerHTML = `
+                <div class="d-flex justify-content-between">
+                    <div class="me-2 flex-grow-1">
+                        <small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span>
+                    </div>
+                    <span class="${topClass}">${topPoints}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="me-2 flex-grow-1">
+                        <small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span>
+                    </div>
+                    <span class="${bottomClass}">${bottomPoints}</span>
+                </div>`;
+            }
+
+            container.appendChild(div);
+        });
+    }
+
+    // 🔁 Event Listener
     seasonSelect.addEventListener("change", async (e) => {
         const year = parseInt(e.target.value, 10);
         if (!year) return;
@@ -133,187 +290,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         loadWeeklyMatchups(year, week);
     });
 
-    // 🚀 Initial Load
+    // 🚀 Initialisierung
     await loadSeasons();
-
-    // Draft
-    async function loadDraftBoard(year) {
-    const board = document.getElementById("draft-board");
-    board.innerHTML = "";
-
-    const { data, error } = await supabase
-        .from("draft_board")
-        .select("round, pick_no, teamname, first_name, last_name, position, keeper_id")
-        .eq("year", year)
-        .order("pick_no");
-
-    if (error) {
-        console.error("Fehler beim Laden des Draft Boards:", error);
-        return;
-    }
-
-    const teams = [...new Set(data.map(p => p.teamname))];
-    const maxRounds = Math.max(...data.map(p => p.round));
-    board.className = `draft-board-grid cols-${teams.length + 2}`; // +2 für Rundennummern
-
-    // Kopfzeile: leere Ecke + Teamnamen + leere Ecke
-    board.appendChild(document.createElement("div")); // Leerfeld oben links
-    teams.forEach(team => {
-        const header = document.createElement("div");
-        header.className = "draft-team-header";
-        header.textContent = team;
-        board.appendChild(header);
-    });
-    board.appendChild(document.createElement("div")); // Leerfeld oben rechts
-
-    for (let r = 1; r <= maxRounds; r++) {
-        // Rundennummer links
-        const leftLabel = document.createElement("div");
-        leftLabel.className = "round-label-left";
-        leftLabel.textContent = (r % 2 === 1) ? `${r} →` : `${r} ←`;
-        board.appendChild(leftLabel);
-
-        let picks = data.filter(p => p.round === r);
-        if (r % 2 === 0) picks.reverse(); // Snake-Draft
-
-        picks.forEach(pick => {
-            const div = document.createElement("div");
-            const posClass = ["QB", "RB", "WR", "TE", "K", "DEF"].includes(pick.position) ? pick.position : "other";
-            div.className = `draft-cell ${posClass}`;
-            const keeperMark = pick.keeper_id !== null ? `<div class="keeper-mark">K</div>` : "";
-            div.innerHTML = `
-                ${keeperMark}
-                <div class="pick-no">#${pick.pick_no}</div>
-                <span>${pick.first_name}</span>
-                <span class="last-name">${pick.last_name}</span>
-            `;
-            board.appendChild(div);
-        });
-
-        // Rundennummer rechts
-        const rightLabel = document.createElement("div");
-        rightLabel.className = "round-label-right";
-        rightLabel.textContent = (r % 2 === 1) ? `→ ${r}` : `← ${r}`;
-        board.appendChild(rightLabel);
-    }
-}
-
-    // Playoffs
-async function loadBracket(year) {
-  // Container zuerst leeren
-  ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
-    const container = document.getElementById(id)
-    if (container) container.innerHTML = ''
-  })
-
-  const { data, error } = await supabase
-    .from('playoff_matches')
-    .select('*')
-    .eq('year', year)
-
-  if (error) {
-    console.error(error)
-    return
-  }
-
-    const qfColumn = document.getElementById('quarterfinals')
-    const hasQuarterfinals = data.some(g => g.round === 'QF')
-    
-    if (qfColumn) {
-      qfColumn.classList.toggle('d-none', !hasQuarterfinals)
-    }
-    
-    
-      // Sortierung
-    const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 }
-    
-    const sortedData = data.slice().sort((a, b) => {
-        if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round]
-        return a.slot - b.slot
-      })
-
-  sortedData.forEach(game => {
-    const roundId =
-      game.round === 'QF' ? 'quarterfinals' :
-      game.round === 'SF' ? 'semifinals' :
-      game.round === 'F'  ? 'finals' : null
-
-    const isBye = game.l_name === null
-    const container = roundId ? document.getElementById(roundId) : null
-    if (!container) return
-
-    const div = document.createElement('div')
-    div.className = 'card my-2 p-2 text-start'
-    div.style.maxWidth = '250px'
-
-    const wPoints = game.w_points?.toFixed(2) ?? ''
-    const lPoints = game.l_points?.toFixed(2) ?? ''
-
-    const winnerPointsClass = 'text-success'
-    const loserPointsClass = 'text-danger'
-
-    if (isBye) {
-      div.innerHTML = `
-  <div class="d-flex justify-content-between">
-    <div class="me-2 flex-grow-1">
-      <small class="text-muted">${game.w_rank}</small> ${game.w_name}
-    </div>
-    <span class="text-muted"></span>
-  </div>
-  <div class="d-flex justify-content-between">
-    <div class="me-2 flex-grow-1">
-      <small class="text-muted">–</small> <span class="text-secondary">BYE</span>
-    </div>
-    <span class="text-muted"></span>
-  </div>
-`
-    } else {
-        let topSeed, bottomSeed
-        const wSlot = game.w_slot
-        const lSlot = game.l_slot
-        
-        if (wSlot !== null && lSlot !== null) {
-          topSeed = wSlot < lSlot ? 'w' : 'l'
-        } else {
-          topSeed = game.w_rank < game.l_rank ? 'w' : 'l'
-        }
-        
-        bottomSeed = topSeed === 'w' ? 'l' : 'w'
-
-      const topRank = game[`${topSeed}_rank`]
-      const topName = game[`${topSeed}_name`]
-      const topPoints = (game[`${topSeed}_points`] ?? 0).toFixed(2)
-
-      const bottomRank = game[`${bottomSeed}_rank`]
-      const bottomName = game[`${bottomSeed}_name`]
-      const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2)
-
-      const topClass = (game.w_rank === topRank) ? 'text-success' : 'text-danger'
-      const bottomClass = (game.w_rank === bottomRank) ? 'text-success' : 'text-danger'
-
-      // Finale: Gewinner fett + gold
-      const topNameClass = (game.round === 'F' && game.w_rank === topRank) ? 'text-warning fw-bold' : ''
-      const bottomNameClass = (game.round === 'F' && game.w_rank === bottomRank) ? 'text-warning fw-bold' : ''
-
-    div.innerHTML = `
-  <div class="d-flex justify-content-between">
-    <div class="me-2 flex-grow-1">
-      <small class="text-muted">${topRank}</small> ${topName}
-    </div>
-    <span class="${topClass}">${topPoints}</span>
-  </div>
-  <div class="d-flex justify-content-between">
-    <div class="me-2 flex-grow-1">
-      <small class="text-muted">${bottomRank}</small> ${bottomName}
-    </div>
-    <span class="${bottomClass}">${bottomPoints}</span>
-  </div>
-`
-
-    }
-
-    container.appendChild(div)
-  })
-}
-
 });
