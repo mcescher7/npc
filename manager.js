@@ -133,21 +133,22 @@ document.addEventListener("DOMContentLoaded", async function() {
         }).join("");
 
         contentDiv.innerHTML = `
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Jahr</th>
-                            <th>Woche</th>
-                            <th>Playoff</th>
-                            <th>${managerName}</th>
-                            <th>${opponentName}</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            </div>
-        `;
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-nowrap" style="width: 60px;">Jahr</th>
+                    <th class="text-nowrap" style="width: 60px;">Woche</th>
+                    <th class="text-nowrap" style="width: 70px;">Playoff</th>
+                    <th>${managerName}</th>
+                    <th>${opponentName}</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+    </div>
+`;
+
     }
 
     const modal = new bootstrap.Modal(document.getElementById("matchDetailsModal"));
