@@ -92,50 +92,68 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function showMatchDetails(managerId, managerName, opponentId, opponentName) {
-        const { data, error } = await supabaseClient
-            .from("matchups")
-            .select("year, week, manager_points, opponent_points")
-            .eq("manager_id", managerId)
-            .eq("opponent_id", opponentId)
-            .order("year", { ascending: true })
-            .order("week", { ascending: true });
+    const { data, error } = await supabaseClient
+        .from("matchups_detail")
+        .select("year, week, manager_points, opponent_points, round")
+        .eq("manager_id", managerId)
+        .eq("opponent_id", opponentId)
+        .order("year", { ascending: true })
+        .order("week", { ascending: true });
 
-        const contentDiv = document.getElementById("match-details-content");
+    const contentDiv = document.getElementById("match-details-content");
 
-        if (error || !data) {
-            contentDiv.innerHTML = `<div class="text-danger">Fehler beim Laden der Matchdetails.</div>`;
-        } else if (data.length === 0) {
-            contentDiv.innerHTML = `<p>Keine Matches gefunden.</p>`;
-        } else {
-            const rows = data.map(match => `
+    if (error || !data) {
+        contentDiv.innerHTML = `<div class="text-danger">Fehler beim Laden der Matchdetails.</div>`;
+    } else if (data.length === 0) {
+        contentDiv.innerHTML = `<p>Keine Matches gefunden.</p>`;
+    } else {
+        const translateRound = (round) => {
+            if (round === "QF") return "VF";
+            if (round === "SF") return "HF";
+            return round ?? "";
+        };
+
+        const rows = data.map(match => {
+            const mp = parseFloat(match.manager_points).toFixed(2);
+            const op = parseFloat(match.opponent_points).toFixed(2);
+
+            const managerWon = match.manager_points > match.opponent_points;
+            const mpClass = managerWon ? "text-success" : "text-danger";
+            const opClass = managerWon ? "text-danger" : "text-success";
+
+            return `
                 <tr>
                     <td>${match.year}</td>
                     <td>${match.week}</td>
-                    <td>${match.manager_points}</td>
-                    <td>${match.opponent_points}</td>
+                    <td>${translateRound(match.round)}</td>
+                    <td class="${mpClass}">${mp}</td>
+                    <td class="${opClass}">${op}</td>
                 </tr>
-            `).join("");
-
-            contentDiv.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Jahr</th>
-                                <th>Woche</th>
-                                <th>${managerName}</th>
-                                <th>${opponentName}</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
             `;
-        }
+        }).join("");
 
-        const modal = new bootstrap.Modal(document.getElementById("matchDetailsModal"));
-        modal.show();
+        contentDiv.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Jahr</th>
+                            <th>Woche</th>
+                            <th>Playoff</th>
+                            <th>${managerName}</th>
+                            <th>${opponentName}</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+        `;
     }
+
+    const modal = new bootstrap.Modal(document.getElementById("matchDetailsModal"));
+    modal.show();
+}
+
 
     /*
     document.getElementById("manager-matchups-table").addEventListener("click", function(e) {
