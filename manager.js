@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadManagerMatchups(managerId) {
         const { data, error } = await supabaseClient
             .from("manager_matchups_alltime")
-            .select("manager2_id, manager2_name, wins, losses, points_for, points_against")
+            .select("manager1_name, manager2_id, manager2_name, wins, losses, points_for, points_against")
             .eq("manager1_id", managerId)
             .order("wins", { ascending: false })
             .order("losses", { ascending: true });
@@ -75,8 +75,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         tableBody.innerHTML = "";
         data.forEach(row => {
             const tr = document.createElement("tr");
-            tr.dataset.opponent_id = row.manager2_id;
-            tr.dataset.opponent_name = row.manager2_name;
             tr.innerHTML = `
                 <td>${row.manager2_name}</td>
                 <td>${row.wins}</td>
@@ -84,13 +82,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.points_for}</td>
                 <td>${row.points_against}</td>
             `;
+            tr.style.cursor = "pointer";
+
+            tr.addEventListener("click", () => {
+                showMatchDetails(managerId, row.manager1_name, row.manager2_id, row.manager2_name);
+            });
             tableBody.appendChild(tr);
         });
     }
 
-    async function showMatchDetails(managerId, opponentId, opponentName) {
-        console.log("Lade Matches für:", managerId, "vs", opponentId);
-
+    async function showMatchDetails(managerId, managerName, opponentId, opponentName) {
         const { data, error } = await supabaseClient
             .from("matchups")
             .select("year, week, manager_points, opponent_points")
@@ -116,15 +117,14 @@ document.addEventListener("DOMContentLoaded", async function() {
             `).join("");
 
             contentDiv.innerHTML = `
-                <p>Spiele gegen <strong>${opponentName}</strong>:</p>
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
                                 <th>Jahr</th>
                                 <th>Woche</th>
-                                <th>Punkte Manager</th>
-                                <th>Punkte Gegner</th>
+                                <th>${managerName}</th>
+                                <th>${opponentName}</th>
                             </tr>
                         </thead>
                         <tbody>${rows}</tbody>
@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         modal.show();
     }
 
+    /*
     document.getElementById("manager-matchups-table").addEventListener("click", function(e) {
         const row = e.target.closest("tr");
         if (!row || !managerId) return;
@@ -148,6 +149,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             showMatchDetails(managerId, opponentId, opponentName);
         }
     });
+    */
 
     managerSelect.addEventListener("change", (event) => {
         managerId = parseInt(event.target.value, 10) || null;
