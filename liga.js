@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.rank}</td>
                 <td>${row.name}</td>
                 <td>${row.seasons}</td>
+                <td>${row.titles}</td>
                 <td>${row.wins}</td>
                 <td>${row.losses}</td>
                 <td>${row.w_l_perc.toFixed(3)}</td>
@@ -33,8 +34,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadSeasonData() {
         const { data, error } = await supabaseClient
             .from("seasons")
-            .select("*")
-            .limit(50);
+            .select("*");
 
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
