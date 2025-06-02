@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.rank}</td>
                 <td>${row.name}</td>
                 <td>${row.seasons}</td>
+                <td>${row.playoffs}</td>
                 <td>${row.titles}</td>
                 <td>${row.wins}</td>
                 <td>${row.losses}</td>
