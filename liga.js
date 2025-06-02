@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadSeasonData() {
         const { data, error } = await supabaseClient
             .from("seasons")
-            .select("*");
+            .select("*")
+            .order("year", { ascending: true });
 
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
