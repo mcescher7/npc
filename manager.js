@@ -57,36 +57,35 @@ document.addEventListener("DOMContentLoaded", async function() {
     const records = [
         {rekord: "längste Siegesserie", 
          wert: data.max_win_streak ? `${data.max_win_streak}` : "-",  
-         details: data.win_streak_details},
+         details: data.win_streak_details || ""},
         {rekord: "längste Niederlagenserie", 
          wert: data.max_loss_streak ? `${data.max_loss_streak}` : "-",  
-         details: data.loss_streak_details},
+         details: data.loss_streak_details || ""},
         {rekord: "bester Saisonstart", 
          wert: data.start_win_streak ? `${data.start_win_streak}-0` : "-",  
-         details: data.start_win_years},
+         details: data.start_win_years || ""},
         {rekord: "schlechtester Saisonstart", 
          wert: data.start_loss_streak ? `0-${data.start_loss_streak}` : "-",  
-         details: data.start_loss_years || "Keine Daten" },
+         details: data.start_loss_years || ""},
         {rekord: "meiste Punkte", 
          wert: data.most_points ? `${formatPoints(data.most_points)}` : "-",  
-         details: data.most_points_details || "Keine Daten" },
+         details: data.most_points_details || ""},
         {rekord: "wenigste Punkte", 
          wert: data.least_points ? `${formatPoints(data.least_points)}` : "-",  
-         details: data.least_points_details || "Keine Daten" },
+         details: data.least_points_details || ""},
         {rekord: "höchster Sieg", 
          wert: data.biggest_win_margin ? `${formatPoints(data.biggest_win_margin)}` : "-",  
-         details: data.biggest_win_details || "Keine Daten" },
+         details: data.biggest_win_details || ""},
         {rekord: "höchste Niederlage", 
          wert: data.biggest_loss_margin ? `${formatPoints(data.biggest_loss_margin)}` : "-",  
-         details: data.biggest_loss_details || "Keine Daten" },
+         details: data.biggest_loss_details || ""},
         {rekord: "knappster Sieg", 
          wert: data.closest_win_margin ? `${formatPoints(data.closest_win_margin)}` : "-",  
-         details: data.closest_win_details || "Keine Daten" },
+         details: data.closest_win_details || ""},
         {rekord: "knappste Niederlage", 
          wert: data.closest_loss_margin ? `${formatPoints(data.closest_loss_margin)}` : "-",  
-         details: data.closest_loss_details || "Keine Daten" }
+         details: data.closest_loss_details || ""}
     ];
-
 
     tableBody.innerHTML = "";
     records.forEach(record => {
