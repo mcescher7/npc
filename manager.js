@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     const { data, error } = await supabaseClient
         .from("manager_stats")
         .select("*")
-        .eq("manager_id", managerId);
+        .eq("manager_id", managerId)
+        .single();
 
     if (error) {
         console.error("Fehler beim Laden der Statistiken:", error);
@@ -48,6 +49,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         return;
     }
 
+    console.log(data.start_win_streak, data.name);
+        
     const records = [
         { 
             rekord: "bester Saisonstart", 
