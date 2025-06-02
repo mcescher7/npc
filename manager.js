@@ -153,8 +153,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.manager2_name}</td>
                 <td>${row.wins}</td>
                 <td>${row.losses}</td>
-                <td>${row.points_for}</td>
-                <td>${row.points_against}</td>
+                <td>${parseFloat(row.points_for).toFixed(2)}</td>
+                <td>${parseFloat(row.points_against).toFixed(2)}</td>
             `;
             tr.style.cursor = "pointer";
 
