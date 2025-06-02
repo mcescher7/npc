@@ -74,10 +74,10 @@ document.addEventListener("DOMContentLoaded", async function() {
          wert: data.closest_loss_margin ? `${formatPoints(data.closest_loss_margin)}` : "-",  
          details: data.closest_loss_margin ? `${formatPoints(data.closest_loss_pf)} - ${formatPoints(data.closest_loss_pa)} vs. ${data.closest_loss_opponent}, ${data.closest_loss_week}/${data.closest_loss_year}` : "" },
         {rekord: "längste Siegesserie", 
-         wert: data.max_win_streak ? `${max_win_streak}` : "-",  
+         wert: data.max_win_streak ? `${data.max_win_streak}` : "-",  
          details: data.max_win_streak ? `${data.win_start_week}/${data.win_start_year} bis ${data.win_end_week}/${data.win_end_year}` : "" },
         {rekord: "längste Niederlagenserie", 
-         wert: data.max_loss_streak ? `${max_loss_streak}` : "-",  
+         wert: data.max_loss_streak ? `${data.max_loss_streak}` : "-",  
          details: data.max_loss_streak ? `${data.loss_start_week}/${data.loss_start_year} bis ${data.loss_end_week}/${data.loss_end_year}` : "" }
         
         /*
