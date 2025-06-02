@@ -60,10 +60,10 @@ document.addEventListener("DOMContentLoaded", async function() {
          details: data.win_streak_details},
         {rekord: "längste Niederlagenserie", 
          wert: data.max_loss_streak ? `${data.max_loss_streak}` : "-",  
-         details: data.loss_streak_details || "" },
+         details: data.loss_streak_details},
         {rekord: "bester Saisonstart", 
          wert: data.start_win_streak ? `${data.start_win_streak}-0` : "-",  
-         details: data.start_win_years || "Keine Daten" },
+         details: data.start_win_years},
         {rekord: "schlechtester Saisonstart", 
          wert: data.start_loss_streak ? `0-${data.start_loss_streak}` : "-",  
          details: data.start_loss_years || "Keine Daten" },
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             .select("player_name, games, total_points, years_played")
             .eq("manager_id", managerId)
             .order("games", { ascending: false })
-            .limit(20);
+            .limit(10);
 
         if (error) {
             console.error("Fehler beim Laden der Spieler:", error);
