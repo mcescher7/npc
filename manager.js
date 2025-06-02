@@ -25,6 +25,57 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
+    async function loadManagerRecords(managerId) {
+    const tableBody = document.getElementById("records-table");
+
+    if (!managerId || isNaN(managerId)) {
+        tableBody.innerHTML = "";
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("manager_stats")
+        .select("*")
+        .eq("manager_id", managerId);
+
+    if (error) {
+        console.error("Fehler beim Laden der Statistiken:", error);
+        return;
+    }
+
+    if (!data) {
+        tableBody.innerHTML = "<tr><td colspan='3'>Keine Daten gefunden</td></tr>";
+        return;
+    }
+
+    const records = [
+        { rekord: "bester Saisonstart", wert: data.start_win_streak ? `${data.start_win_streak} - 0` : "-", details: data.start_win_streak ? ${data.start_win_year} }
+        /*
+        { rekord: "Wenigste Punkte (Saison)", wert: data.least_points_season, details: `${data.least_points_season_year} - ${data.least_points_season_value} Punkte` },
+        { rekord: "Meiste Siege", wert: data.most_wins, details: `${data.most_wins_year} - ${data.most_wins_count} Siege` },
+        { rekord: "Längste Siegesserie", wert: data.longest_win_streak, details: `${data.win_streak_start} bis ${data.win_streak_end}` },
+        { rekord: "Längste Niederlagenserie", wert: data.longest_loss_streak, details: `${data.loss_streak_start} bis ${data.loss_streak_end}` },
+        { rekord: "Höchste Einzelwoche", wert: data.highest_weekly_score, details: `Woche ${data.highest_week_number}, ${data.highest_week_year}` },
+        { rekord: "Niedrigste Einzelwoche", wert: data.lowest_weekly_score, details: `Woche ${data.lowest_week_number}, ${data.lowest_week_year}` },
+        { rekord: "Playoff-Teilnahmen", wert: data.playoff_appearances, details: `${data.playoff_years}` },
+        { rekord: "Championship Titel", wert: data.championships, details: data.championship_years || "Keine" }
+        */
+    ];
+
+    tableBody.innerHTML = "";
+    records.forEach(record => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${record.rekord}</td>
+            <td>${record.wert}</td>
+            <td>${record.details}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
+
+
+    
     async function loadTopPlayers(managerId) {
         const tableBody = document.getElementById("top-players-table");
 
@@ -174,6 +225,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     managerSelect.addEventListener("change", (event) => {
         managerId = parseInt(event.target.value, 10) || null;
         selectedManagerName = managerSelect.options[managerSelect.selectedIndex].text;
+        loadManagerRecords(managerId);
         loadTopPlayers(managerId);
         loadManagerMatchups(managerId);
     });
