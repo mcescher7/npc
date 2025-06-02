@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     const records = [
-        { rekord: "bester Saisonstart", wert: data.start_win_streak ? `${data.start_win_streak} - 0` : "-", details: data.start_win_streak ? ${data.start_win_year} }
+        { rekord: "bester Saisonstart", wert: data.start_win_streak ? `${data.start_win_streak} - 0` : "-", details: data.start_win_streak ? ${data.start_win_year}
         /*
         { rekord: "Wenigste Punkte (Saison)", wert: data.least_points_season, details: `${data.least_points_season_year} - ${data.least_points_season_value} Punkte` },
         { rekord: "Meiste Siege", wert: data.most_wins, details: `${data.most_wins_year} - ${data.most_wins_count} Siege` },
