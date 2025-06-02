@@ -56,10 +56,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         
     const records = [
         {rekord: "bester Saisonstart", 
-         wert: data.start_win_streak ? `${data.start_win_streak} - 0` : "-",  
+         wert: data.start_win_streak ? `${data.start_win_streak}-0` : "-",  
          details: data.start_win_streak ? `${data.start_win_year}` : "" },
         {rekord: "schlechtester Saisonstart", 
-         wert: data.start_loss_streak ? `0 - ${data.start_loss_streak}` : "-",  
+         wert: data.start_loss_streak ? `0-${data.start_loss_streak}` : "-",  
          details: data.start_loss_streak ? `${data.start_loss_year}` : "" },
         {rekord: "höchster Sieg", 
          wert: data.biggest_win_margin ? `${formatPoints(data.biggest_win_margin)}` : "-",  
@@ -69,7 +69,16 @@ document.addEventListener("DOMContentLoaded", async function() {
          details: data.biggest_loss_margin ? `${formatPoints(data.biggest_loss_pf)} - ${formatPoints(data.biggest_loss_pa)} vs. ${data.biggest_loss_opponent}, ${data.biggest_loss_week}/${data.biggest_loss_year}` : "" },
         {rekord: "knappster Sieg", 
          wert: data.closest_win_margin ? `${formatPoints(data.closest_win_margin)}` : "-",  
-         details: data.closest_win_margin ? `${formatPoints(data.closest_win_pf)} - ${formatPoints(data.closest_win_pa)} vs. ${data.closest_win_opponent}, ${data.closest_win_week}/${data.closest_win_year}` : "" }
+         details: data.closest_win_margin ? `${formatPoints(data.closest_win_pf)} - ${formatPoints(data.closest_win_pa)} vs. ${data.closest_win_opponent}, ${data.closest_win_week}/${data.closest_win_year}` : "" },
+        {rekord: "knappste Niederlage", 
+         wert: data.closest_loss_margin ? `${formatPoints(data.closest_loss_margin)}` : "-",  
+         details: data.closest_loss_margin ? `${formatPoints(data.closest_loss_pf)} - ${formatPoints(data.closest_loss_pa)} vs. ${data.closest_loss_opponent}, ${data.closest_loss_week}/${data.closest_loss_year}` : "" },
+        {rekord: "längste Siegesserie", 
+         wert: data.max_win_streak ? `${max_win_streak}` : "-",  
+         details: data.max_win_streak ? `${data.win_start_week}/${data.win_start_year} bis ${data.win_end_week}/${data.win_end_year}` : "" },
+        {rekord: "längste Niederlagenserie", 
+         wert: data.max_loss_streak ? `${max_loss_streak}` : "-",  
+         details: data.max_loss_streak ? `${data.loss_start_week}/${data.loss_start_year} bis ${data.loss_end_week}/${data.loss_end_year}` : "" }
         
         /*
         { rekord: "Wenigste Punkte (Saison)", wert: data.least_points_season, details: `${data.least_points_season_year} - ${data.least_points_season_value} Punkte` },
