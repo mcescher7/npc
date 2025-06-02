@@ -48,8 +48,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         tableBody.innerHTML = "<tr><td colspan='3'>Keine Daten gefunden</td></tr>";
         return;
     }
-
-    console.log(data.start_win_streak, data.name);
         
     const records = [
         {rekord: "bester Saisonstart", 
@@ -59,8 +57,11 @@ document.addEventListener("DOMContentLoaded", async function() {
          wert: data.start_loss_streak ? `0 - ${data.start_loss_streak}` : "-",  
          details: data.start_loss_streak ? `${data.start_loss_year}` : "" },
         {rekord: "höchster Sieg", 
-         wert: data.biggest_win_margin ? `${data.biggest_win_margin}` : "-",  
-         details: data.biggest_win_margin ? `${data.biggest_win_pf} - ${data.biggest_win_pa} vs. ${data.biggest_win_opponent}, ${data.biggest_win_week}/${data.biggest_win_year}` : "" }
+         wert: data.biggest_win_margin ? `${data.biggest_win_margin}.toFixed(2)` : "-",  
+         details: data.biggest_win_margin ? `${data.biggest_win_pf}.toFixed(2) - ${data.biggest_win_pa}.toFixed(2) vs. ${data.biggest_win_opponent}, ${data.biggest_win_week}/${data.biggest_win_year}` : "" },
+         {rekord: "höchste Niederlage", 
+         wert: data.biggest_loss_margin ? `${data.biggest_loss_margin}.toFixed(2)` : "-",  
+         details: data.biggest_loss_margin ? `${data.biggest_loss_pf}.toFixed(2) - ${data.biggest_loss_pa}.toFixed(2) vs. ${data.biggest_loss_opponent}, ${data.biggest_loss_week}/${data.biggest_loss_year}` : "" }
         
         /*
         { rekord: "Wenigste Punkte (Saison)", wert: data.least_points_season, details: `${data.least_points_season_year} - ${data.least_points_season_value} Punkte` },
