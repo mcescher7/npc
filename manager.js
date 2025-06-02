@@ -55,12 +55,24 @@ document.addEventListener("DOMContentLoaded", async function() {
     };
         
     const records = [
+        {rekord: "längste Siegesserie", 
+         wert: data.max_win_streak ? `${data.max_win_streak}` : "-",  
+         details: data.max_win_streak ? `${data.win_start_week}/${data.win_start_year} bis ${data.win_end_week}/${data.win_end_year}` : "" },
+        {rekord: "längste Niederlagenserie", 
+         wert: data.max_loss_streak ? `${data.max_loss_streak}` : "-",  
+         details: data.max_loss_streak ? `${data.loss_start_week}/${data.loss_start_year} bis ${data.loss_end_week}/${data.loss_end_year}` : "" },
         {rekord: "bester Saisonstart", 
          wert: data.start_win_streak ? `${data.start_win_streak}-0` : "-",  
          details: data.start_win_streak ? `${data.start_win_year}` : "" },
         {rekord: "schlechtester Saisonstart", 
          wert: data.start_loss_streak ? `0-${data.start_loss_streak}` : "-",  
          details: data.start_loss_streak ? `${data.start_loss_year}` : "" },
+        {rekord: "meiste Punkte", 
+         wert: data.most_points ? `${data.most_points}` : "-",  
+         details: data.most_points ? `${data.most_points_week}/${data.most_points_year}` : "" },
+        {rekord: "wenigste Punkte", 
+         wert: data.least_points ? `${data.least_points}` : "-",  
+         details: data.least_points ? `${data.least_points_week}/${data.least_points_year}` : "" },
         {rekord: "höchster Sieg", 
          wert: data.biggest_win_margin ? `${formatPoints(data.biggest_win_margin)}` : "-",  
          details: data.biggest_win_margin ? `${formatPoints(data.biggest_win_pf)} - ${formatPoints(data.biggest_win_pa)} vs. ${data.biggest_win_opponent}, ${data.biggest_win_week}/${data.biggest_win_year}` : "" },
@@ -72,26 +84,8 @@ document.addEventListener("DOMContentLoaded", async function() {
          details: data.closest_win_margin ? `${formatPoints(data.closest_win_pf)} - ${formatPoints(data.closest_win_pa)} vs. ${data.closest_win_opponent}, ${data.closest_win_week}/${data.closest_win_year}` : "" },
         {rekord: "knappste Niederlage", 
          wert: data.closest_loss_margin ? `${formatPoints(data.closest_loss_margin)}` : "-",  
-         details: data.closest_loss_margin ? `${formatPoints(data.closest_loss_pf)} - ${formatPoints(data.closest_loss_pa)} vs. ${data.closest_loss_opponent}, ${data.closest_loss_week}/${data.closest_loss_year}` : "" },
-        {rekord: "längste Siegesserie", 
-         wert: data.max_win_streak ? `${data.max_win_streak}` : "-",  
-         details: data.max_win_streak ? `${data.win_start_week}/${data.win_start_year} bis ${data.win_end_week}/${data.win_end_year}` : "" },
-        {rekord: "längste Niederlagenserie", 
-         wert: data.max_loss_streak ? `${data.max_loss_streak}` : "-",  
-         details: data.max_loss_streak ? `${data.loss_start_week}/${data.loss_start_year} bis ${data.loss_end_week}/${data.loss_end_year}` : "" }
-        
-        /*
-        { rekord: "Wenigste Punkte (Saison)", wert: data.least_points_season, details: `${data.least_points_season_year} - ${data.least_points_season_value} Punkte` },
-        { rekord: "Meiste Siege", wert: data.most_wins, details: `${data.most_wins_year} - ${data.most_wins_count} Siege` },
-        { rekord: "Längste Siegesserie", wert: data.longest_win_streak, details: `${data.win_streak_start} bis ${data.win_streak_end}` },
-        { rekord: "Längste Niederlagenserie", wert: data.longest_loss_streak, details: `${data.loss_streak_start} bis ${data.loss_streak_end}` },
-        { rekord: "Höchste Einzelwoche", wert: data.highest_weekly_score, details: `Woche ${data.highest_week_number}, ${data.highest_week_year}` },
-        { rekord: "Niedrigste Einzelwoche", wert: data.lowest_weekly_score, details: `Woche ${data.lowest_week_number}, ${data.lowest_week_year}` },
-        { rekord: "Playoff-Teilnahmen", wert: data.playoff_appearances, details: `${data.playoff_years}` },
-        { rekord: "Championship Titel", wert: data.championships, details: data.championship_years || "Keine" }
-        */
+         details: data.closest_loss_margin ? `${formatPoints(data.closest_loss_pf)} - ${formatPoints(data.closest_loss_pa)} vs. ${data.closest_loss_opponent}, ${data.closest_loss_week}/${data.closest_loss_year}` : "" }
     ];
-
 
     tableBody.innerHTML = "";
     records.forEach(record => {
@@ -102,10 +96,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             <td>${record.details}</td>
         `;
         tableBody.appendChild(tr);
-    });
-}
-
-
+        });
+    }
     
     async function loadTopPlayers(managerId) {
         const tableBody = document.getElementById("top-players-table");
