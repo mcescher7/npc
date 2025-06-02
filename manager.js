@@ -52,11 +52,16 @@ document.addEventListener("DOMContentLoaded", async function() {
     console.log(data.start_win_streak, data.name);
         
     const records = [
-        { 
-            rekord: "bester Saisonstart", 
-            wert: data.start_win_streak ? `${data.start_win_streak} - 0` : "-", 
-            details: data.start_win_streak ? `${data.start_win_year}` : ""
-        }
+        {rekord: "bester Saisonstart", 
+         wert: data.start_win_streak ? `${data.start_win_streak} - 0` : "-",  
+         details: data.start_win_streak ? `${data.start_win_year}` : "" },
+        {rekord: "schlechtester Saisonstart", 
+         wert: data.start_loss_streak ? `0 - ${data.start_loss_streak}` : "-",  
+         details: data.start_loss_streak ? `${data.start_loss_year}` : "" },
+        {rekord: "höchster Sieg", 
+         wert: data.biggest_win_margin ? `${data.biggest_win_margin}` : "-",  
+         details: data.biggest_win_margin ? `${data.biggest_win_pf} - ${data.biggest_win_pa} vs. ${data.biggest_win_opponent}, ${data.biggest_win_week}/${data.biggest_win_year}` : "" }
+        
         /*
         { rekord: "Wenigste Punkte (Saison)", wert: data.least_points_season, details: `${data.least_points_season_year} - ${data.least_points_season_value} Punkte` },
         { rekord: "Meiste Siege", wert: data.most_wins, details: `${data.most_wins_year} - ${data.most_wins_count} Siege` },
