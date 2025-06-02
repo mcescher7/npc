@@ -48,6 +48,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         tableBody.innerHTML = "<tr><td colspan='3'>Keine Daten gefunden</td></tr>";
         return;
     }
+
+    const formatPoints = (value) => {
+        if (value === null || value === undefined) return "-";
+        return parseFloat(value).toFixed(2);
+    };
         
     const records = [
         {rekord: "bester Saisonstart", 
@@ -57,11 +62,14 @@ document.addEventListener("DOMContentLoaded", async function() {
          wert: data.start_loss_streak ? `0 - ${data.start_loss_streak}` : "-",  
          details: data.start_loss_streak ? `${data.start_loss_year}` : "" },
         {rekord: "höchster Sieg", 
-         wert: data.biggest_win_margin ? `${data.biggest_win_margin}.toFixed(2)` : "-",  
-         details: data.biggest_win_margin ? `${data.biggest_win_pf}.toFixed(2) - ${data.biggest_win_pa}.toFixed(2) vs. ${data.biggest_win_opponent}, ${data.biggest_win_week}/${data.biggest_win_year}` : "" },
-         {rekord: "höchste Niederlage", 
-         wert: data.biggest_loss_margin ? `${data.biggest_loss_margin}.toFixed(2)` : "-",  
-         details: data.biggest_loss_margin ? `${data.biggest_loss_pf}.toFixed(2) - ${data.biggest_loss_pa}.toFixed(2) vs. ${data.biggest_loss_opponent}, ${data.biggest_loss_week}/${data.biggest_loss_year}` : "" }
+         wert: data.biggest_win_margin ? `${formatPoints(data.biggest_win_margin)}` : "-",  
+         details: data.biggest_win_margin ? `${formatPoints(data.biggest_win_pf)} - ${formatPoints(data.biggest_win_pa)} vs. ${data.biggest_win_opponent}, ${data.biggest_win_week}/${data.biggest_win_year}` : "" },
+        {rekord: "höchste Niederlage", 
+         wert: data.biggest_loss_margin ? `${formatPoints(data.biggest_loss_margin)}` : "-",  
+         details: data.biggest_loss_margin ? `${formatPoints(data.biggest_loss_pf)} - ${formatPoints(data.biggest_loss_pa)} vs. ${data.biggest_loss_opponent}, ${data.biggest_loss_week}/${data.biggest_loss_year}` : "" },
+        {rekord: "knappster Sieg", 
+         wert: data.closest_win_margin ? `${formatPoints(data.closest_win_margin)}` : "-",  
+         details: data.closest_win_margin ? `${formatPoints(data.closest_win_pf)} - ${formatPoints(data.closest_win_pa)} vs. ${data.closest_win_opponent}, ${data.closest_win_week}/${data.closest_win_year}` : "" }
         
         /*
         { rekord: "Wenigste Punkte (Saison)", wert: data.least_points_season, details: `${data.least_points_season_year} - ${data.least_points_season_value} Punkte` },
