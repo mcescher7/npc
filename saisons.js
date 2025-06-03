@@ -174,9 +174,9 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                             <span class="fw-bold">${homePlayer.player_name}</span>
                             <span class="text-muted ms-2">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
                         </div>
-                        <div class="d-flex justify-content-start">
+                        <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted small">${homePlayer.game_info || '&nbsp;'}</span>
-                            <span class="text-muted ms-2">${homePlayer.stats}</span>
+                            <span class="text-muted small">${homePlayer.stats}</span>
                         </div>
                     ` : ''}
                 </td>
@@ -189,8 +189,8 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                             <span class="text-muted me-2">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
                             <span class="fw-bold">${awayPlayer.player_name}</span>
                         </div>
-                        <div class="d-flex justify-content-end">
-                            <span class="text-muted ms-2">${awayPlayer.stats}</span>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">${awayPlayer.stats}</span>
                             <span class="text-muted small">${awayPlayer.game_info || '&nbsp;'}</span>
                         </div>
                     ` : ''}
