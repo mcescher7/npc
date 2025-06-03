@@ -130,49 +130,88 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 
-        // Zusätzliche Funktionen für Roster-Anzeige
+   
+
     async function showRosters(home_id, home_team, away_id, away_team, year, week) {
-        const rosterModal = new bootstrap.Modal(document.getElementById('rosterModal'));
-        const rosterContent = document.getElementById('roster-content');
-    
-        try {
-            // Roster für beide Teams abrufen
-            const { data: homeRoster } = await supabase
-                .from('roster_info')
-                .select('position, player_name, points, own_team, game_info, opponent_team')
-                .eq('manager_id', home_id)
-                .eq('year', year)
-                .eq('week', week)
-                .order('position', { ascending: true });
-    
-            const { data: awayRoster } = await supabase
-                .from('roster_info')
-                .select('position, player_name, points, own_team, game_info, opponent_team')
-                .eq('manager_id', away_id)
-                .eq('year', year)
-                .eq('week', week)
-                .order('position', { ascending: true });
-    
-            // Modal-Inhalt erstellen
-            rosterContent.innerHTML = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>${home_team}</h5>
-                        ${renderRosterTable(homeRoster)}
-                    </div>
-                    <div class="col-md-6">
-                        <h5>${away_team}</h5>
-                        ${renderRosterTable(awayRoster)}
-                    </div>
-                </div>
-            `;
-    
-            rosterModal.show();
-        } catch (error) {
-            console.error('Fehler beim Laden der Rosters:', error);
-            rosterContent.innerHTML = '<div class="alert alert-danger">Fehler beim Laden der Daten</div>';
-        }
+    const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
+    const rosterContent = document.getElementById('roster-content');
+
+    // Hole die Roster-Daten für beide Teams
+    const { data: homeRoster } = await supabase
+        .from('roster_positions')
+        .select('position, player_name, points, own_team, game_info, opponent_team')
+        .eq('manager_id', home_id)
+        .eq('year', year)
+        .eq('week', week);
+
+    const { data: awayRoster } = await supabase
+        .from('roster_positions')
+        .select('position, player_name, points, own_team, opponent_team, game_info')
+        .eq('manager_id', away_id)
+        .eq('year', year)
+        .eq('week', week);
+
+    // Definiere die Positionsreihenfolge wie auf dem Screenshot
+    const positions = [
+        'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
+        'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10', 'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
+    ];
+
+    // Optional: Nur Startaufstellung anzeigen
+    const visiblePositions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
+
+    // Hilfsfunktion für Zusatzinfos (hier kannst du beliebig erweitern)
+    function getPlayerInfo(player) {
+        if (!player) return '';
+        // Beispiel: Gegner, Game-Info (v/@), Teams
+        return `<div class="text-muted small">${player.own_team || ''} ${player.game_info || ''} ${player.opponent_team || ''}</div>`;
     }
+
+    // Hilfsfunktion für eine Zelle
+    function renderCell(player) {
+        if (!player) return `<div>-</div>`;
+        return `
+            <div>
+                <div class="fw-bold">${player.player_name || '-'}</div>
+                <div class="fs-6">${player.points !== null && player.points !== undefined ? player.points.toFixed(2) : '-'}</div>
+                ${getPlayerInfo(player)}
+            </div>
+        `;
+    }
+
+    // Roster als Map für schnellen Zugriff
+    const homeMap = Object.fromEntries((homeRoster || []).map(p => [p.position, p]));
+    const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
+
+    // Baue das Matchup-Grid
+    let tableRows = visiblePositions.map(pos => `
+        <tr>
+            <td class="text-end pe-2 align-middle" style="width:40%;">${renderCell(homeMap[pos])}</td>
+            <td class="text-center align-middle" style="width:10%;">
+                <span class="badge bg-secondary">${pos}</span>
+            </td>
+            <td class="text-start ps-2 align-middle" style="width:40%;">${renderCell(awayMap[pos])}</td>
+        </tr>
+    `).join('');
+
+    rosterContent.innerHTML = `
+        <div class="container-fluid px-0">
+            <div class="row">
+                <div class="col text-center fw-bold">${home_team}</div>
+                <div class="col-1"></div>
+                <div class="col text-center fw-bold">${away_team}</div>
+            </div>
+            <table class="table table-borderless table-sm mt-2 mb-0">
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    modal.show();
+}
+
     
     function renderRosterTable(roster) {
         if (!roster || roster.length === 0) return '<p>Keine Daten verfügbar</p>';
