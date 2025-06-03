@@ -138,14 +138,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Hole die Roster-Daten für beide Teams
     const { data: homeRoster } = await supabase
-        .from('roster_positions')
+        .from('roster_info')
         .select('position, player_name, points, own_team, game_info, opponent_team')
         .eq('manager_id', home_id)
         .eq('year', year)
         .eq('week', week);
 
     const { data: awayRoster } = await supabase
-        .from('roster_positions')
+        .from('roster_info')
         .select('position, player_name, points, own_team, opponent_team, game_info')
         .eq('manager_id', away_id)
         .eq('year', year)
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
 
     // Baue das Matchup-Grid
-    let tableRows = visiblePositions.map(pos => `
+    let tableRows = positions.map(pos => `
         <tr>
             <td class="text-end pe-2 align-middle" style="width:40%;">${renderCell(homeMap[pos])}</td>
             <td class="text-center align-middle" style="width:10%;">
