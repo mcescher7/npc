@@ -133,7 +133,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
     const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
     const rosterContent = document.getElementById('roster-content');
 
-    // Hole die Roster-Daten für beide Teams
+    // Roster-Daten für beide Teams laden
     const { data: homeRoster } = await supabase
         .from('roster_info')
         .select('position, player_name, points, own_team, game_info, opponent_team')
@@ -148,41 +148,44 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
         .eq('year', year)
         .eq('week', week);
 
-    // Definiere die Positionsreihenfolge
+    // Positionsreihenfolge
     const positions = [
         'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
         'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10', 
         'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
     ];
 
-    // Roster als Map für schnellen Zugriff
+    // Roster als Map
     const homeMap = Object.fromEntries((homeRoster || []).map(p => [p.position, p]));
     const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
 
-    // Filtere Positionen ohne Spieler
-    const validPositions = positions.filter(pos => 
-        homeMap[pos]?.player_name || awayMap[pos]?.player_name
+    // Nur Positionen mit mindestens einem Spieler
+    const validPositions = positions.filter(pos =>
+        (homeMap[pos] && homeMap[pos].player_name) || (awayMap[pos] && awayMap[pos].player_name)
     );
 
     // Hilfsfunktion für Zusatzinfos
     function getPlayerInfo(player) {
         if (!player) return '';
-        return `<div class="text-muted small">${player.game_info || ''} ${player.opponent_team || ''}</div>`;
+        return `<div class="text-muted small">
+            ${player.own_team || ''} ${player.game_info || ''} ${player.opponent_team ? 'vs ' + player.opponent_team : ''}
+        </div>`;
     }
 
-    // Neue Render-Funktion für eine Zeile
+    // Eine Zeile rendern (Name links, Punkte rechts)
     function renderRow(pos, index) {
         const homePlayer = homeMap[pos];
         const awayPlayer = awayMap[pos];
-        const rowClass = index % 2 === 0 ? 'bg-light' : 'bg-white';
+        // Bootstrap table-striped: even -> "", odd -> "table-active"
+        const rowClass = index % 2 === 1 ? 'table-active' : '';
 
         return `
             <tr class="${rowClass}">
-                <td class="text-end pe-3 align-middle" style="width:45%;">
-                    ${homePlayer?.player_name ? `
+                <td class="text-end pe-3 align-middle" style="width:40%;">
+                    ${homePlayer ? `
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small">${homePlayer.points?.toFixed(2) || '0.00'}</span>
                             <span class="fw-bold">${homePlayer.player_name}</span>
+                            <span class="text-muted ms-2">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
                         </div>
                         ${getPlayerInfo(homePlayer)}
                     ` : ''}
@@ -190,11 +193,11 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                 <td class="text-center align-middle" style="width:10%;">
                     <span class="badge bg-secondary">${pos}</span>
                 </td>
-                <td class="text-start ps-3 align-middle" style="width:45%;">
-                    ${awayPlayer?.player_name ? `
+                <td class="text-start ps-3 align-middle" style="width:40%;">
+                    ${awayPlayer ? `
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold">${awayPlayer.player_name}</span>
-                            <span class="text-muted small">${awayPlayer.points?.toFixed(2) || '0.00'}</span>
+                            <span class="text-muted ms-2">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
                         </div>
                         ${getPlayerInfo(awayPlayer)}
                     ` : ''}
@@ -203,10 +206,8 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
         `;
     }
 
-    // Baue das Matchup-Grid
-    const tableRows = validPositions
-        .map((pos, index) => renderRow(pos, index))
-        .join('');
+    // Tabelle bauen
+    const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
 
     rosterContent.innerHTML = `
         <div class="container-fluid px-0">
@@ -215,7 +216,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                 <div class="col-1"></div>
                 <div class="col text-center fw-bold fs-5">${away_team}</div>
             </div>
-            <table class="table table-sm mb-0">
+            <table class="table table-striped table-sm mb-0">
                 <tbody>
                     ${tableRows}
                 </tbody>
