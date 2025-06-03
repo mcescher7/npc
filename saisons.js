@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             tr.addEventListener("click", () => {
                 showRosters(game.home_team, game.away_team, year, week);
             });
-            tableBody.appendChild(tr);
+            weeklyTableBody.appendChild(tr);
         });
     }
 
