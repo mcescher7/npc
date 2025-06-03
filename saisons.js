@@ -201,46 +201,40 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
 
     const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
 
-    // Definiere, welche Positionen NICHT zur Bank gehören
-    const mainPositions = [
-        'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'
-    ];
-    
-    // Summe nur die Punkte der Nicht-Bank-Spieler
-    const homeTotal = mainPositions.reduce((sum, pos) => {
-        const p = homeMap[pos];
-        return sum + (p && typeof p.points === 'number' ? p.points : 0);
-    }, 0);
-    
-    const awayTotal = mainPositions.reduce((sum, pos) => {
-        const p = awayMap[pos];
-        return sum + (p && typeof p.points === 'number' ? p.points : 0);
-    }, 0);
+   // Hauptpositionen (ohne Bank)
+const mainPositions = [
+    'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'
+];
 
-    rosterContent.innerHTML = `
-        <div class="container-fluid px-0">
-            <div class="row mb-3">
-                <div class="col text-center fw-bold fs-5">
-                    ${home_team}<br>
-                    <span class="fs-6 text-primary">${homeTotal.toFixed(2)} Punkte</span>
-                </div>
-                <div class="col-1"></div>
-                <div class="col text-center fw-bold fs-5">
-                    ${away_team}<br>
-                    <span class="fs-6 text-primary">${awayTotal.toFixed(2)} Punkte</span>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm mb-0">
-                    <tbody>
-                        ${tableRows}
-                    </tbody>
-                </table>
-            </div>
+// Punkte summieren (nur Hauptpositionen)
+const homeTotal = mainPositions.reduce((sum, pos) => {
+    const p = homeMap[pos];
+    return sum + (p && typeof p.points === 'number' ? p.points : 0);
+}, 0);
+
+const awayTotal = mainPositions.reduce((sum, pos) => {
+    const p = awayMap[pos];
+    return sum + (p && typeof p.points === 'number' ? p.points : 0);
+}, 0);
+
+// Kopfzeile bauen: Teamnamen außen, Punktzahlen innen
+rosterContent.innerHTML = `
+    <div class="container-fluid px-0">
+        <div class="row mb-3">
+            <div class="col text-start fw-bold fs-5">${home_team}</div>
+            <div class="col-2 text-center fs-4 text-primary">${homeTotal.toFixed(2)}</div>
+            <div class="col-2 text-center fs-4 text-primary">${awayTotal.toFixed(2)}</div>
+            <div class="col text-end fw-bold fs-5">${away_team}</div>
         </div>
-    `;
-
-
+        <div class="table-responsive">
+            <table class="table table-striped table-sm mb-0">
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    </div>
+`;
 
     modal.show();
 }
