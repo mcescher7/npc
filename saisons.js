@@ -163,7 +163,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
 
     function getPlayerInfo(player) {
         if (!player) return '';
-        return `<span class="text-muted small">${player.own_team || ''} ${player.game_info || ' '} ${player.opponent_team || ''}</span>`;
+        return `<span class="text-muted small">${player.own_team || ''} ${player.game_info || '_'} ${player.opponent_team || ''}</span>`;
     }
 
     function renderRow(pos, index) {
@@ -221,35 +221,6 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
 
     modal.show();
 }
-
-
-    
-    function renderRosterTable(roster) {
-        if (!roster || roster.length === 0) return '<p>Keine Daten verfügbar</p>';
-    
-        return `
-            <div class="table-responsive">
-                <table class="table table-striped table-hover table-sm align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">Position</th>
-                            <th scope="col">Spieler</th>
-                            <th scope="col">Punkte</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${roster.map(player => `
-                            <tr>
-                                <td>${player.position}</td>
-                                <td>${player.player_name}</td>
-                                <td>${player.points !== null && player.points !== undefined ? player.points.toFixed(2) : '-'}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-    }
 
 
     async function loadDraftBoard(year) {
