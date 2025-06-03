@@ -163,7 +163,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
 
     function getPlayerInfo(player) {
         if (!player) return '';
-        return `<span class="text-muted small">${player.own_team || ''} ${player.game_info || '_'} ${player.opponent_team || ''}</span>`;
+        return `<span class="text-muted small">${player.own_team || ''} ${player.game_info || '&nbsp;'} ${player.opponent_team || ''}</span>`;
     }
 
     function renderRow(pos, index) {
