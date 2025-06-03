@@ -169,15 +169,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     
     function renderRosterTable(roster) {
         if (!roster || roster.length === 0) return '<p>Keine Daten verfügbar</p>';
-        
+    
         return `
             <div class="table-responsive">
-                <table class="table table-sm">
+                <table class="table table-striped table-hover table-sm align-middle mb-0">
                     <thead>
                         <tr>
-                            <th>Position</th>
-                            <th>Spieler</th>
-                            <th>Punkte</th>
+                            <th scope="col">Position</th>
+                            <th scope="col">Spieler</th>
+                            <th scope="col">Punkte</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             <tr>
                                 <td>${player.position}</td>
                                 <td>${player.player_name}</td>
-                                <td>${player.points.toFixed(2)}</td>
+                                <td>${player.points !== null && player.points !== undefined ? player.points.toFixed(2) : '-'}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -193,6 +193,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             </div>
         `;
     }
+
     
     // Angepasste populateWeeklyResults-Funktion
     async function populateWeeklyResults(year, week) {
