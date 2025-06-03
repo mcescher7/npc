@@ -129,10 +129,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-
-   
-
-    async function showRosters(home_id, home_team, away_id, away_team, year, week) {
+async function showRosters(home_id, home_team, away_id, away_team, year, week) {
     const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
     const rosterContent = document.getElementById('roster-content');
 
@@ -151,57 +148,74 @@ document.addEventListener("DOMContentLoaded", async function () {
         .eq('year', year)
         .eq('week', week);
 
-    // Definiere die Positionsreihenfolge wie auf dem Screenshot
+    // Definiere die Positionsreihenfolge
     const positions = [
         'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
-        'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10', 'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
+        'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10', 
+        'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
     ];
-
-    // Optional: Nur Startaufstellung anzeigen
-    const visiblePositions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
-
-    // Hilfsfunktion für Zusatzinfos (hier kannst du beliebig erweitern)
-    function getPlayerInfo(player) {
-        if (!player) return '';
-        // Beispiel: Gegner, Game-Info (v/@), Teams
-        return `<div class="text-muted small">${player.own_team || ''} ${player.game_info || ''} ${player.opponent_team || ''}</div>`;
-    }
-
-    // Hilfsfunktion für eine Zelle
-    function renderCell(player) {
-        if (!player) return `<div>-</div>`;
-        return `
-            <div>
-                <div class="fw-bold">${player.player_name || '-'}</div>
-                <div class="fs-6">${player.points !== null && player.points !== undefined ? player.points.toFixed(2) : '-'}</div>
-                ${getPlayerInfo(player)}
-            </div>
-        `;
-    }
 
     // Roster als Map für schnellen Zugriff
     const homeMap = Object.fromEntries((homeRoster || []).map(p => [p.position, p]));
     const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
 
+    // Filtere Positionen ohne Spieler
+    const validPositions = positions.filter(pos => 
+        homeMap[pos]?.player_name || awayMap[pos]?.player_name
+    );
+
+    // Hilfsfunktion für Zusatzinfos
+    function getPlayerInfo(player) {
+        if (!player) return '';
+        return `<div class="text-muted small">${player.game_info || ''} ${player.opponent_team || ''}</div>`;
+    }
+
+    // Neue Render-Funktion für eine Zeile
+    function renderRow(pos, index) {
+        const homePlayer = homeMap[pos];
+        const awayPlayer = awayMap[pos];
+        const rowClass = index % 2 === 0 ? 'bg-light' : 'bg-white';
+
+        return `
+            <tr class="${rowClass}">
+                <td class="text-end pe-3 align-middle" style="width:45%;">
+                    ${homePlayer?.player_name ? `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">${homePlayer.points?.toFixed(2) || '0.00'}</span>
+                            <span class="fw-bold">${homePlayer.player_name}</span>
+                        </div>
+                        ${getPlayerInfo(homePlayer)}
+                    ` : ''}
+                </td>
+                <td class="text-center align-middle" style="width:10%;">
+                    <span class="badge bg-secondary">${pos}</span>
+                </td>
+                <td class="text-start ps-3 align-middle" style="width:45%;">
+                    ${awayPlayer?.player_name ? `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${awayPlayer.player_name}</span>
+                            <span class="text-muted small">${awayPlayer.points?.toFixed(2) || '0.00'}</span>
+                        </div>
+                        ${getPlayerInfo(awayPlayer)}
+                    ` : ''}
+                </td>
+            </tr>
+        `;
+    }
+
     // Baue das Matchup-Grid
-    let tableRows = positions.map(pos => `
-        <tr>
-            <td class="text-end pe-2 align-middle" style="width:40%;">${renderCell(homeMap[pos])}</td>
-            <td class="text-center align-middle" style="width:10%;">
-                <span class="badge bg-secondary">${pos}</span>
-            </td>
-            <td class="text-start ps-2 align-middle" style="width:40%;">${renderCell(awayMap[pos])}</td>
-        </tr>
-    `).join('');
+    const tableRows = validPositions
+        .map((pos, index) => renderRow(pos, index))
+        .join('');
 
     rosterContent.innerHTML = `
         <div class="container-fluid px-0">
-            <div class="row">
-                <div class="col text-center fw-bold">${home_team}</div>
+            <div class="row mb-3">
+                <div class="col text-center fw-bold fs-5">${home_team}</div>
                 <div class="col-1"></div>
-                <div class="col text-center fw-bold">${away_team}</div>
+                <div class="col text-center fw-bold fs-5">${away_team}</div>
             </div>
-            <table class="table table-borderless table-sm mt-2 mb-0">
+            <table class="table table-sm mb-0">
                 <tbody>
                     ${tableRows}
                 </tbody>
