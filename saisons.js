@@ -163,7 +163,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
 
     function getPlayerInfo(player) {
         if (!player) return '';
-        return `<span class="text-muted small">${player.own_team || ''} ${player.game_info || ''} ${player.opponent_team || ''}</span>`;
+        return `<span class="text-muted small">${player.own_team || ''} ${player.game_info || ' '} ${player.opponent_team || ''}</span>`;
     }
 
     function renderRow(pos, index) {
@@ -184,7 +184,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                         </div>
                     ` : ''}
                 </td>
-                <td class="text-center align-middle" style="width:10%;">
+                <td class="text-center align-top" style="width:10%;">
                     <span class="badge bg-secondary">${pos}</span>
                 </td>
                 <td class="text-start ps-3 align-middle" style="width:40%;">
