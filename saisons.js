@@ -122,6 +122,117 @@ document.addEventListener("DOMContentLoaded", async function () {
         `).join("");
     }
 
+
+        // Zusätzliche Funktionen für Roster-Anzeige
+    async function showRosters(homeTeam, awayTeam, year, week) {
+        const rosterModal = new bootstrap.Modal(document.getElementById('rosterModal'));
+        const rosterContent = document.getElementById('roster-content');
+    
+        try {
+            // Roster für beide Teams abrufen
+            const { data: homeRoster } = await supabase
+                .from('roster_positions')
+                .select('position, player_name, points')
+                .eq('own_team', homeTeam)
+                .eq('year', year)
+                .eq('week', week)
+                .order('position', { ascending: true });
+    
+            const { data: awayRoster } = await supabase
+                .from('roster_positions')
+                .select('position, player_name, points')
+                .eq('own_team', awayTeam)
+                .eq('year', year)
+                .eq('week', week)
+                .order('position', { ascending: true });
+    
+            // Modal-Inhalt erstellen
+            rosterContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>${homeTeam}</h5>
+                        ${renderRosterTable(homeRoster)}
+                    </div>
+                    <div class="col-md-6">
+                        <h5>${awayTeam}</h5>
+                        ${renderRosterTable(awayRoster)}
+                    </div>
+                </div>
+            `;
+    
+            rosterModal.show();
+        } catch (error) {
+            console.error('Fehler beim Laden der Rosters:', error);
+            rosterContent.innerHTML = '<div class="alert alert-danger">Fehler beim Laden der Daten</div>';
+        }
+    }
+    
+    function renderRosterTable(roster) {
+        if (!roster || roster.length === 0) return '<p>Keine Daten verfügbar</p>';
+        
+        return `
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Spieler</th>
+                            <th>Punkte</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${roster.map(player => `
+                            <tr>
+                                <td>${player.position}</td>
+                                <td>${player.player_name}</td>
+                                <td>${player.points.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    // Angepasste populateWeeklyResults-Funktion
+    async function populateWeeklyResults(year, week) {
+        weeklyTableBody.innerHTML = '<tr><td colspan="5">Lade Daten...</td></tr>';
+    
+        try {
+            const { data: games, error } = await supabase
+                .from('games')
+                .select('home_team, away_team, home_score, away_score, completed')
+                .eq('year', year)
+                .eq('week', week)
+                .order('home_team', { ascending: true });
+    
+            if (error) throw error;
+    
+            weeklyTableBody.innerHTML = '';
+            games.forEach(game => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${game.home_team}</td>
+                    <td>${game.away_team}</td>
+                    <td>${game.completed ? `${game.home_score.toFixed(2)} - ${game.away_score.toFixed(2)}` : '-'}</td>
+                    <td>${game.completed ? 'Beendet' : 'Ausstehend'}</td>
+                `;
+                
+                // Click-Handler für Roster-Anzeige
+                tr.style.cursor = 'pointer';
+                tr.addEventListener('click', () => {
+                    showRosters(game.home_team, game.away_team, year, week);
+                });
+    
+                weeklyTableBody.appendChild(tr);
+            });
+        } catch (error) {
+            logError('Laden der Wochenergebnisse', error);
+            weeklyTableBody.innerHTML = '<tr><td colspan="5">Fehler beim Laden der Daten</td></tr>';
+        }
+    }
+
+
     async function loadDraftBoard(year) {
         const board = document.getElementById("draft-board");
         board.innerHTML = "";
