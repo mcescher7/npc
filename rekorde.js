@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${row.week}</td>
                 <td>${row.manager}</td>
                 <td>${row.player}</td>
-                <td>${row.points}</td>
+                <td>${row.points.toFixed(2)}</td>
             `;
             tableBody.appendChild(tr);
         });
@@ -61,7 +61,7 @@ async function loadRecordPlayers(position = "all") {
             tr.innerHTML = `
                 <td>${row.player_name}</td>
                 <td>${row.games}</td>
-                <td>${row.total_points}</td>
+                <td>${row.total_points.toFixed(2)}</td>
                 <td>${row.years_played}</td>
                 <td>${row.managers}</td>
             `;
