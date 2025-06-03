@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             tr.style.cursor = "pointer";
 
             tr.addEventListener("click", () => {
-                showRosters(game.home_team, game.away_team, year, week);
+                showRosters(row.team1, row.team2, year, week);
             });
             weeklyTableBody.appendChild(tr);
         });
