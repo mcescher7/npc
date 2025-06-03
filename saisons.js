@@ -222,8 +222,8 @@ rosterContent.innerHTML = `
     <div class="container-fluid px-0">
         <div class="row mb-3">
             <div class="col text-start fw-bold fs-5">${home_team}</div>
-            <div class="col-2 text-center fs-4 text-primary">${homeTotal.toFixed(2)}</div>
-            <div class="col-2 text-center fs-4 text-primary">${awayTotal.toFixed(2)}</div>
+            <div class="col-2 text-center fs-5">${homeTotal.toFixed(2)}</div>
+            <div class="col-2 text-center fs-5">${awayTotal.toFixed(2)}</div>
             <div class="col text-end fw-bold fs-5">${away_team}</div>
         </div>
         <div class="table-responsive">
