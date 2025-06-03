@@ -133,17 +133,17 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
     const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
     const rosterContent = document.getElementById('roster-content');
 
-    // Roster-Daten für beide Teams laden
+    // Roster-Daten mit stats laden
     const { data: homeRoster } = await supabase
         .from('roster_info')
-        .select('position, player_name, points, own_team, game_info, opponent_team')
+        .select('position, player_name, points, stats, game_info')
         .eq('manager_id', home_id)
         .eq('year', year)
         .eq('week', week);
 
     const { data: awayRoster } = await supabase
         .from('roster_info')
-        .select('position, player_name, points, own_team, opponent_team, game_info')
+        .select('position, player_name, points, stats, own_team, opponent_team, game_info')
         .eq('manager_id', away_id)
         .eq('year', year)
         .eq('week', week);
@@ -161,11 +161,6 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
         (homeMap[pos] && homeMap[pos].player_name) || (awayMap[pos] && awayMap[pos].player_name)
     );
 
-    function getPlayerInfo(player) {
-        if (!player) return '';
-        return `<span class="text-muted small">${player.own_team || ''} ${player.game_info || '&nbsp;'} ${player.opponent_team || ''}</span>`;
-    }
-
     function renderRow(pos, index) {
         const homePlayer = homeMap[pos];
         const awayPlayer = awayMap[pos];
@@ -173,28 +168,33 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
 
         return `
             <tr class="${rowClass}">
-                <td class="text-end pe-3 align-middle" style="width:40%;">
+                <!-- Heimteam -->
+                <td class="text-end pe-3 align-top" style="width:40%;">
                     ${homePlayer ? `
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex flex-column align-items-end">
                             <span class="fw-bold">${homePlayer.player_name}</span>
-                            <span class="text-muted ms-2">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
+                            <span class="text-muted small">${homePlayer.game_info || ''}</span>
                         </div>
-                        <div class="d-flex justify-content-start">
-                            ${getPlayerInfo(homePlayer)}
+                        <div class="d-flex flex-column align-items-end mt-1">
+                            <span class="fs-6">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
+                            <span class="text-muted small">${homePlayer.stats || ''}</span>
                         </div>
                     ` : ''}
                 </td>
+                <!-- Position -->
                 <td class="text-center align-top" style="width:10%;">
                     <span class="badge bg-secondary">${pos}</span>
                 </td>
-                <td class="text-start ps-3 align-middle" style="width:40%;">
+                <!-- Auswärtsteam -->
+                <td class="text-start ps-3 align-top" style="width:40%;">
                     ${awayPlayer ? `
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted me-2">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
+                        <div class="d-flex flex-column align-items-start">
                             <span class="fw-bold">${awayPlayer.player_name}</span>
+                            <span class="text-muted small">${awayPlayer.game_info || ''}</span>
                         </div>
-                        <div class="d-flex justify-content-end">
-                            ${getPlayerInfo(awayPlayer)}
+                        <div class="d-flex flex-column align-items-start mt-1">
+                            <span class="fs-6">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
+                            <span class="text-muted small">${awayPlayer.stats || ''}</span>
                         </div>
                     ` : ''}
                 </td>
@@ -221,6 +221,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
 
     modal.show();
 }
+
 
 
     async function loadDraftBoard(year) {
