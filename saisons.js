@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const { data, error } = await supabase
             .from("matchup_table")
-            .select("team1, points1, points2, team2")
+            .select("team1, team1_id, points1, points2, team2, team2_id")
             .eq("year", year)
             .eq("week", week);
 
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             tr.style.cursor = "pointer";
 
             tr.addEventListener("click", () => {
-                showRosters(row.team1, row.team2, year, week);
+                showRosters(row.team1_id, row.team1, row.team2_id, row.team2, year, week);
             });
             weeklyTableBody.appendChild(tr);
         });
@@ -131,24 +131,24 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         // Zusätzliche Funktionen für Roster-Anzeige
-    async function showRosters(homeTeam, awayTeam, year, week) {
+    async function showRosters(home_id, home_team, away_id, away_team, year, week) {
         const rosterModal = new bootstrap.Modal(document.getElementById('rosterModal'));
         const rosterContent = document.getElementById('roster-content');
     
         try {
             // Roster für beide Teams abrufen
             const { data: homeRoster } = await supabase
-                .from('roster_positions')
-                .select('position, player_name, points')
-                .eq('own_team', homeTeam)
+                .from('roster_info')
+                .select('position, player_name, points, own_team, game_info, opponent_team')
+                .eq('manager_id', home_id)
                 .eq('year', year)
                 .eq('week', week)
                 .order('position', { ascending: true });
     
             const { data: awayRoster } = await supabase
-                .from('roster_positions')
-                .select('position, player_name, points')
-                .eq('own_team', awayTeam)
+                .from('roster_info')
+                .select('position, player_name, points, own_team, game_info, opponent_team')
+                .eq('manager_id', away_id)
                 .eq('year', year)
                 .eq('week', week)
                 .order('position', { ascending: true });
@@ -157,11 +157,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             rosterContent.innerHTML = `
                 <div class="row">
                     <div class="col-md-6">
-                        <h5>${homeTeam}</h5>
+                        <h5>${home_team}</h5>
                         ${renderRosterTable(homeRoster)}
                     </div>
                     <div class="col-md-6">
-                        <h5>${awayTeam}</h5>
+                        <h5>${away_team}</h5>
                         ${renderRosterTable(awayRoster)}
                     </div>
                 </div>
