@@ -111,15 +111,22 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (error) return logError("Laden der Matchups", error);
         if (!data || data.length === 0) return showNoData(weeklyTableBody, 5);
 
-        weeklyTableBody.innerHTML = data.map(row => `
-            <tr>
+        data.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
                 <td>${row.team1}</td>
                 <td>${row.points1.toFixed(2)}</td>
                 <td>-</td>
                 <td>${row.points2.toFixed(2)}</td>
                 <td>${row.team2}</td>
-            </tr>
-        `).join("");
+            `;
+            tr.style.cursor = "pointer";
+
+            tr.addEventListener("click", () => {
+                showRosters(game.home_team, game.away_team, year, week);
+            });
+            tableBody.appendChild(tr);
+        });
     }
 
 
@@ -192,45 +199,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 </table>
             </div>
         `;
-    }
-
-    
-    // Angepasste populateWeeklyResults-Funktion
-    async function populateWeeklyResults(year, week) {
-        weeklyTableBody.innerHTML = '<tr><td colspan="5">Lade Daten...</td></tr>';
-    
-        try {
-            const { data: games, error } = await supabase
-                .from('games')
-                .select('home_team, away_team, home_score, away_score, completed')
-                .eq('year', year)
-                .eq('week', week)
-                .order('home_team', { ascending: true });
-    
-            if (error) throw error;
-    
-            weeklyTableBody.innerHTML = '';
-            games.forEach(game => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${game.home_team}</td>
-                    <td>${game.away_team}</td>
-                    <td>${game.completed ? `${game.home_score.toFixed(2)} - ${game.away_score.toFixed(2)}` : '-'}</td>
-                    <td>${game.completed ? 'Beendet' : 'Ausstehend'}</td>
-                `;
-                
-                // Click-Handler für Roster-Anzeige
-                tr.style.cursor = 'pointer';
-                tr.addEventListener('click', () => {
-                    showRosters(game.home_team, game.away_team, year, week);
-                });
-    
-                weeklyTableBody.appendChild(tr);
-            });
-        } catch (error) {
-            logError('Laden der Wochenergebnisse', error);
-            weeklyTableBody.innerHTML = '<tr><td colspan="5">Fehler beim Laden der Daten</td></tr>';
-        }
     }
 
 
