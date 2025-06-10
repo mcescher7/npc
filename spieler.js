@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const searchInput = document.getElementById('search-player');
     const suggestionsContainer = document.getElementById('player-suggestions');
-    const tableBody = document.getElementById("roster-changes-table");
+    const tableBody = document.getElementById("career-table");
 
     function formatDate(date) {
         const rowTime = new Date(date);
