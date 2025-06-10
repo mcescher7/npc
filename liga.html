@@ -78,13 +78,19 @@
     </div>
     <script>
         $(document).ready(function() {
-            $('#alltime-table').DataTable({
-                responsive: true
-            });
-            $('#seasons-info-table').DataTable({
-                responsive: true
-            });
-        });
+    $('#alltime-table').DataTable({
+        responsive: true,
+        searching: false,   // Suchleiste verstecken
+        paging: false,      // Paginierung verstecken
+        info: false         // Infozeile verstecken
+    });
+    $('#seasons-info-table').DataTable({
+        responsive: true,
+        searching: false,
+        paging: false,
+        info: false
+    });
+});
     </script>
 </body>
 </html>
