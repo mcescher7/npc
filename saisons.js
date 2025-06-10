@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             await loadBracket(newestYear);
             await loadRegSeason(newestYear);
             await loadWeeks(newestYear); 
+            await loadAwards(newestYear); 
             await loadDraftBoard(newestYear);
         }
     }
