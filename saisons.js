@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const bracketDiv = document.getElementById("playoff-bracket");
     const regTableBody = document.getElementById("regular-season-table");
     const weeklyTableBody = document.getElementById("weekly-results-table");
+    const awardTableBody = document.getElementById("awards-table");
 
     const createOption = (value, text) => {
         const option = document.createElement("option");
@@ -240,6 +241,29 @@ rosterContent.innerHTML = `
 }
 
 
+    async function loadAwards(year) {
+        awardTableBody.innerHTML = "";
+        if (!year) return;
+
+        const { data, error } = await supabase
+            .from("award_winners")
+            .select("award, player")
+            .eq("year", year)
+            .order("award_order");
+
+        if (error) return logError("Laden der Awards", error);
+        if (!data || data.length === 0) return showNoData(awardTableBody, 2);
+
+        data.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${row.award}</td>
+                <td>${row.player}</td>
+            `;
+            awardTableBody.appendChild(tr);
+        });
+    }
+
     async function loadDraftBoard(year) {
         const board = document.getElementById("draft-board");
         board.innerHTML = "";
@@ -397,6 +421,7 @@ rosterContent.innerHTML = `
         await loadBracket(year);
         await loadRegSeason(year);
         await loadWeeks(year);
+        await loadAwards(year);
         await loadDraftBoard(year);
     });
 
