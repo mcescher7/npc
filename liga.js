@@ -12,15 +12,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
             return;
-        }
-
-        data.forEach((row, index) => {
-            console.log(`Row ${index}:`);
-            for (const key in row) {
-              console.log(`  ${key}: ${typeof row[key]}`);
-            }
-          });
-        
+        }        
         const tableBody = document.getElementById("alltime-records-table");
         tableBody.innerHTML = data.map(row =>
             `<tr>
@@ -29,13 +21,15 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.seasons}</td>
                 <td>${row.playoffs}</td>
                 <td>${row.titles}</td>
-                <td>${Number(row.wins)}</td>
-                <td>${Number(row.losses)}</td>
+                <td>${row.wins}</td>
+                <td>${row.losses}</td>
                 <td>${row.w_l_perc.toFixed(3)}</td>
                 <td>${row.points_for.toFixed(2)}</td>
                 <td>${row.points_against.toFixed(2)}</td>
             </tr>`
         ).join("");       
+
+        sorttable.init();
     }
     
     async function loadSeasonData() {
