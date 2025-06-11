@@ -6,8 +6,11 @@
     <title>Nathan Peterman Cup</title>
     <link rel="icon" href="assets/favicon.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sorttable@1.0.2/sorttable.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="script.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script defer src="liga.js"></script>
@@ -20,30 +23,29 @@
 
         <h2 class="mt-4">Ewige Tabelle</h2>
         <div class="table-responsive">
-            <table class="table table-striped table-bordered sortable">
+            <table id="alltime-table" class="table table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>
-                        <th data-defaultsort="asc">Platz</th>
+                        <th>Platz</th>
                         <th>Manager</th>
-                        <th data-sorttype="number">Saisons</th>
-                        <th data-sorttype="number">Playoffs</th>
-                        <th data-sorttype="number">Titel</th>
-                        <th data-sorttype="number">W</th>
-                        <th data-sorttype="number">L</th>
-                        <th data-sorttype="number">W/L-%</th>
-                        <th data-sorttype="number">PF</th>
-                        <th data-sorttype="number">PA</th>
+                        <th>Saisons</th>
+                        <th>Playoffs</th>
+                        <th>Titel</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>W/L-%</th>
+                        <th>PF</th>
+                        <th>PA</th>
                     </tr>
                 </thead>
-                <tbody id="alltime-records-table">
-                    <!-- Daten von Supabase werden hier eingefügt -->
+                <tbody>
                 </tbody>
             </table>
         </div>
 
         <h2 class="mt-4">Saison-Info</h2>
         <div class="table-responsive">
-            <table class="table table-striped table-bordered">
+            <table id="seasons-table" class="table table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>
                         <th>Year</th>
@@ -67,8 +69,7 @@
                         <th>Teams</th>
                     </tr>
                 </thead>
-                <tbody id="seasons-table">
-                    <!-- Daten von Supabase werden hier eingefügt -->
+                <tbody>
                 </tbody>
             </table>
         </div>
