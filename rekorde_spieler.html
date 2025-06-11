@@ -16,92 +16,85 @@
 
     <h1 class="text-center mt-4">Rekorde - Spieler</h1>
     
-    <div class="container mt-4">
-        <h2>Top 10 Performances</h2>
-
-    <div class="text-center">
-    <div class="btn-group btn-group-top10" data-bs-toggle="buttons">
-        <input type="radio" class="btn-check" name="position-1" id="all-1" autocomplete="off" checked>
-        <label class="btn btn-success" for="all-1">alle</label>
-    
-        <input type="radio" class="btn-check" name="position-1" id="QB-1" autocomplete="off">
-        <label class="btn btn-success" for="QB-1">QB</label>
-    
-        <input type="radio" class="btn-check" name="position-1" id="RB-1" autocomplete="off">
-        <label class="btn btn-success" for="RB-1">RB</label>
-    
-        <input type="radio" class="btn-check" name="position-1" id="WR-1" autocomplete="off">
-        <label class="btn btn-success" for="WR-1">WR</label>
-    
-        <input type="radio" class="btn-check" name="position-1" id="TE-1" autocomplete="off">
-        <label class="btn btn-success" for="TE-1">TE</label>
-    
-        <input type="radio" class="btn-check" name="position-1" id="K-1" autocomplete="off">
-        <label class="btn btn-success" for="K-1">K</label>
-    
-        <input type="radio" class="btn-check" name="position-1" id="DEF-1" autocomplete="off">
-        <label class="btn btn-success" for="DEF-1">D/ST</label>
+<div class="container mt-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6 col-sm-12 mb-2 mb-md-0">
+            <h2 class="mb-0">Top 10 Performances</h2>
+        </div>
+        <div class="col-md-6 col-sm-12 text-md-end text-center">
+            <div class="btn-group btn-group-top10" data-bs-toggle="buttons">
+                <input type="radio" class="btn-check" name="position-1" id="all-1" autocomplete="off" checked>
+                <label class="btn btn-success" for="all-1">alle</label>
+                <input type="radio" class="btn-check" name="position-1" id="QB-1" autocomplete="off">
+                <label class="btn btn-success" for="QB-1">QB</label>
+                <input type="radio" class="btn-check" name="position-1" id="RB-1" autocomplete="off">
+                <label class="btn btn-success" for="RB-1">RB</label>
+                <input type="radio" class="btn-check" name="position-1" id="WR-1" autocomplete="off">
+                <label class="btn btn-success" for="WR-1">WR</label>
+                <input type="radio" class="btn-check" name="position-1" id="TE-1" autocomplete="off">
+                <label class="btn btn-success" for="TE-1">TE</label>
+                <input type="radio" class="btn-check" name="position-1" id="K-1" autocomplete="off">
+                <label class="btn btn-success" for="K-1">K</label>
+                <input type="radio" class="btn-check" name="position-1" id="DEF-1" autocomplete="off">
+                <label class="btn btn-success" for="DEF-1">D/ST</label>
+            </div>
+        </div>
     </div>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Jahr</th>
+                <th>Woche</th>
+                <th>Manager</th>
+                <th>Spieler</th>
+                <th>Punkte</th>
+            </tr>
+        </thead>
+        <tbody id="top-performances-table">
+            <!-- Daten werden hier eingefügt -->
+        </tbody>
+    </table>
+</div>
+
+<div class="container mt-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6 col-sm-12 mb-2 mb-md-0">
+            <h2 class="mb-0">Rekordspieler</h2>
+        </div>
+        <div class="col-md-6 col-sm-12 text-md-end text-center">
+            <div class="btn-group btn-group-record-players" data-bs-toggle="buttons">
+                <input type="radio" class="btn-check" name="position-2" id="all-2" autocomplete="off" checked>
+                <label class="btn btn-success" for="all-2">alle</label>
+                <input type="radio" class="btn-check" name="position-2" id="QB-2" autocomplete="off">
+                <label class="btn btn-success" for="QB-2">QB</label>
+                <input type="radio" class="btn-check" name="position-2" id="RB-2" autocomplete="off">
+                <label class="btn btn-success" for="RB-2">RB</label>
+                <input type="radio" class="btn-check" name="position-2" id="WR-2" autocomplete="off">
+                <label class="btn btn-success" for="WR-2">WR</label>
+                <input type="radio" class="btn-check" name="position-2" id="TE-2" autocomplete="off">
+                <label class="btn btn-success" for="TE-2">TE</label>
+                <input type="radio" class="btn-check" name="position-2" id="K-2" autocomplete="off">
+                <label class="btn btn-success" for="K-2">K</label>
+                <input type="radio" class="btn-check" name="position-2" id="DEF-2" autocomplete="off">
+                <label class="btn btn-success" for="DEF-2">D/ST</label>
+            </div>
+        </div>
     </div>
-
-        <table class="table table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>Jahr</th>
-                    <th>Woche</th>
-                    <th>Manager</th>
-                    <th>Spieler</th>
-                    <th>Punkte</th>
-                </tr>
-            </thead>
-            <tbody id="top-performances-table">
-                <!-- Daten werden hier eingefügt -->
-            </tbody>
-        </table>
-    </div>   
-
-     <div class="container mt-4">
-        <h2>Rekordspieler</h2>
-
-    <div class="text-center">
-    <div class="btn-group btn-group-record-players" data-bs-toggle="buttons">
-        <input type="radio" class="btn-check" name="position-2" id="all-2" autocomplete="off" checked>
-        <label class="btn btn-success" for="all-2">alle</label>
-    
-        <input type="radio" class="btn-check" name="position-2" id="QB-2" autocomplete="off">
-        <label class="btn btn-success" for="QB-2">QB</label>
-    
-        <input type="radio" class="btn-check" name="position-2" id="RB-2" autocomplete="off">
-        <label class="btn btn-success" for="RB-2">RB</label>
-    
-        <input type="radio" class="btn-check" name="position-2" id="WR-2" autocomplete="off">
-        <label class="btn btn-success" for="WR-2">WR</label>
-    
-        <input type="radio" class="btn-check" name="position-2" id="TE-2" autocomplete="off">
-        <label class="btn btn-success" for="TE-2">TE</label>
-    
-        <input type="radio" class="btn-check" name="position-2" id="K-2" autocomplete="off">
-        <label class="btn btn-success" for="K-2">K</label>
-    
-        <input type="radio" class="btn-check" name="position-2" id="DEF-2" autocomplete="off">
-        <label class="btn btn-success" for="DEF-2">D/ST</label>
-    </div>
-    </div>
-
-        <table class="table table-striped">
-             <thead class="table-dark">
-                <tr>
-                    <th>Spieler</th>
-                    <th>Spiele</th>
-                    <th>Punkte</th>
-                    <th>Jahre</th>
-                    <th>Manager</th>
-                </tr>
-            </thead>
-            <tbody id="record-players-table">
-                <!-- Daten werden hier eingefügt -->
-            </tbody>
-        </table>
-    </div>   
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Spieler</th>
+                <th>Spiele</th>
+                <th>Punkte</th>
+                <th>Jahre</th>
+                <th>Manager</th>
+            </tr>
+        </thead>
+        <tbody id="record-players-table">
+            <!-- Daten werden hier eingefügt -->
+        </tbody>
+    </table>
+</div>
+ 
 </body>
 </html>
