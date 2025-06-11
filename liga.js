@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
+        
+        
         const tableBody = document.getElementById("alltime-records-table");
         tableBody.innerHTML = data.map(row =>
             `<tr>
@@ -22,8 +24,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.seasons}</td>
                 <td>${row.playoffs}</td>
                 <td>${row.titles}</td>
-                <td>${row.wins}</td>
-                <td>${row.losses}</td>
+                <td>${Number(row.wins)}</td>
+                <td>${Number(row.losses)}</td>
                 <td>${row.w_l_perc.toFixed(3)}</td>
                 <td>${row.points_for.toFixed(2)}</td>
                 <td>${row.points_against.toFixed(2)}</td>
