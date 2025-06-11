@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         $('#alltime-table').DataTable({
             data: data,
             columns: [
-                { data: 'rank', title: 'Platz' },
+                { data: 'rank', title: 'Platz', orderSequence: ['asc', 'desc'] },
                 { data: 'name', title: 'Manager' },
                 { data: 'seasons', title: 'Saisons' },
                 { data: 'playoffs', title: 'Playoffs' },
@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                 { data: 'points_against', title: 'PA', render: data => data.toFixed(2) }
             ],
             order: [[0, "asc"]],
-            orderSequence: ["desc", "asc"],
             responsive: true,
             searching: false,
             paging: false,
