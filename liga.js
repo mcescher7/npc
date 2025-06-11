@@ -42,6 +42,18 @@ document.addEventListener("DOMContentLoaded", async function() {
             info: false
         });
     }
+
+    function formatDraftDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        // Monat und Tag mit führender Null, Uhrzeit ohne Sekunden
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${day}.${month}., ${hours}:${minutes} Uhr`;
+    }
+
     
     async function loadSeasonData() {
         const { data, error } = await supabaseClient
@@ -54,11 +66,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
-        // Alte DataTables-Instanz zerstören, falls vorhanden
-        if ($.fn.DataTable.isDataTable('#seasons-table')) {
-            $('#seasons-table').DataTable().destroy();
-        }
-
         const tableBody = document.getElementById("seasons-table");
         tableBody.innerHTML = "";
 
@@ -66,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${row.year}</td>
-                <td>${row.draft_date}</td>
+                <td>${formatDraftDate(row.draft_date)}</td>
                 <td>${row.weeks}</td>
                 <td>${row.teams}</td>
                 <td>${row.playoff_teams}</td>
