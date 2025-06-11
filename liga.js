@@ -12,24 +12,33 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (error) {
             console.error("Fehler beim Laden der Daten:", error);
             return;
-        }        
-        const tableBody = document.getElementById("alltime-records-table");
-        tableBody.innerHTML = data.map(row =>
-            `<tr>
-                <td>${row.rank}</td>
-                <td>${row.name}</td>
-                <td>${row.seasons}</td>
-                <td>${row.playoffs}</td>
-                <td>${row.titles}</td>
-                <td>${row.wins}</td>
-                <td>${row.losses}</td>
-                <td>${row.w_l_perc.toFixed(3)}</td>
-                <td>${row.points_for.toFixed(2)}</td>
-                <td>${row.points_against.toFixed(2)}</td>
-            </tr>`
-        ).join("");       
+        }
 
-        sorttable.init();
+        // Alte DataTables-Instanz zerstören, falls vorhanden
+        if ($.fn.DataTable.isDataTable('#alltime-table')) {
+            $('#alltime-table').DataTable().destroy();
+        }
+
+        // DataTables initialisieren und mit Daten befüllen
+        $('#alltime-table').DataTable({
+            data: data,
+            columns: [
+                { data: 'rank', title: 'Platz' },
+                { data: 'name', title: 'Manager' },
+                { data: 'seasons', title: 'Saisons' },
+                { data: 'playoffs', title: 'Playoffs' },
+                { data: 'titles', title: 'Titel' },
+                { data: 'wins', title: 'W' },
+                { data: 'losses', title: 'L' },
+                { data: 'w_l_perc', title: 'W/L-%', render: data => data.toFixed(3) },
+                { data: 'points_for', title: 'PF', render: data => data.toFixed(2) },
+                { data: 'points_against', title: 'PA', render: data => data.toFixed(2) }
+            ],
+            responsive: true,
+            searching: false,
+            paging: false,
+            info: false
+        });
     }
     
     async function loadSeasonData() {
@@ -43,33 +52,39 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
-        const tableBody = document.getElementById("seasons-table");
-        tableBody.innerHTML = "";
+        // Alte DataTables-Instanz zerstören, falls vorhanden
+        if ($.fn.DataTable.isDataTable('#seasons-table')) {
+            $('#seasons-table').DataTable().destroy();
+        }
 
-        data.forEach(row => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${row.year}</td>
-                <td>${row.draft_date}</td>
-                <td>${row.playoff_teams}</td>
-                <td>${row.weeks}</td>
-                <td>${row.ppr}</td>
-                <td>${row.qb}</td>
-                <td>${row.rb}</td>
-                <td>${row.wr}</td>
-                <td>${row.te}</td>
-                <td>${row["r/w"]}</td>
-                <td>${row["r/w/t"]}</td>
-                <td>${row.k}</td>
-                <td>${row["d/st"]}</td>
-                <td>${row.bench}</td>
-                <td>${row.ir}</td>
-                <td>${row.waiver_type}</td>
-                <td>${row.tiebreaker}</td>
-                <td>${row.platform}</td>
-                <td>${row.teams}</td>
-            `;
-            tableBody.appendChild(tr);
+        // DataTables initialisieren und mit Daten befüllen
+        $('#seasons-table').DataTable({
+            data: data,
+            columns: [
+                { data: 'year', title: 'Year' },
+                { data: 'draft_date', title: 'Draft Date' },
+                { data: 'playoff_teams', title: 'Playoff Teams' },
+                { data: 'weeks', title: 'Weeks' },
+                { data: 'ppr', title: 'PPR' },
+                { data: 'qb', title: 'QB' },
+                { data: 'rb', title: 'RB' },
+                { data: 'wr', title: 'WR' },
+                { data: 'te', title: 'TE' },
+                { data: 'r/w', title: 'R/W' },
+                { data: 'r/w/t', title: 'R/W/T' },
+                { data: 'k', title: 'K' },
+                { data: 'd/st', title: 'D/ST' },
+                { data: 'bench', title: 'Bench' },
+                { data: 'ir', title: 'IR' },
+                { data: 'waiver_type', title: 'Waiver Type' },
+                { data: 'tiebreaker', title: 'Tiebreaker' },
+                { data: 'platform', title: 'Platform' },
+                { data: 'teams', title: 'Teams' }
+            ],
+            responsive: true,
+            searching: false,
+            paging: false,
+            info: false
         });
     }
 
