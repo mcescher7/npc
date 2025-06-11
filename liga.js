@@ -14,7 +14,12 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
-        
+        data.forEach((row, index) => {
+            console.log(`Row ${index}:`);
+            for (const key in row) {
+              console.log(`  ${key}: ${typeof row[key]}`);
+            }
+          });
         
         const tableBody = document.getElementById("alltime-records-table");
         tableBody.innerHTML = data.map(row =>
