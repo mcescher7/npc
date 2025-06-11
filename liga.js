@@ -28,10 +28,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td>${row.points_for.toFixed(2)}</td>
                 <td>${row.points_against.toFixed(2)}</td>
             </tr>`
-        ).join("");
-
-        $('.sortable').trigger('update');
-        
+        ).join("");       
     }
     
     async function loadSeasonData() {
