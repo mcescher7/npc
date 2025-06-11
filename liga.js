@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 { data: 'points_for', title: 'PF', render: data => data.toFixed(2) },
                 { data: 'points_against', title: 'PA', render: data => data.toFixed(2) }
             ],
-            order: [[0, "desc"]],
+            order: [[0, "asc"]],
             orderSequence: ["desc", "asc"],
             responsive: true,
             searching: false,
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${day}.${month}., ${hours}:${minutes} Uhr`;
+        return `${day}.${month}. ${hours}:${minutes} Uhr`;
     }
 
     
