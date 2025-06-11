@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 { data: 'points_for', title: 'PF', render: data => data.toFixed(2) },
                 { data: 'points_against', title: 'PA', render: data => data.toFixed(2) }
             ],
+            order: [[0, "desc"]],
+            orderSequence: ["desc", "asc"],
             responsive: true,
             searching: false,
             paging: false,
@@ -57,34 +59,33 @@ document.addEventListener("DOMContentLoaded", async function() {
             $('#seasons-table').DataTable().destroy();
         }
 
-        // DataTables initialisieren und mit Daten befüllen
-        $('#seasons-table').DataTable({
-            data: data,
-            columns: [
-                { data: 'year', title: 'Year' },
-                { data: 'draft_date', title: 'Draft Date' },
-                { data: 'playoff_teams', title: 'Playoff Teams' },
-                { data: 'weeks', title: 'Weeks' },
-                { data: 'ppr', title: 'PPR' },
-                { data: 'qb', title: 'QB' },
-                { data: 'rb', title: 'RB' },
-                { data: 'wr', title: 'WR' },
-                { data: 'te', title: 'TE' },
-                { data: 'r/w', title: 'R/W' },
-                { data: 'r/w/t', title: 'R/W/T' },
-                { data: 'k', title: 'K' },
-                { data: 'd/st', title: 'D/ST' },
-                { data: 'bench', title: 'Bench' },
-                { data: 'ir', title: 'IR' },
-                { data: 'waiver_type', title: 'Waiver Type' },
-                { data: 'tiebreaker', title: 'Tiebreaker' },
-                { data: 'platform', title: 'Platform' },
-                { data: 'teams', title: 'Teams' }
-            ],
-            responsive: true,
-            searching: false,
-            paging: false,
-            info: false
+        const tableBody = document.getElementById("seasons-table");
+        tableBody.innerHTML = "";
+
+        data.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${row.year}</td>
+                <td>${row.draft_date}</td>
+                <td>${row.weeks}</td>
+                <td>${row.teams}</td>
+                <td>${row.playoff_teams}</td>
+                <td>${row.ppr}</td>
+                <td>${row.waiver_type}</td>
+                <td>${row.tiebreaker}</td>
+                <td>${row.platform}</td>
+                <td>${row.qb}</td>
+                <td>${row.rb}</td>
+                <td>${row.wr}</td>
+                <td>${row.te}</td>
+                <td>${row["r/w"]}</td>
+                <td>${row["r/w/t"]}</td>
+                <td>${row.k}</td>
+                <td>${row["d/st"]}</td>
+                <td>${row.bench}</td>
+                <td>${row.ir}</td>      
+            `;
+            tableBody.appendChild(tr);
         });
     }
 
