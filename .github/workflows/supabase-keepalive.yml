@@ -2,17 +2,19 @@ name: Supabase Keepalive
 
 on:
   schedule:
-    - cron: '0 0 * * 1,5'  # Jeden Montag um 00:00 UTC
-  workflow_dispatch:      # Manuelles Auslösen ermöglichen
+    - cron: '0 0 * * 1 5' 
+  workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Insert keepalive record
+      - name: Insert keepalive record with readable date
         run: |
+          DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           curl -X POST \
             "${{ secrets.SUPABASE_URL }}/rest/v1/keep_alive" \
             -H "apikey: ${{ secrets.SUPABASE_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"value": "keepalive_$(date +%s)"}'
+            -H "Prefer: return=minimal" \
+            -d "{\"value\": \"keepalive_$DATE\"}"
