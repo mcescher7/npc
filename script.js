@@ -4,6 +4,7 @@ fetch('menu.html')
   .then(data => {
     document.getElementById('menu-container').innerHTML = data;
     setActiveMenuItem();  // Funktion zum Aktivieren des aktiven Menüpunktes nach dem Laden
+    initDarkModeToggle(); // Dark Mode Toggle initialisieren
   })
   .catch(error => console.error('Fehler beim Laden des Menüs:', error));
 
@@ -20,16 +21,26 @@ function setActiveMenuItem() {
   });
 }
 
-  // Optional: Letzte Auswahl speichern und beim Laden wiederherstellen
-  if (localStorage.getItem('theme')) {
-    document.documentElement.setAttribute('data-bs-theme', localStorage.getItem('theme'));
+ function initDarkModeToggle() {
+  const html = document.documentElement;
+  const btn = document.getElementById('darkModeToggle');
+  if (!btn) {
+    console.warn('Dark Mode Toggle Button nicht gefunden!');
+    return;
   }
 
-  document.getElementById('darkModeToggle').addEventListener('click', function() {
-    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-bs-theme', newTheme);
-    localStorage.setItem('theme', newTheme); // Auswahl speichern
+  // Gespeichertes Theme laden oder Standard "dark"
+  const savedTheme = localStorage.getItem('bsTheme') || 'dark';
+  html.setAttribute('data-bs-theme', savedTheme);
+
+  // Button-Text anpassen
+  btn.textContent = savedTheme === 'dark' ? 'Light Mode umschalten' : 'Dark Mode umschalten';
+
+  btn.addEventListener('click', () => {
+    const current = html.getAttribute('data-bs-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-bs-theme', next);
+    localStorage.setItem('bsTheme', next);
+    btn.textContent = next === 'dark' ? 'Light Mode umschalten' : 'Dark Mode umschalten';
   });
-
-
+}
