@@ -21,26 +21,24 @@ function setActiveMenuItem() {
   });
 }
 
- function initDarkModeToggle() {
+
+function initDarkModeToggle() {
   const html = document.documentElement;
   const btn = document.getElementById('darkModeToggle');
-  if (!btn) {
-    console.warn('Dark Mode Toggle Button nicht gefunden!');
-    return;
-  }
+  const icon = document.getElementById('themeIcon');
+  if (!btn || !icon) return;
 
   // Gespeichertes Theme laden oder Standard "dark"
   const savedTheme = localStorage.getItem('bsTheme') || 'dark';
   html.setAttribute('data-bs-theme', savedTheme);
-
-  // Button-Text anpassen
-  btn.textContent = savedTheme === 'dark' ? 'Light Mode umschalten' : 'Dark Mode umschalten';
+  icon.textContent = savedTheme === 'dark' ? 'light_mode' : 'dark_mode';
 
   btn.addEventListener('click', () => {
     const current = html.getAttribute('data-bs-theme');
     const next = current === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-bs-theme', next);
     localStorage.setItem('bsTheme', next);
-    btn.textContent = next === 'dark' ? 'Light Mode umschalten' : 'Dark Mode umschalten';
+    icon.textContent = next === 'dark' ? 'light_mode' : 'dark_mode';
   });
 }
+
