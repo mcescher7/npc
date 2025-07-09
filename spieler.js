@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     
         let infoHtml = '';
+        if (data.game_info)   infoHtml += `<div>${data.game_info}</div>`;
         if (data.passing)   infoHtml += `<div>${data.passing}</div>`;
         if (data.rushing)   infoHtml += `<div>${data.rushing}</div>`;
         if (data.receiving) infoHtml += `<div>${data.receiving}</div>`;
