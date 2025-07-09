@@ -121,5 +121,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         this.value = "";
         tableBody.innerHTML = "";
         suggestionsContainer.innerHTML = "";
+        infoDiv.innerHTML = "";
     });
 });
