@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
         
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('player_info')
             .select('*')
             .ilike('player_name', `%${player}%`)
