@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const searchInput = document.getElementById('search-player');
     const suggestionsContainer = document.getElementById('player-suggestions');
     const tableBody = document.getElementById("career-table");
+    const infoDiv = document.getElementById('player-info');
 
     function formatDate(date) {
         const rowTime = new Date(date);
@@ -27,6 +28,33 @@ document.addEventListener("DOMContentLoaded", async function() {
         return '';
     }
 
+    async function loadPlayerInfo(player = '') {
+        if (!player.trim()) {
+            infoDiv.innerHTML = "";
+            return;
+        }
+        
+        const { data, error } = await supabase
+            .from('player_info')
+            .select('*')
+            .ilike('player_name', `%${player}%`)
+            .single();
+    
+        if (error || !data) {
+            infoDiv.innerHTML = '<div class="text-danger">Spieler nicht gefunden.</div>';
+            return;
+        }
+    
+        infoDiv.innerHTML = `
+            <div>${data.passing}</div>
+            <div>${data.rushing}</div>
+            <div><strong>Position:</strong> ${data.receiving}</div>
+            <div><strong>Verein:</strong> ${data.misc || '-'}</div>
+            <div><strong>Nationalität:</strong> ${data.kicking || '-'}</div>
+            <div>${data.defense}</div>
+        `;
+    }
+    
     async function loadCareerData(player = '') {
         if (!player.trim()) {
             tableBody.innerHTML = "";
@@ -79,6 +107,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
 
     searchInput.addEventListener("change", function () {
+        loadPlayerInfo(this.value);
         loadCareerData(this.value);
         searchInput.blur();
     });
