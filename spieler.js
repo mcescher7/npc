@@ -40,19 +40,23 @@ document.addEventListener("DOMContentLoaded", async function() {
             .ilike('player_name', `%${player}%`)
             .single();
     
-        if (error || !data) {
-            infoDiv.innerHTML = '<div class="text-danger">Spieler nicht gefunden.</div>';
+        if (error) {
+            console.log("loadPlayerInfo: Spieler nicht gefunden.");
             return;
         }
     
-        infoDiv.innerHTML = `
-            <div>${data.passing}</div>
-            <div>${data.rushing}</div>
-            <div><strong>Position:</strong> ${data.receiving}</div>
-            <div><strong>Verein:</strong> ${data.misc || '-'}</div>
-            <div><strong>Nationalität:</strong> ${data.kicking || '-'}</div>
-            <div>${data.defense}</div>
-        `;
+        let infoHtml = '';
+        if (data.passing)   infoHtml += `<div>${data.passing}</div>`;
+        if (data.rushing)   infoHtml += `<div>${data.rushing}</div>`;
+        if (data.receiving) infoHtml += `<div>${data.receiving}</div>`;
+        if (data.misc)      infoHtml += `<div>${data.misc}</div>`;
+        if (data.kicking)   infoHtml += `<div>${data.kicking}</div>`;
+        if (data.defense)   infoHtml += `<div>${data.defense}</div>`;
+        if (!infoHtml) {
+          infoDiv.innerHTML = '<div class="text-muted">Keine Statistiken vorhanden.</div>';
+        } else {
+          infoDiv.innerHTML = infoHtml;
+        }
     }
     
     async function loadCareerData(player = '') {
