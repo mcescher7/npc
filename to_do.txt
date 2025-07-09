@@ -1,1 +1,2 @@
 Matchups: Darstellung auf Handy; Gameslot (SUE, MON, ...)
+Spieler-Info: Formatierung, Awards
