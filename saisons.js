@@ -234,10 +234,9 @@ rosterContent.innerHTML = `
             <table class="table table-striped table-sm mb-0">
                 <thead>
                   <tr>
-                    <th class="text-start">${home_team}</th>
-                    <th class="text-center">${homeTotal.toFixed(2)}</th>
-                    <th class="text-center">${awayTotal.toFixed(2)}</th>
-                    <th class="text-end">${away_team}</th>
+                    <th>${home_team} ${homeTotal.toFixed(2)}</th>
+                    <th></th>
+                    <th>${awayTotal.toFixed(2)} ${away_team}</th>
                   </tr>
                 </thead>
                 <tbody>
