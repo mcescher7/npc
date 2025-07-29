@@ -232,11 +232,21 @@ rosterContent.innerHTML = `
     <div class="container-fluid px-0">
         <div class="table-responsive">
             <table class="table table-striped table-sm mb-0">
-                <thead>
+               <thead>
                   <tr>
-                    <th>${home_team} ${homeTotal.toFixed(2)}</th>
-                    <th></th>
-                    <th>${awayTotal.toFixed(2)} ${away_team}</th>
+                    <th style="width: 40%;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>${home_team}</span>
+                        <span>${homeTotal.toFixed(2)}</span>
+                      </div>
+                    </th>
+                    <th style="width: 10%;"></th>
+                    <th style="width: 40%;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>${awayTotal.toFixed(2)}</span>
+                        <span>${away_team}</span>
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
