@@ -138,14 +138,14 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
     // Roster-Daten für beide Teams laden
     const { data: homeRoster } = await supabase
         .from('roster_info')
-        .select('position, player_name, points, stats, game_info')
+        .select('position, player_name, points, stats, game_info, timeslot')
         .eq('manager_id', home_id)
         .eq('year', year)
         .eq('week', week);
 
     const { data: awayRoster } = await supabase
         .from('roster_info')
-        .select('position, player_name, points, stats, game_info')
+        .select('position, player_name, points, stats, game_info, timeslot')
         .eq('manager_id', away_id)
         .eq('year', year)
         .eq('week', week);
@@ -177,7 +177,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                             <span class="text-muted ms-2">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small text-nowrap">${homePlayer.game_info || '&nbsp;'}</span>
+                            <span class="text-muted small text-nowrap">${homePlayer.game_info - homePlayer.timeslot || '&nbsp;'}</span>
                             <span class="text-muted small text-nowrap">${homePlayer.stats}</span>
                         </div>
                     ` : ''}
@@ -193,7 +193,7 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted small text-nowrap">${awayPlayer.stats}</span>
-                            <span class="text-muted small text-nowrap">${awayPlayer.game_info || '&nbsp;'}</span>
+                            <span class="text-muted small text-nowrap">${awayPlayer.game_info - awayPlayer.timeslot || '&nbsp;'}</span>
                         </div>
                     ` : ''}
                 </td>
