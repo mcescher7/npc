@@ -236,15 +236,15 @@ rosterContent.innerHTML = `
                   <tr>
                     <th style="width: 40%;">
                       <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>${home_team}</span>
-                        <span>${homeTotal.toFixed(2)}</span>
+                        <span class="fs-4">${home_team}</span>
+                        <span class="fs-4">${homeTotal.toFixed(2)}</span>
                       </div>
                     </th>
                     <th style="width: 10%;"></th>
                     <th style="width: 40%;">
                       <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>${awayTotal.toFixed(2)}</span>
-                        <span>${away_team}</span>
+                        <span class="fs-4">${awayTotal.toFixed(2)}</span>
+                        <span class="fs-4">${away_team}</span>
                       </div>
                     </th>
                   </tr>
