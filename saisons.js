@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", async function() {
     const SUPABASE_URL = "https://hcjinenoxuulhcoadmgh.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -26,10 +26,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     };
 
     async function loadSeasons() {
-        const { data, error } = await supabase
+        const {
+            data,
+            error
+        } = await supabase
             .from("seasons")
             .select("year")
-            .order("year", { ascending: true });
+            .order("year", {
+                ascending: true
+            });
 
         if (error) return logError("Laden der Saisons", error);
         seasonSelect.innerHTML = "";
@@ -44,8 +49,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             await loadBracket(newestYear);
             await loadRegSeason(newestYear);
-            await loadWeeks(newestYear); 
-            await loadAwards(newestYear); 
+            await loadWeeks(newestYear);
+            await loadAwards(newestYear);
             await loadDraftBoard(newestYear);
         }
     }
@@ -54,7 +59,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         regTableBody.innerHTML = "";
         if (!year || isNaN(year)) return;
 
-        const { data, error } = await supabase
+        const {
+            data,
+            error
+        } = await supabase
             .from("regular_season_standings")
             .select("rank, name, teamname, w, l, pf, pa")
             .eq("year", year)
@@ -81,7 +89,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function loadWeeks(year) {
         weekSelect.innerHTML = "";
 
-        const { data, error } = await supabase
+        const {
+            data,
+            error
+        } = await supabase
             .from("seasons")
             .select("weeks")
             .eq("year", year)
@@ -104,7 +115,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         weeklyTableBody.innerHTML = "";
         if (!year || !week) return;
 
-        const { data, error } = await supabase
+        const {
+            data,
+            error
+        } = await supabase
             .from("matchup_table")
             .select("team1, team1_id, points1, points2, team2, team2_id")
             .eq("year", year)
@@ -131,44 +145,48 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
-async function showRosters(home_id, home_team, away_id, away_team, year, week) {
-    const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
-    const rosterContent = document.getElementById('roster-content');
+    async function showRosters(home_id, home_team, away_id, away_team, year, week) {
+        const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
+        const rosterContent = document.getElementById('roster-content');
 
-    // Roster-Daten für beide Teams laden
-    const { data: homeRoster } = await supabase
-        .from('roster_info')
-        .select('position, player_name, points, stats, game_info, timeslot')
-        .eq('manager_id', home_id)
-        .eq('year', year)
-        .eq('week', week);
+        // Roster-Daten für beide Teams laden
+        const {
+            data: homeRoster
+        } = await supabase
+            .from('roster_info')
+            .select('position, player_name, points, stats, game_info, timeslot')
+            .eq('manager_id', home_id)
+            .eq('year', year)
+            .eq('week', week);
 
-    const { data: awayRoster } = await supabase
-        .from('roster_info')
-        .select('position, player_name, points, stats, game_info, timeslot')
-        .eq('manager_id', away_id)
-        .eq('year', year)
-        .eq('week', week);
+        const {
+            data: awayRoster
+        } = await supabase
+            .from('roster_info')
+            .select('position, player_name, points, stats, game_info, timeslot')
+            .eq('manager_id', away_id)
+            .eq('year', year)
+            .eq('week', week);
 
-    const positions = [
-        'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
-        'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10', 
-        'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
-    ];
+        const positions = [
+            'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
+            'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10',
+            'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
+        ];
 
-    const homeMap = Object.fromEntries((homeRoster || []).map(p => [p.position, p]));
-    const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
+        const homeMap = Object.fromEntries((homeRoster || []).map(p => [p.position, p]));
+        const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
 
-    const validPositions = positions.filter(pos =>
-        (homeMap[pos] && homeMap[pos].player_name) || (awayMap[pos] && awayMap[pos].player_name)
-    );
+        const validPositions = positions.filter(pos =>
+            (homeMap[pos] && homeMap[pos].player_name) || (awayMap[pos] && awayMap[pos].player_name)
+        );
 
-    function renderRow(pos, index) {
-        const homePlayer = homeMap[pos];
-        const awayPlayer = awayMap[pos];
-        const rowClass = index % 2 === 1 ? 'table-active' : '';
+        function renderRow(pos, index) {
+            const homePlayer = homeMap[pos];
+            const awayPlayer = awayMap[pos];
+            const rowClass = index % 2 === 1 ? 'table-active' : '';
 
-        return `
+            return `
             <tr class="${rowClass}">
                 <td class="text-end pe-3 align-middle" style="width:40%;">
                     ${homePlayer ? `
@@ -207,28 +225,28 @@ async function showRosters(home_id, home_team, away_id, away_team, year, week) {
                 </td>
             </tr>
         `;
-    }
+        }
 
-    const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
+        const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
 
-   // Hauptpositionen (ohne Bank)
-const mainPositions = [
-    'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'
-];
+        // Hauptpositionen (ohne Bank)
+        const mainPositions = [
+            'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'
+        ];
 
-// Punkte summieren (nur Hauptpositionen)
-const homeTotal = mainPositions.reduce((sum, pos) => {
-    const p = homeMap[pos];
-    return sum + (p && typeof p.points === 'number' ? p.points : 0);
-}, 0);
+        // Punkte summieren (nur Hauptpositionen)
+        const homeTotal = mainPositions.reduce((sum, pos) => {
+            const p = homeMap[pos];
+            return sum + (p && typeof p.points === 'number' ? p.points : 0);
+        }, 0);
 
-const awayTotal = mainPositions.reduce((sum, pos) => {
-    const p = awayMap[pos];
-    return sum + (p && typeof p.points === 'number' ? p.points : 0);
-}, 0);
+        const awayTotal = mainPositions.reduce((sum, pos) => {
+            const p = awayMap[pos];
+            return sum + (p && typeof p.points === 'number' ? p.points : 0);
+        }, 0);
 
-// Kopfzeile bauen: Teamnamen außen, Punktzahlen innen
-rosterContent.innerHTML = `
+        // Kopfzeile bauen: Teamnamen außen, Punktzahlen innen
+        rosterContent.innerHTML = `
     <div class="container-fluid px-0">
         <div class="table-responsive">
             <table class="table table-striped table-sm mb-0">
@@ -257,17 +275,17 @@ rosterContent.innerHTML = `
     </div>
 `;
 
-
-    
-    modal.show();
-}
-
+        modal.show();
+    }
 
     async function loadAwards(year) {
         awardTableBody.innerHTML = "";
         if (!year) return;
 
-        const { data, error } = await supabase
+        const {
+            data,
+            error
+        } = await supabase
             .from("award_winners")
             .select("award, player")
             .eq("year", year)
@@ -290,7 +308,10 @@ rosterContent.innerHTML = `
         const board = document.getElementById("draft-board");
         board.innerHTML = "";
 
-        const { data, error } = await supabase
+        const {
+            data,
+            error
+        } = await supabase
             .from("draft_board")
             .select("round, pick_no, teamname, first_name, last_name, position, keeper_id")
             .eq("year", year)
@@ -347,14 +368,21 @@ rosterContent.innerHTML = `
             if (container) container.innerHTML = "";
         });
 
-        const { data, error } = await supabase
+        const {
+            data,
+            error
+        } = await supabase
             .from("playoff_matches")
             .select("*")
             .eq("year", year);
 
         if (error) return logError("Laden des Brackets", error);
 
-        const roundOrder = { "QF": 1, "SF": 2, "F": 3 };
+        const roundOrder = {
+            "QF": 1,
+            "SF": 2,
+            "F": 3
+        };
         const sortedData = data.slice().sort((a, b) => {
             if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round];
             return a.slot - b.slot;
@@ -368,8 +396,8 @@ rosterContent.innerHTML = `
 
         sortedData.forEach(game => {
             const roundId = game.round === "QF" ? "quarterfinals" :
-                            game.round === "SF" ? "semifinals" :
-                            game.round === "F" ? "finals" : null;
+                game.round === "SF" ? "semifinals" :
+                game.round === "F" ? "finals" : null;
 
             const container = roundId ? document.getElementById(roundId) : null;
             if (!container) return;
@@ -399,7 +427,7 @@ rosterContent.innerHTML = `
                 const wSlot = game.w_slot;
                 const lSlot = game.l_slot;
                 topSeed = (wSlot !== null && lSlot !== null) ? (wSlot < lSlot ? "w" : "l") :
-                          (game.w_rank < game.l_rank ? "w" : "l");
+                    (game.w_rank < game.l_rank ? "w" : "l");
                 bottomSeed = topSeed === "w" ? "l" : "w";
 
                 const topRank = game[`${topSeed}_rank`];
