@@ -230,14 +230,16 @@ const awayTotal = mainPositions.reduce((sum, pos) => {
 // Kopfzeile bauen: Teamnamen außen, Punktzahlen innen
 rosterContent.innerHTML = `
     <div class="container-fluid px-0">
-        <div class="row mb-3">
-            <div class="col text-start fw-bold fs-5">${home_team}</div>
-            <div class="col-2 text-center fs-5">${homeTotal.toFixed(2)}</div>
-            <div class="col-2 text-center fs-5">${awayTotal.toFixed(2)}</div>
-            <div class="col text-end fw-bold fs-5">${away_team}</div>
-        </div>
         <div class="table-responsive">
             <table class="table table-striped table-sm mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-start">${home_team}</th>
+                    <th class="text-center">${homeTotal.toFixed(2)}</th>
+                    <th class="text-center">${awayTotal.toFixed(2)}</th>
+                    <th class="text-end">${away_team}</th>
+                  </tr>
+                </thead>
                 <tbody>
                     ${tableRows}
                 </tbody>
@@ -246,6 +248,8 @@ rosterContent.innerHTML = `
     </div>
 `;
 
+
+    
     modal.show();
 }
 
