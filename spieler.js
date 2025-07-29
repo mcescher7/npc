@@ -44,16 +44,26 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.log("loadPlayerInfo: Spieler nicht gefunden.");
             return;
         }
-    
+
         let infoHtml = '';
-        if (data.awards)    infoHtml += `<div>${data.awards}</div>`;
-        if (data.game_info) infoHtml += `<div>${data.game_info}</div>`;
-        if (data.passing)   infoHtml += `<div>passing: ${data.passing}</div>`;
-        if (data.rushing)   infoHtml += `<div>${data.rushing}</div>`;
-        if (data.receiving) infoHtml += `<div>${data.receiving}</div>`;
-        if (data.misc)      infoHtml += `<div>${data.misc}</div>`;
-        if (data.kicking)   infoHtml += `<div>${data.kicking}</div>`;
-        if (data.defense)   infoHtml += `<div>${data.defense}</div>`;
+        
+        if (data.awards)
+          infoHtml += `<div><strong>awards:</strong> <span style="color: gold;">${data.awards}</span></div>`;
+        if (data.game_info)
+          infoHtml += `<div><strong>game_info:</strong> ${data.game_info}</div>`;
+        if (data.passing)
+          infoHtml += `<div><strong>passing:</strong> ${data.passing}</div>`;
+        if (data.rushing)
+          infoHtml += `<div><strong>rushing:</strong> ${data.rushing}</div>`;
+        if (data.receiving)
+          infoHtml += `<div><strong>receiving:</strong> ${data.receiving}</div>`;
+        if (data.misc)
+          infoHtml += `<div><strong>misc:</strong> ${data.misc}</div>`;
+        if (data.kicking)
+          infoHtml += `<div><strong>kicking:</strong> ${data.kicking}</div>`;
+        if (data.defense)
+          infoHtml += `<div><strong>defense:</strong> ${data.defense}</div>`;
+        
         if (!infoHtml) {
           infoDiv.innerHTML = '<div class="text-muted">Keine Statistiken vorhanden.</div>';
         } else {
