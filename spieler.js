@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (data.awards)
           infoHtml += `<div style="text-align: center;"><span style="color: gold;">${data.awards}</span></div>`;
         if (data.game_info)
-          infoHtml += `<div style="text-align: center;">${data.game_info}</div>`;
+          infoHtml += `<div style="text-align: center; margin-bottom: 0.25rem;">${data.game_info}</div>`;
         if (data.passing)
           infoHtml += `<div><strong>passing:</strong> ${data.passing}</div>`;
         if (data.rushing)
