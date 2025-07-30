@@ -192,8 +192,9 @@ document.addEventListener("DOMContentLoaded", async function() {
             const op = parseFloat(match.opponent_points).toFixed(2);
 
             const managerWon = match.manager_points > match.opponent_points;
-            const mpClass = managerWon ? "text-success" : "text-danger";
-            const opClass = managerWon ? "text-danger" : "text-success";
+            const mpClass = managerWon ? "color-green" : "color-red";
+            const opClass = managerWon ? "color-red" : "color-green";
+
 
             return `
                 <tr>
