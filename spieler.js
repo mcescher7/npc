@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function setRowColor(type) {
         if (type === 'add') {
-            return 'color: var(--color-green);';
+            return "color-green";
         } else if (type === 'drop') {
-            return 'color: var(--color-red);';
+            return "color-red";
         }
         return '';
     }
@@ -90,9 +90,9 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         tableBody.innerHTML = data.map(row =>
             `<tr>
-                <td style="${setRowColor(row.type)}">${formatDate(row.time)}</td>
-                <td style="${setRowColor(row.type)}">${row.manager_name}</td>
-                <td style="${setRowColor(row.type)}">${row.target}</td>
+                <td class="${setRowColor(row.type)}">${formatDate(row.time)}</td>
+                <td class="${setRowColor(row.type)}">${row.manager_name}</td>
+                <td class="${setRowColor(row.type)}">${row.target}</td>
             </tr>`
         ).join("");       
     }
