@@ -1,18 +1,10 @@
 /* Für Light Mode: */
-.color-green {
-  color: darkgreen;
-}
-.color-red {
-  color: darkred;
-}
+[data-bs-theme="light"] .color-green { color: darkgreen; }
+[data-bs-theme="light"] .color-red { color: darkred; }
 
 /* Für Dark Mode: */
-[data-bs-theme="dark"] .color-green {
-  color: #7cff7c; /* Helles Grün für dunklen Hintergrund */
-}
-[data-bs-theme="dark"] .color-red {
-  color: #ff7c7c; /* Helles Rot für dunklen Hintergrund */
-}
+[data-bs-theme="dark"] .color-green { color: #7cff7c; }
+[data-bs-theme="dark"] .color-red { color: #ff7c7c; }
 
 [data-bs-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) {
   --bs-table-accent-bg: #2c3035;
