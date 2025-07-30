@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function setRowColor(type) {
         if (type === 'add') {
-            return 'color: darkgreen;';
+            return 'color: var(--color-green);';
         } else if (type === 'drop') {
-            return 'color: darkred;';
+            return 'color: var(--color-red);';
         }
         return '';
     }
@@ -48,9 +48,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         let infoHtml = '';
         
         if (data.awards)
-          infoHtml += `<div><strong>awards:</strong> <span style="color: gold;">${data.awards}</span></div>`;
+          infoHtml += `<div style="text-align: center;"><span style="color: gold;">${data.awards}</span></div>`;
         if (data.game_info)
-          infoHtml += `<div><strong>game_info:</strong> ${data.game_info}</div>`;
+          infoHtml += `<div style="text-align: center;">${data.game_info}</div>`;
         if (data.passing)
           infoHtml += `<div><strong>passing:</strong> ${data.passing}</div>`;
         if (data.rushing)
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (data.kicking)
           infoHtml += `<div><strong>kicking:</strong> ${data.kicking}</div>`;
         if (data.defense)
-          infoHtml += `<div><strong>defense:</strong> ${data.defense}</div>`;
+          infoHtml += `<div>${data.defense}</div>`;
         
         if (!infoHtml) {
           infoDiv.innerHTML = '<div class="text-muted">Keine Statistiken vorhanden.</div>';
