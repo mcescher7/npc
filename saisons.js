@@ -438,8 +438,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const bottomName = game[`${bottomSeed}_name`];
                 const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2);
 
-                const topClass = (game.w_rank === topRank) ? "text-success" : "text-danger";
-                const bottomClass = (game.w_rank === bottomRank) ? "text-success" : "text-danger";
+                const topClass = (game.w_rank === topRank) ? "color-green" : "color-red";
+                const bottomClass = (game.w_rank === bottomRank) ? "color-green" : "color-red";
 
                 const topNameClass = (game.round === "F" && game.w_rank === topRank) ? "text-warning fw-bold" : "";
                 const bottomNameClass = (game.round === "F" && game.w_rank === bottomRank) ? "text-warning fw-bold" : "";
