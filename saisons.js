@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             data: homeRoster
         } = await supabase
             .from('roster_info')
-            .select('position, player_name, points, stats, game_info, timeslot')
+            .select('position, player_name, points, stats, game_info, timeslot, projection')
             .eq('manager_id', home_id)
             .eq('year', year)
             .eq('week', week);
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             data: awayRoster
         } = await supabase
             .from('roster_info')
-            .select('position, player_name, points, stats, game_info, timeslot')
+            .select('position, player_name, points, stats, game_info, timeslot, projection')
             .eq('manager_id', away_id)
             .eq('year', year)
             .eq('week', week);
@@ -192,15 +192,19 @@ document.addEventListener("DOMContentLoaded", async function() {
                     ${homePlayer ? `
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold">${homePlayer.player_name}</span>
-                            <span class="text-muted ms-2">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
+                            <span class="fw-bold">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small text-nowrap">${
+                            <span class="text-muted fs-5 text-nowrap">${
                                 homePlayer.game_info && homePlayer.timeslot
                                   ? `${homePlayer.game_info} - ${homePlayer.timeslot}`
                                   : '&nbsp;'
                               }</span>
-                            <span class="text-muted small text-nowrap">${homePlayer.stats}</span>
+                            <span class="text-muted small text-nowrap">${homePlayer.projection !== null && homePlayer.projection !== undefined ? homePlayer.projection.toFixed(2) : '%nbsp;'}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${'&nbsp;'}</span>
+                            <span class="fw-bold">${homePlayer.stats}</span>
                         </div>
                     ` : ''}
                 </td>
@@ -210,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td class="text-start ps-3 align-middle" style="width:40%;">
                     ${awayPlayer ? `
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted me-2">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
+                            <span class="fw-bold">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
                             <span class="fw-bold">${awayPlayer.player_name}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
