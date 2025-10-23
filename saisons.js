@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                             <span class="fw-bold">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted fs-5 text-nowrap">${
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${
                                 homePlayer.game_info && homePlayer.timeslot
                                   ? `${homePlayer.game_info} - ${homePlayer.timeslot}`
                                   : '&nbsp;'
@@ -203,8 +203,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                             <span class="text-muted small text-nowrap">${homePlayer.projection !== null && homePlayer.projection !== undefined ? homePlayer.projection.toFixed(2) : '%nbsp;'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">${'&nbsp;'}</span>
-                            <span class="fw-bold">${homePlayer.stats}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${'&nbsp;'}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.stats}</span>
                         </div>
                     ` : ''}
                 </td>
