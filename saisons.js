@@ -218,12 +218,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                             <span class="fw-bold">${awayPlayer.player_name}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small text-nowrap">${awayPlayer.stats}</span>
-                            <span class="text-muted small text-nowrap">${
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.projection !== null && awayPlayer.projection !== undefined ? awayPlayer.projection.toFixed(2) : '&nbsp;'}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${
                                 awayPlayer.game_info && awayPlayer.timeslot
                                   ? `${awayPlayer.game_info} - ${awayPlayer.timeslot}`
                                   : '&nbsp;'
                               }</span>
+                        </div>
+                         <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.stats}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${'&nbsp;'}</span>
                         </div>
                     ` : ''}
                 </td>
