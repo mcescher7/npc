@@ -8,7 +8,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     let selectedManagerName = "";
 
     async function loadManagers() {
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("managers")
             .select("manager_id, name");
 
@@ -26,98 +29,129 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadManagerRecords(managerId) {
-    const tableBody = document.getElementById("records-table");
+        const tableBody = document.getElementById("records-table");
 
-    if (!managerId || isNaN(managerId)) {
-        tableBody.innerHTML = "";
-        return;
-    }
-
-    const { data, error } = await supabaseClient
-        .from("manager_stats")
-        .select("*")
-        .eq("manager_id", managerId)
-        .single();
-
-    if (error) {
-        console.error("Fehler beim Laden der Statistiken:", error);
-        return;
-    }
-
-    if (!data) {
-        tableBody.innerHTML = "<tr><td colspan='3'>Keine Daten gefunden</td></tr>";
-        return;
-    }
-
-    const formatPoints = (value) => {
-        if (value === null || value === undefined) return "-";
-        return parseFloat(value).toFixed(2);
-    };
-        
-    const records = [
-        {rekord: "längste Siegesserie", 
-         wert: data.max_win_streak ? `${data.max_win_streak}` : "-",  
-         details: data.win_streak_details || ""},
-        {rekord: "längste Niederlagenserie", 
-         wert: data.max_loss_streak ? `${data.max_loss_streak}` : "-",  
-         details: data.loss_streak_details || ""},
-        {rekord: "bester Saisonstart", 
-         wert: data.start_win_streak ? `${data.start_win_streak}-0` : "-",  
-         details: data.start_win_years || ""},
-        {rekord: "schlechtester Saisonstart", 
-         wert: data.start_loss_streak ? `0-${data.start_loss_streak}` : "-",  
-         details: data.start_loss_years || ""},
-        {rekord: "meiste Punkte", 
-         wert: data.most_points ? `${formatPoints(data.most_points)}` : "-",  
-         details: data.most_points_details || ""},
-        {rekord: "wenigste Punkte", 
-         wert: data.least_points ? `${formatPoints(data.least_points)}` : "-",  
-         details: data.least_points_details || ""},
-        {rekord: "höchster Sieg", 
-         wert: data.biggest_win_margin ? `${formatPoints(data.biggest_win_margin)}` : "-",  
-         details: data.biggest_win_details || ""},
-        {rekord: "höchste Niederlage", 
-         wert: data.biggest_loss_margin ? `${formatPoints(data.biggest_loss_margin)}` : "-",  
-         details: data.biggest_loss_details || ""},
-        {rekord: "knappster Sieg", 
-         wert: data.closest_win_margin ? `${formatPoints(data.closest_win_margin)}` : "-",  
-         details: data.closest_win_details || ""},
-        {rekord: "knappste Niederlage", 
-         wert: data.closest_loss_margin ? `${formatPoints(data.closest_loss_margin)}` : "-",  
-         details: data.closest_loss_details || ""},
-        {rekord: "frechster Sieg", 
-         wert: data.bad_win_score || "-",  
-         details: data.bad_win_details || ""},
-        {rekord: "frechste Niederlage", 
-         wert: data.bad_loss_score || "-",  
-         details: data.bad_loss_details || ""}
-    ];
-
-    tableBody.innerHTML = "";
-    records.forEach(record => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${record.rekord}</td>
-            <td>${record.wert}</td>
-            <td>${record.details}</td>
-        `;
-        tableBody.appendChild(tr);
-        });
-    }
-    
-    async function loadTopPlayers(managerId) {
-        const tableBody = document.getElementById("top-players-table");
-
-        if (!managerId || isNaN(managerId)) { 
+        if (!managerId || isNaN(managerId)) {
             tableBody.innerHTML = "";
             return;
         }
 
-        const { data, error } = await supabaseClient
-            .from("v_top_players") 
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("manager_stats")
+            .select("*")
+            .eq("manager_id", managerId)
+            .single();
+
+        if (error) {
+            console.error("Fehler beim Laden der Statistiken:", error);
+            return;
+        }
+
+        if (!data) {
+            tableBody.innerHTML = "<tr><td colspan='3'>Keine Daten gefunden</td></tr>";
+            return;
+        }
+
+        const formatPoints = (value) => {
+            if (value === null || value === undefined) return "-";
+            return parseFloat(value).toFixed(2);
+        };
+
+        const records = [{
+                rekord: "längste Siegesserie",
+                wert: data.max_win_streak ? `${data.max_win_streak}` : "-",
+                details: data.win_streak_details || ""
+            },
+            {
+                rekord: "längste Niederlagenserie",
+                wert: data.max_loss_streak ? `${data.max_loss_streak}` : "-",
+                details: data.loss_streak_details || ""
+            },
+            {
+                rekord: "bester Saisonstart",
+                wert: data.start_win_streak ? `${data.start_win_streak}-0` : "-",
+                details: data.start_win_years || ""
+            },
+            {
+                rekord: "schlechtester Saisonstart",
+                wert: data.start_loss_streak ? `0-${data.start_loss_streak}` : "-",
+                details: data.start_loss_years || ""
+            },
+            {
+                rekord: "meiste Punkte",
+                wert: data.most_points ? `${formatPoints(data.most_points)}` : "-",
+                details: data.most_points_details || ""
+            },
+            {
+                rekord: "wenigste Punkte",
+                wert: data.least_points ? `${formatPoints(data.least_points)}` : "-",
+                details: data.least_points_details || ""
+            },
+            {
+                rekord: "höchster Sieg",
+                wert: data.biggest_win_margin ? `${formatPoints(data.biggest_win_margin)}` : "-",
+                details: data.biggest_win_details || ""
+            },
+            {
+                rekord: "höchste Niederlage",
+                wert: data.biggest_loss_margin ? `${formatPoints(data.biggest_loss_margin)}` : "-",
+                details: data.biggest_loss_details || ""
+            },
+            {
+                rekord: "knappster Sieg",
+                wert: data.closest_win_margin ? `${formatPoints(data.closest_win_margin)}` : "-",
+                details: data.closest_win_details || ""
+            },
+            {
+                rekord: "knappste Niederlage",
+                wert: data.closest_loss_margin ? `${formatPoints(data.closest_loss_margin)}` : "-",
+                details: data.closest_loss_details || ""
+            },
+            {
+                rekord: "frechster Sieg",
+                wert: data.bad_win_score || "-",
+                details: data.bad_win_details || ""
+            },
+            {
+                rekord: "frechste Niederlage",
+                wert: data.bad_loss_score || "-",
+                details: data.bad_loss_details || ""
+            }
+        ];
+
+        tableBody.innerHTML = "";
+        records.forEach(record => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+            <td>${record.rekord}</td>
+            <td>${record.wert}</td>
+            <td>${record.details}</td>
+        `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    async function loadTopPlayers(managerId) {
+        const tableBody = document.getElementById("top-players-table");
+
+        if (!managerId || isNaN(managerId)) {
+            tableBody.innerHTML = "";
+            return;
+        }
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("v_top_players")
             .select("player_name, games, total_points, years_played")
             .eq("manager_id", managerId)
-            .order("games", { ascending: false })
+            .order("games", {
+                ascending: false
+            })
             .limit(10);
 
         if (error) {
@@ -139,12 +173,19 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadManagerMatchups(managerId) {
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("manager_matchups_alltime")
             .select("manager1_name, manager2_id, manager2_name, wins, losses, points_for, points_against")
             .eq("manager1_id", managerId)
-            .order("wins", { ascending: false })
-            .order("losses", { ascending: true });
+            .order("wins", {
+                ascending: false
+            })
+            .order("losses", {
+                ascending: true
+            });
 
         if (error) {
             console.error("Fehler beim Laden der Matchups:", error);
@@ -172,37 +213,43 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function showMatchDetails(managerId, managerName, opponentId, opponentName) {
-    const { data, error } = await supabaseClient
-        .from("matchups_detail")
-        .select("year, week, manager_points, opponent_points, round")
-        .eq("manager_id", managerId)
-        .eq("opponent_id", opponentId)
-        .order("year", { ascending: true })
-        .order("week", { ascending: true });
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("matchups_detail")
+            .select("year, week, manager_points, opponent_points, round")
+            .eq("manager_id", managerId)
+            .eq("opponent_id", opponentId)
+            .order("year", {
+                ascending: true
+            })
+            .order("week", {
+                ascending: true
+            });
 
-    const contentDiv = document.getElementById("match-details-content");
+        const contentDiv = document.getElementById("match-details-content");
 
-    if (error || !data) {
-        contentDiv.innerHTML = `<div class="text-danger">Fehler beim Laden der Matchdetails.</div>`;
-    } else if (data.length === 0) {
-        contentDiv.innerHTML = `<p>Keine Matches gefunden.</p>`;
-    } else {
-        const translateRound = (round) => {
-            if (round === "QF") return "VF";
-            if (round === "SF") return "HF";
-            return round ?? "";
-        };
+        if (error || !data) {
+            contentDiv.innerHTML = `<div class="text-danger">Fehler beim Laden der Matchdetails.</div>`;
+        } else if (data.length === 0) {
+            contentDiv.innerHTML = `<p>Keine Matches gefunden.</p>`;
+        } else {
+            const translateRound = (round) => {
+                if (round === "QF") return "VF";
+                if (round === "SF") return "HF";
+                return round ?? "";
+            };
 
-        const rows = data.map(match => {
-            const mp = parseFloat(match.manager_points).toFixed(2);
-            const op = parseFloat(match.opponent_points).toFixed(2);
+            const rows = data.map(match => {
+                const mp = parseFloat(match.manager_points).toFixed(2);
+                const op = parseFloat(match.opponent_points).toFixed(2);
 
-            const managerWon = match.manager_points > match.opponent_points;
-            const mpClass = managerWon ? "color-green" : "color-red";
-            const opClass = managerWon ? "color-red" : "color-green";
+                const managerWon = match.manager_points > match.opponent_points;
+                const mpClass = managerWon ? "color-green" : "color-red";
+                const opClass = managerWon ? "color-red" : "color-green";
 
-
-            return `
+                return `
                 <tr>
                     <td>${match.year}</td>
                     <td>${match.week}</td>
@@ -211,9 +258,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <td class="${opClass}">${op}</td>
                 </tr>
             `;
-        }).join("");
+            }).join("");
 
-        contentDiv.innerHTML = `
+            contentDiv.innerHTML = `
             <div class="table-responsive">
                 <table class="table table-sm table-bordered table-striped">
                     <thead>
@@ -230,13 +277,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             </div>
         `;
 
+        }
 
+        const modal = new bootstrap.Modal(document.getElementById("matchDetailsModal"));
+        modal.show();
     }
-
-    const modal = new bootstrap.Modal(document.getElementById("matchDetailsModal"));
-    modal.show();
-}
-
 
     /*
     document.getElementById("manager-matchups-table").addEventListener("click", function(e) {
