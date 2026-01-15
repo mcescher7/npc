@@ -84,7 +84,13 @@ document.addEventListener("DOMContentLoaded", async function() {
          details: data.closest_win_details || ""},
         {rekord: "knappste Niederlage", 
          wert: data.closest_loss_margin ? `${formatPoints(data.closest_loss_margin)}` : "-",  
-         details: data.closest_loss_details || ""}
+         details: data.closest_loss_details || ""},
+        {rekord: "frechster Sieg", 
+         wert: data.bad_win_score || "-",  
+         details: data.bad_win_details || ""},
+        {rekord: "frechste Niederlage", 
+         wert: data.bad_loss_score || "-",  
+         details: data.bad_loss_details || ""}
     ];
 
     tableBody.innerHTML = "";
