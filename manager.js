@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function() {
     const SUPABASE_URL = "https://hcjinenoxuulhcoadmgh.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0";
+    const SUPABASE_KEY = "sb_publishable_BGv-lH87VHMk9fO33rZ-fw_yPBh5OSX";
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const managerSelect = document.getElementById("manager-select");
