@@ -132,13 +132,15 @@ document.addEventListener("DOMContentLoaded", async function() {
          <img class="retro-player-photo" src="https://static.www.nfl.com/image/upload/t_player_profile_landscape/f_auto/league/zvi4hdm6fywcekfe7ceb" alt="${data.player_name}">
          /* <img class="retro-player-photo" src="${data.photo_url || 'placeholder.jpg'}" alt="${player.name}"> */
         <div class="retro-name-bar">${data.player_name}</div>
-        <div class="retro-awards">
-          <div class="retro-award-badge">${data.awards}</div>
-        </div>
+          ${data.awards ? `
+            <div class="retro-awards">
+              <div class="retro-award-badge">${data.awards}</div>
+            </div>
+          ` : ''}
         <div class="retro-front-stats">
-          <div><label>Games</label><strong>${data.player_id || 0}</strong></div>
-          <div><label>Points</label><strong>${data.player_id || 0}</strong></div>
-          <div><label>PPG</label><strong>${data.player_id?.toFixed(1) || 0}</strong></div>
+          <div><label>Games</label><strong>${data.games || 0}</strong></div>
+          <div><label>Points</label><strong>${data.points || 0}</strong></div>
+          <div><label>PPG</label><strong>${data.ppg || 0}</strong></div>
         </div>
       `;
     
@@ -146,17 +148,28 @@ document.addEventListener("DOMContentLoaded", async function() {
       const back = container.querySelector('.retro-back');
       back.innerHTML = `
         <div class="retro-back-name">${data.player_name}</div>
-        /* <div class="retro-back-meta">${data.position} • ${data.team}<br>Owner: ${data.owner || 'Unbekannt'}</div> */
-        <div class="retro-back-meta">"POS" • "test"<br>Owner: "owner1, owner2"</div>
+        <div class="retro-back-meta">${data.position} • ${data.team}<br>Owner: ${data.owner || 'Unbekannt'}</div>
         <div class="retro-back-stats">
           <div class="retro-back-section">
             <h3>Career Stats</h3>
-            <div class="retro-stat-row"><span>REC</span><span>${data.receiving}</span></div>
-            <div class="retro-stat-row"><span>RUS</span><span>${data.rushing}</span></div>
-            /*
-            <div class="retro-stat-row"><span>REC AVG</span><span>${player.rec_avg?.toFixed(1) || 0}</span></div>
-            <div class="retro-stat-row"><span>REC TD</span><span>${player.rec_td || 0}</span></div>
-            */
+            ${data.passing ? `
+                <div class="retro-stat-row"><span>RUS</span><span>${data.passing}</span></div>
+            ` : ''}
+            ${data.receiving ? `
+                <div class="retro-stat-row"><span>REC</span><span>${data.receiving}</span></div>
+            ` : ''}
+            ${data.rushing ? `
+                <div class="retro-stat-row"><span>RUS</span><span>${data.rushing}</span></div>
+            ` : ''}
+            ${data.misc ? `
+                <div class="retro-stat-row"><span>RUS</span><span>${data.misc}</span></div>
+            ` : ''}
+            ${data.kicking ? `
+                <div class="retro-stat-row"><span>RUS</span><span>${data.kicking}</span></div>
+            ` : ''}
+            ${data.defense ? `
+                <div class="retro-stat-row"><span>RUS</span><span>${data.defense}</span></div>
+            ` : ''}
           </div>
         </div>
       `;
