@@ -2,36 +2,100 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Turnierbaum</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantasy Football Player Card</title>
+  <style>
+    body { background: #f0f0f0; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }
+    .player-card {
+      background: linear-gradient(135deg, #FF9500, #FFA726, #FFB347);
+      border-radius: 25px;
+      padding: 25px;
+      max-width: 450px;
+      color: white;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    .player-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .player-photo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 5px solid white;
+      margin-right: 20px;
+      object-fit: cover;
+    }
+    .player-info h2 {
+      margin: 0 0 5px 0;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .player-info p {
+      margin: 0;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .stats-panel {
+      background: rgba(255,255,255,0.2);
+      border-radius: 15px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .stats-panel h3 {
+      text-align: center;
+      margin: 0 0 15px 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .stat-value {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    @media (max-width: 500px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <div id="bracket"></div>
-
-  <!-- Skript OHNE type="module" laden -->
-  <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
-  <script>
-    // Zugriff über window.BracketsViewer
-    const viewer = new window.BracketsViewer({
-      selector: '#bracket',
-    });
-
-    const data = {
-      stage: { id: 1, name: "Turnier", type: "single_elimination" },
-      matches: [
-        { id: 1, stage_id: 1, round_id: 1, participant1_id: 1, participant2_id: 2, status: "completed", winner_id: 1 },
-        { id: 2, stage_id: 1, round_id: 1, participant1_id: 3, participant2_id: 4, status: "completed", winner_id: 4 },
-        { id: 3, stage_id: 1, round_id: 2, participant1_id: 1, participant2_id: 4, status: "pending" }
-      ],
-      participants: [
-        { id: 1, name: "Team A" },
-        { id: 2, name: "Team B" },
-        { id: 3, name: "Team C" },
-        { id: 4, name: "Team D" }
-      ]
-    };
-
-    viewer.render(data);
-  </script>
+  <div class="player-card">
+    <div class="player-header">
+      <!-- Ersetzen Sie src durch echtes Foto aus Supabase -->
+      <img src="https://via.placeholder.com/90?text=Puka" alt="Puka Nacua" class="player-photo">
+      <div class="player-info">
+        <h2>Puka Nacua</h2>
+        <p>WR • Los Angeles Rams</p>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stats-panel career">
+        <h3>Career</h3>
+        <div class="stat-row"><span>REC</span><span class="stat-value">290</span></div>
+        <div class="stat-row"><span>YDS</span><span class="stat-value">4191</span></div>
+        <div class="stat-row"><span>AVG</span><span class="stat-value">14.4</span></div>
+        <div class="stat-row"><span>TD</span><span class="stat-value">19</span></div>
+      </div>
+      <div class="stats-panel season">
+        <h3>2025 Reg. Season</h3>
+        <div class="stat-row"><span>REC</span><span class="stat-value">129</span></div>
+        <div class="stat-row"><span>YDS</span><span class="stat-value">1715</span></div>
+        <div class="stat-row"><span>AVG</span><span class="stat-value">13.3</span></div>
+        <div class="stat-row"><span>TD</span><span class="stat-value">10</span></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
