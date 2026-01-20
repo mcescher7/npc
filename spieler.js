@@ -117,6 +117,54 @@ document.addEventListener("DOMContentLoaded", async function() {
             `<option value="${player}"></option>`
         ).join("");
     }
+
+    async function renderPlayerCard(player) {
+      const container = document.querySelector('.retro-card-container');
+      const { data } = await supabaseClient
+        .from('player_info')
+        .select('*')
+        .ilike('player_name', `%${player}%`)
+        .single();
+    
+      // Vorderseite
+      const front = container.querySelector('.retro-front');
+      front.innerHTML = `
+        /* <img class="retro-player-photo" src="${data.photo_url || 'placeholder.jpg'}" alt="${player.name}"> */
+         <img class="retro-player-photo" src="https://static.www.nfl.com/image/upload/t_player_profile_landscape/f_auto/league/zvi4hdm6fywcekfe7ceb" alt="${data.player_name}">
+        <div class="retro-name-bar">${data.player_name}</div>
+        <div class="retro-awards">
+          <div class="retro-award-badge">${data.awards}</div>
+        </div>
+        <div class="retro-front-stats">
+          <div><label>Games</label><strong>${data.player_id || 0}</strong></div>
+          <div><label>Points</label><strong>${data.player_id || 0}</strong></div>
+          <div><label>PPG</label><strong>${data.player_id?.toFixed(1) || 0}</strong></div>
+        </div>
+      `;
+    
+      // Rückseite
+      const back = container.querySelector('.retro-back');
+      back.innerHTML = `
+        <div class="retro-back-name">${data.player_name}</div>
+        /* <div class="retro-back-meta">${data.position} • ${data.team}<br>Owner: ${data.owner || 'Unbekannt'}</div> */
+        <div class="retro-back-meta">"POS" • "test"<br>Owner: "owner1, owner2"</div>
+        <div class="retro-back-stats">
+          <div class="retro-back-section">
+            <h3>Career Stats</h3>
+            <div class="retro-stat-row"><span>REC</span><span>${data.receiving}</span></div>
+            <div class="retro-stat-row"><span>RUS</span><span>${data.rushing}</span></div>
+            /*
+            <div class="retro-stat-row"><span>REC AVG</span><span>${player.rec_avg?.toFixed(1) || 0}</span></div>
+            <div class="retro-stat-row"><span>REC TD</span><span>${player.rec_td || 0}</span></div>
+            */
+          </div>
+        </div>
+      `;
+    
+      // Flip-Event
+      container.onclick = () => container.classList.toggle('flipped');
+    }
+
     
     searchInput.addEventListener("input", function () {
         loadPlayerSuggestions(this.value);
@@ -125,6 +173,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     searchInput.addEventListener("change", function () {
         loadPlayerInfo(this.value);
         loadCareerData(this.value);
+        renderPlayerCard(this.value);
         searchInput.blur();
     });
 
