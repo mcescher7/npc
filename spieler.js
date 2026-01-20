@@ -152,22 +152,22 @@ document.addEventListener("DOMContentLoaded", async function() {
           <div class="retro-back-section">
             <h3>Career Stats</h3>
             ${data.passing ? `
-                <div class="retro-stat-row"><span>RUS</span><span>${data.passing}</span></div>
+                <div class="retro-stat-row"><span>PASSING</span><span>${data.passing}</span></div>
             ` : ''}
             ${data.receiving ? `
-                <div class="retro-stat-row"><span>REC</span><span>${data.receiving}</span></div>
+                <div class="retro-stat-row"><span>RECEIVING</span><span>${data.receiving}</span></div>
             ` : ''}
             ${data.rushing ? `
-                <div class="retro-stat-row"><span>RUS</span><span>${data.rushing}</span></div>
+                <div class="retro-stat-row"><span>RUSHING</span><span>${data.rushing}</span></div>
             ` : ''}
             ${data.misc ? `
-                <div class="retro-stat-row"><span>RUS</span><span>${data.misc}</span></div>
+                <div class="retro-stat-row"><span>MISC</span><span>${data.misc}</span></div>
             ` : ''}
             ${data.kicking ? `
-                <div class="retro-stat-row"><span>RUS</span><span>${data.kicking}</span></div>
+                <div class="retro-stat-row"><span>KICKING</span><span>${data.kicking}</span></div>
             ` : ''}
             ${data.defense ? `
-                <div class="retro-stat-row"><span>RUS</span><span>${data.defense}</span></div>
+                <div class="retro-stat-row"><span>DEFENSE</span><span>${data.defense}</span></div>
             ` : ''}
           </div>
         </div>
