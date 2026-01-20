@@ -3,97 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fantasy Football Player Card</title>
+  <title>Retro Fantasy Football Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body { background: #f0f0f0; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }
-    .player-card {
-      background: linear-gradient(135deg, #FF9500, #FFA726, #FFB347);
-      border-radius: 25px;
-      padding: 25px;
-      max-width: 450px;
-      color: white;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    body { 
+      background: linear-gradient(to bottom, #8B4513, #D2691E); /* Braunes Retro-Papier */
+      display: flex; justify-content: center; align-items: center; 
+      height: 100vh; margin: 0; font-family: 'Roboto Slab', serif; 
+    }
+    .retro-card {
+      width: 380px; height: 550px; /* Standard Trading Card Ratio 2.5x3.5" skaliert */
+      background: white;
+      border: 12px solid white;
+      border-radius: 8px; /* Leicht abgerundet */
+      box-shadow: 
+        inset 0 0 20px rgba(0,0,0,0.1),
+        0 0 0 3px #333,
+        0 10px 30px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .retro-card::before { /* Scan-Effekt: Staub/Scratches */
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(0,0,0,0.05) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 50px 50px, 30px 30px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    .card-inner {
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
       position: relative;
     }
-    .player-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
     .player-photo {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      border: 5px solid white;
-      margin-right: 20px;
+      width: 140px; height: 180px;
+      border: 4px solid #FFD700; /* Goldener Rahmen */
+      border-radius: 4px;
       object-fit: cover;
+      margin: 0 auto 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
-    .player-info h2 {
-      margin: 0 0 5px 0;
-      font-size: 24px;
-      font-weight: bold;
+    .player-name {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      text-align: center;
+      margin: 0 0 5px;
+      color: #B22222; /* Dunkelrot */
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
-    .player-info p {
-      margin: 0;
+    .player-pos-team {
+      text-align: center;
       font-size: 16px;
-      opacity: 0.9;
+      color: #333;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     .stats-grid {
+      flex: 1;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 15px;
+      font-size: 14px;
     }
     .stats-panel {
-      background: rgba(255,255,255,0.2);
-      border-radius: 15px;
-      padding: 20px;
-      backdrop-filter: blur(10px);
+      background: linear-gradient(145deg, #F5F5F5, #E0E0E0);
+      border: 2px solid #999;
+      border-radius: 6px;
+      padding: 12px;
     }
     .stats-panel h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
       text-align: center;
-      margin: 0 0 15px 0;
-      font-size: 14px;
-      font-weight: bold;
+      margin: 0 0 10px;
+      color: #B22222;
+      border-bottom: 2px solid #FFD700;
+      padding-bottom: 5px;
     }
     .stat-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 14px;
+      display: flex; justify-content: space-between;
+      margin-bottom: 4px;
     }
-    .stat-value {
-      font-weight: bold;
-      font-size: 16px;
+    .team-logo {
+      position: absolute;
+      top: 20px; right: 20px;
+      width: 60px; height: 60px;
+      background: radial-gradient(circle, #FF9500, #FFA726);
+      border-radius: 50%;
+      border: 3px solid white;
     }
-    @media (max-width: 500px) {
-      .stats-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 450px) { .stats-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <div class="player-card">
-    <div class="player-header">
-      <!-- Ersetzen Sie src durch echtes Foto aus Supabase -->
-      <img src="https://via.placeholder.com/90?text=Puka" alt="Puka Nacua" class="player-photo">
-      <div class="player-info">
-        <h2>Puka Nacua</h2>
-        <p>WR • Los Angeles Rams</p>
-      </div>
-    </div>
-    <div class="stats-grid">
-      <div class="stats-panel career">
-        <h3>Career</h3>
-        <div class="stat-row"><span>REC</span><span class="stat-value">290</span></div>
-        <div class="stat-row"><span>YDS</span><span class="stat-value">4191</span></div>
-        <div class="stat-row"><span>AVG</span><span class="stat-value">14.4</span></div>
-        <div class="stat-row"><span>TD</span><span class="stat-value">19</span></div>
-      </div>
-      <div class="stats-panel season">
-        <h3>2025 Reg. Season</h3>
-        <div class="stat-row"><span>REC</span><span class="stat-value">129</span></div>
-        <div class="stat-row"><span>YDS</span><span class="stat-value">1715</span></div>
-        <div class="stat-row"><span>AVG</span><span class="stat-value">13.3</span></div>
-        <div class="stat-row"><span>TD</span><span class="stat-value">10</span></div>
+  <div class="retro-card">
+    <div class="team-logo"></div> <!-- Chargers-Logo Platzhalter -->
+    <img src="https://via.placeholder.com/140x180/1a472a/FFD700?text=Puka+Nacua" alt="Puka Nacua" class="player-photo">
+    <div class="card-inner">
+      <h1 class="player-name">PUKA NACUA</h1>
+      <p class="player-pos-team">WR • LOS ANGELES RAMS</p>
+      <div class="stats-grid">
+        <div class="stats-panel career">
+          <h3>Career</h3>
+          <div class="stat-row"><span>REC</span><span>290</span></div>
+          <div class="stat-row"><span>REC YDS</span><span>4191</span></div>
+          <div class="stat-row"><span>AVG</span><span>14.4</span></div>
+          <div class="stat-row"><span>TD</span><span>19</span></div>
+        </div>
+        <div class="stats-panel season">
+          <h3>2025 Season</h3>
+          <div class="stat-row"><span>REC</span><span>129</span></div>
+          <div class="stat-row"><span>REC YDS</span><span>1715</span></div>
+          <div class="stat-row"><span>AVG</span><span>13.3</span></div>
+          <div class="stat-row"><span>TD</span><span>10</span></div>
+        </div>
       </div>
     </div>
   </div>
