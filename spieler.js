@@ -129,8 +129,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       // Vorderseite
       const front = container.querySelector('.retro-front');
       front.innerHTML = `
-         <img class="retro-player-photo" src="https://static.www.nfl.com/image/upload/t_player_profile_landscape/f_auto/league/zvi4hdm6fywcekfe7ceb" alt="${data.player_name}">
-         /* <img class="retro-player-photo" src="${data.photo_url || 'placeholder.jpg'}" alt="${player.name}"> */
+        <img class="retro-player-photo" src="${data.photo_url || "https://static.www.nfl.com/image/upload/t_player_profile_landscape/f_auto/league/zvi4hdm6fywcekfe7ceb"}" alt="${player.name}">
         <div class="retro-name-bar">${data.player_name}</div>
           ${data.awards ? `
             <div class="retro-awards">
