@@ -41,19 +41,24 @@
 .retro-player-photo { width: 100%; height: 55%; object-fit: cover; border: 4px solid #fff; border-radius: 8px; box-shadow: 0 6px 15px rgba(0,0,0,0.3); margin-bottom: 15px; }
 .retro-name-bar { 
   background: linear-gradient(135deg, #b0392e, #8b1e0f); 
-  color: #fff; text-align: center; 
+  color: #fff; 
+  text-align: center; 
   font-family: 'Cinzel', serif; 
-  font-size: clamp(20px, 6vw, 28px);  /* ← Neu: responsiv 20-28px */
-  padding: 10px 0; 
-  letter-spacing: 2px;  /* ← Reduziert für kürzere Namen */
+  /* Dynamische Font-Size: skaliert perfekt zur Container-Breite */
+  font-size: clamp(18px, 7.5vw, 32px);
+  padding: 8px 12px; 
+  letter-spacing: 1.5px; 
   text-transform: uppercase; 
   border-radius: 6px; 
   margin-bottom: 12px;
-  line-height: 1.1;  /* ← Neu: straffere Zeilen */
-  white-space: nowrap;  /* ← Neu: NIE umbrechen */
+  line-height: 1.1;
+  /* Wichtig: Flex-Container für perfektes Fitting */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;  /* Fixe Höhe für konsistentes Layout */
   overflow: hidden;
-  text-overflow: ellipsis;  /* ← Neu: abschneiden bei zu lang */
-}
+  }
 
 /*.retro-name-bar { background: linear-gradient(135deg, #b0392e, #8b1e0f); color: #fff; text-align: center; font-family: 'Cinzel', serif; font-size: 28px; padding: 10px 0; letter-spacing: 3px; text-transform: uppercase; border-radius: 6px; margin-bottom: 12px; } */
 
