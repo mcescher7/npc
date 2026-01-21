@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       const back = container.querySelector('.retro-back');
       back.innerHTML = `
         <div class="retro-back-name">${data.player_name}</div>
-        <div class="retro-back-meta">${data.position} • ${data.team}<br>Owner: ${data.owner || 'Unbekannt'}</div>
+        <div class="retro-back-meta">${data.position} • #${data.number}</div>
         <div class="retro-back-stats">
           <div class="retro-back-section">
             <h3>Career Stats</h3>
