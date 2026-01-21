@@ -129,17 +129,22 @@ document.addEventListener("DOMContentLoaded", async function() {
       // Vorderseite
       const front = container.querySelector('.retro-front');
       front.innerHTML = `
-        <img class="retro-player-photo" src="${data.espn_id ? "https://a.espncdn.com/i/headshots/nfl/players/full/${data.espn_id}.png" || "https://a.espncdn.com/i/headshots/nfl/players/full/3128720.png"}" alt="${data.player_name}>
+        <img class="retro-player-photo" 
+         src="${data.espn_id ? `https://a.espncdn.com/i/headshots/nfl/players/full/${data.espn_id}.png` : 'https://a.espncdn.com/i/headshots/nfl/players/full/3128720.png'}" 
+         alt="${data.player_name}">
+         
         <div class="retro-name-bar">${data.player_name}</div>
-          ${data.awards ? `
+        
+        ${data.awards ? `
             <div class="retro-awards">
               <div class="retro-award-badge">${data.awards}</div>
             </div>
           ` : ''}
+          
         <div class="retro-front-stats">
           <div><label>Games</label><strong>${data.games || 0}</strong></div>
-          <div><label>Points</label><strong>${data.points || 0}</strong></div>
           <div><label>PPG</label><strong>${data.ppg || 0}</strong></div>
+          <div><label>Points</label><strong>${data.points || 0}</strong></div>     
         </div>
       `;
     
