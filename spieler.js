@@ -182,8 +182,11 @@ document.addEventListener("DOMContentLoaded", async function() {
           </div>
           <div class="retro-back-section">
             <h3>Best Performance</h3>
-            ${data.best_game ? `
-                <div class="retro-stat-row"><span>${data.best_game}</span></div>
+            ${data.best_game_points ? `
+                <div class="retro-stat-row"><span>${data.best_game_points}</span></div>
+            ` : ''}
+            ${data.best_game_info ? `
+                <div class="retro-stat-row"><span>${data.best_game_info}</span></div>
             ` : ''}
           </div>
         </div>
