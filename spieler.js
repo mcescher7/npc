@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     
     searchInput.addEventListener("input", function () {      
-        const container = document.getElementById('player-card-container');
+        const cardContainer  = document.getElementById('player-card-container');
          const careerTable   = document.querySelector('.table.hidden'); 
         if (!searchInput.value.trim()) {
             cardContainer?.classList.add('hidden');
