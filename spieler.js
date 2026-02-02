@@ -180,6 +180,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <div class="retro-stat-row"><span>DEFENSE</span><span>${data.defense}</span></div>
             ` : ''}
           </div>
+          <div class="retro-back-section">
+            <h3>Best Performance</h3>
+            ${data.best_game ? `
+                <div class="retro-stat-row"><span>${data.best_game}</span></div>
+            ` : ''}
+          </div>
         </div>
       `;
     
