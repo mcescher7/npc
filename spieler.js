@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     searchInput.addEventListener("input", function () {
         loadPlayerSuggestions(this.value);
         const container = document.getElementById('player-card-container');
-        if (!this.value.trim()) {
+        if (!searchInput.value.trim()) {
             container.classList.add('hidden');    // nichts eingegeben → ausblenden
         }
     });
