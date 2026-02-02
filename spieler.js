@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
     
     async function loadCareerData(player = '') {
+        const careerTbody   = document.getElementById('career-table');  // ← tbody!
         if (!player.trim()) {
             tableBody.innerHTML = "";
             return;
@@ -94,7 +95,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <td class="${setRowColor(row.type)}">${row.manager_name}</td>
                 <td class="${setRowColor(row.type)}">${row.target}</td>
             </tr>`
-        ).join("");       
+        ).join("");    
+
+        if (careerTbody?.parentElement) {
+            careerTbody.parentElement.classList.remove('hidden');
+        }
     }
 
     async function loadPlayerSuggestions(query) {
@@ -185,12 +190,15 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     
-    searchInput.addEventListener("input", function () {
-        loadPlayerSuggestions(this.value);
+    searchInput.addEventListener("input", function () {      
         const container = document.getElementById('player-card-container');
+         const careerTable   = document.querySelector('.table.hidden'); 
         if (!searchInput.value.trim()) {
-            container.classList.add('hidden');    // nichts eingegeben → ausblenden
+            cardContainer?.classList.add('hidden');
+            careerTable?.classList.add('hidden');
+            return;
         }
+        loadPlayerSuggestions(this.value);
     });
 
     searchInput.addEventListener("change", function () {
