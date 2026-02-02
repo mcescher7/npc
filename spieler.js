@@ -180,11 +180,17 @@ document.addEventListener("DOMContentLoaded", async function() {
     
       // Flip-Event
       container.onclick = () => container.classList.toggle('flipped');
+
+      container.classList.remove('hidden');
     }
 
     
     searchInput.addEventListener("input", function () {
         loadPlayerSuggestions(this.value);
+        const container = document.getElementById('player-card-container');
+        if (!this.value.trim()) {
+            container.classList.add('hidden');    // nichts eingegeben → ausblenden
+        }
     });
 
     searchInput.addEventListener("change", function () {
