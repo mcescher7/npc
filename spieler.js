@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     searchInput.addEventListener("focus", function () {
         this.value = "";
-        tableBody.innerHTML = "";
+        /* tableBody.innerHTML = ""; */
         suggestionsContainer.innerHTML = "";
         /* infoDiv.innerHTML = ""; */
     });
