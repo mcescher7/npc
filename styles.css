@@ -91,3 +91,33 @@
 .hidden {
   display: none !important;
 }
+
+/* Kompakte Week-Buttons (nur Zahlen: 1,2,3...) */
+#week-buttons-group {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px;  /* Minimale Gruppen-Übergänge */
+  padding: 4px;
+  max-width: 100%;
+}
+
+#week-buttons-group .btn {
+  flex: 0 0 auto;           /* Fixe Breite, kein Shrink */
+  width: 42px !important;   /* Ideal für 1-2 Ziffern */
+  height: 36px;             /* Kompakt */
+  font-size: 0.875rem;      /* Klein */
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;  /* Weniger Padding */
+  border-radius: 4px;       /* Leicht abgerundet */
+  margin: 1px;              /* Feiner Abstand */
+}
+
+/* Handy: Mehr pro Reihe */
+@media (max-width: 576px) {
+  #week-buttons-group .btn {
+    width: 38px !important;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+}
+
