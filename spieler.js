@@ -183,10 +183,13 @@ document.addEventListener("DOMContentLoaded", async function() {
           <div class="retro-back-section">
             <h3>Best Performance</h3>
             ${data.best_game_points ? `
-                <div class="retro-stat-row"><span>${data.best_game_points}</span></div>
+                <div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_points}</span></div>
             ` : ''}
             ${data.best_game_info ? `
-                <div class="retro-stat-row"><span>${data.best_game_info}</span></div>
+                <div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_info}</span></div>
+            ` : ''}
+             ${data.best_game_stats ? `
+                <div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_stats}</span></div>
             ` : ''}
           </div>
         </div>
