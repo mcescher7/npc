@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const createWeekButton = (week) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'btn btn-secondary';
+      button.className = 'btn btn-outline-secondary';
       button.textContent = `${week}`;
       button.dataset.week = week;
       return button;
