@@ -17,6 +17,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         return option;
     };
 
+    const createWeekButton = (week) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn btn-outline-primary';
+      button.textContent = `Woche ${week}`;
+      button.dataset.week = week;
+      return button;
+    };
+
     const logError = (context, error) => {
         console.error(`❌ Fehler bei ${context}:`, error);
     };
@@ -87,28 +96,37 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadWeeks(year) {
-        weekSelect.innerHTML = "";
-
-        const {
-            data,
-            error
-        } = await supabase
-            .from("seasons")
-            .select("weeks")
-            .eq("year", year)
-            .single();
-
-        if (error || !data) return logError("Laden der Wochen", error);
-
-        const weeks = data.weeks;
-        for (let i = 1; i <= weeks; i++) {
-            weekSelect.appendChild(createOption(i, i));
-        }
-
-        if (weeks > 0) {
-            weekSelect.value = weeks;
-            await loadWeeklyMatchups(year, weeks);
-        }
+      const group = document.getElementById('week-buttons-group');
+      if (!group) return;
+      group.innerHTML = '';
+      
+      const { data, error } = await supabase
+        .from('seasons')
+        .select('weeks')
+        .eq('year', year)
+        .single();
+        
+      if (error || !data) {
+        console.error('Fehler beim Laden der Wochen', error);
+        return;
+      }
+      
+      const weeks = data.weeks;
+      for (let i = 1; i <= weeks; i++) {
+        const button = createWeekButton(i);
+        if (i === weeks) button.classList.add('active', 'btn-primary');  // Letzte aktiv
+        button.addEventListener('click', () => {
+          // Alle deaktivieren
+          group.querySelectorAll('.btn').forEach(btn => {
+            btn.classList.remove('active', 'btn-primary');
+          });
+          // Aktivieren
+          button.classList.add('active', 'btn-primary');
+          const selectedWeek = parseInt(button.dataset.week, 10);
+          loadWeeklyMatchups(year, selectedWeek);
+        });
+        group.appendChild(button);
+      }
     }
 
     async function loadWeeklyMatchups(year, week) {
@@ -481,13 +499,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         await loadWeeks(year);
         await loadAwards(year);
         await loadDraftBoard(year);
-    });
-
-    weekSelect.addEventListener("change", (e) => {
-        const year = parseInt(seasonSelect.value, 10);
-        const week = parseInt(e.target.value, 10);
-        if (!year || !week) return;
-        loadWeeklyMatchups(year, week);
     });
 
     // 🚀 Initialisierung
