@@ -1,5 +1,8 @@
 // Das Menü aus der components/menu.html in die Seite laden
-fetch('components/menu.html')
+// Prüfen ob wir im /pages Ordner sind oder im Root
+const menuPath = window.location.pathname.includes('/pages/') ? '../components/menu.html' : 'components/menu.html';
+
+fetch(menuPath)
   .then(response => response.text())
   .then(data => {
     document.getElementById('menu-container').innerHTML = data;
