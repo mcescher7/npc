@@ -79,6 +79,7 @@
 .retro-back-stats { display: grid; grid-template-rows: auto 1fr; height: 65%; gap: 15px; }
 .retro-back-section h3 { font-family: 'Cinzel', serif; font-size: 16px; color: #b0392e; margin: 0 0 12px; border-bottom: 2px solid #d4a017; padding-bottom: 5px; }
 .retro-stat-row { display: flex; justify-content: space-between; font-size: 13px; color: #000; padding: 4px 0; border-bottom: 1px dotted #d1c0a5; }
+.retro-stat-row-center { justify-content: center !important; border-bottom: none; }
 .retro-stat-row:last-child { border-bottom: none; }
 
 /* Karte initial verstecken */
