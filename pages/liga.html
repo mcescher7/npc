@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nathan Peterman Cup</title>
+    <link rel="icon" href="../assets/favicon.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+    <script src="../js/script.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script defer src="../js/liga.js"></script>
+</head>
+<body>
+    <div id="menu-container"></div>
+    
+    <div class="container mt-4">
+        <h1 class="text-center">Liga-Stats</h1>
+
+        <h2 class="mt-4">Ewige Tabelle</h2>
+        <div class="table-responsive">
+            <table id="alltime-table" class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Platz</th>
+                        <th>Manager</th>
+                        <th>Saisons</th>
+                        <th>Playoffs</th>
+                        <th>Titel</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>W/L-%</th>
+                        <th>PF</th>
+                        <th>PA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="mt-4">Saison-Info</h2>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Jahr</th>
+                        <th>Draft</th>
+                        <th>Wochen</th>
+                        <th>Teams</th>
+                        <th>Playoff-Teams</th>
+                        <th>PPR</th>
+                        <th>Waiver</th>
+                        <th>Tiebreaker</th>
+                        <th>Plattform</th>
+                        <th>QB</th>
+                        <th>RB</th>
+                        <th>WR</th>
+                        <th>TE</th>
+                        <th>R/W</th>
+                        <th>R/W/T</th>
+                        <th>K</th>
+                        <th>D/ST</th>
+                        <th>BN</th>
+                        <th>IR</th>
+                    </tr>
+                </thead>
+              <tbody id="seasons-table">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
