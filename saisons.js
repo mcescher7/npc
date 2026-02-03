@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     const createWeekButton = (week) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'btn btn-outline-primary';
-      button.textContent = `Woche ${week}`;
+      button.className = 'btn btn-secondary';
+      button.textContent = `${week}`;
       button.dataset.week = week;
       return button;
     };
@@ -114,14 +114,14 @@ document.addEventListener("DOMContentLoaded", async function() {
       const weeks = data.weeks;
       for (let i = 1; i <= weeks; i++) {
         const button = createWeekButton(i);
-        if (i === weeks) button.classList.add('active', 'btn-primary');  // Letzte aktiv
+        if (i === weeks) button.classList.add('active');  // Letzte aktiv
         button.addEventListener('click', () => {
           // Alle deaktivieren
           group.querySelectorAll('.btn').forEach(btn => {
-            btn.classList.remove('active', 'btn-primary');
+            btn.classList.remove('active');
           });
           // Aktivieren
-          button.classList.add('active', 'btn-primary');
+          button.classList.add('active');
           const selectedWeek = parseInt(button.dataset.week, 10);
           loadWeeklyMatchups(year, selectedWeek);
         });
