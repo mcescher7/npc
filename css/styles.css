@@ -44,7 +44,6 @@
   color: #fff; 
   text-align: center; 
   font-family: 'Cinzel', serif; 
-  /* Dynamische Font-Size: skaliert perfekt zur Container-Breite */
   font-size: clamp(18px, 7.5vw, 32px);
   padding: 8px 12px; 
   letter-spacing: 1.5px; 
@@ -52,15 +51,12 @@
   border-radius: 6px; 
   margin-bottom: 12px;
   line-height: 1.1;
-  /* Wichtig: Flex-Container für perfektes Fitting */
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;  /* Fixe Höhe für konsistentes Layout */
+  min-height: 48px;
   overflow: hidden;
   }
-
-/*.retro-name-bar { background: linear-gradient(135deg, #b0392e, #8b1e0f); color: #fff; text-align: center; font-family: 'Cinzel', serif; font-size: 28px; padding: 10px 0; letter-spacing: 3px; text-transform: uppercase; border-radius: 6px; margin-bottom: 12px; } */
 
 .retro-award-badge { display: inline-block; background: linear-gradient(135deg, #f9e07f, #d4a017); color: #8b1e0f; padding: 6px 12px; border-radius: 20px; border: 3px solid #fff; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 3px 8px rgba(0,0,0,0.3); }
 .retro-front-stats { 
@@ -68,8 +64,8 @@
   grid-template-columns: repeat(3,1fr); 
   gap: 15px; 
   text-align: center;
-  margin-top: 20px;  /* ← Neu: weiter unten */
-  padding-top: 15px;  /* ← Neu: Abstand oben */
+  margin-top: 20px;
+  padding-top: 15px;
 }
 .retro-front-stats > div { background: rgba(255,255,255,0.6); padding: 10px 5px; border-radius: 6px; border: 1px solid #d1c0a5; }
 .retro-front-stats label { display: block; font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
@@ -83,7 +79,6 @@
 .retro-stat-row-center { justify-content: center !important; }
 .retro-stat-row-center:last-child { border-bottom: none; }
 
-/* Karte initial verstecken */
 .retro-card-container.hidden {
   display: none;
 }

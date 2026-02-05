@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     const searchInput = document.getElementById('search-player');
     const suggestionsContainer = document.getElementById('player-suggestions');
     const tableBody = document.getElementById("career-table");
-    /* const infoDiv = document.getElementById('player-info'); */
 
     function formatDate(date) {
         const rowTime = new Date(date);
@@ -27,52 +26,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
         return '';
     }
-
-    async function loadPlayerInfo(player = '') {
-        if (!player.trim()) {
-            infoDiv.innerHTML = "";
-            return;
-        }
-        
-        const { data, error } = await supabaseClient
-            .from('player_info')
-            .select('*')
-            .ilike('player_name', `%${player}%`)
-            .single();
-    
-        if (error) {
-            console.log("loadPlayerInfo: Spieler nicht gefunden.");
-            return;
-        }
-
-        let infoHtml = '';
-        
-        if (data.awards)
-          infoHtml += `<div style="text-align: center;"><span style="color: gold;">${data.awards}</span></div>`;
-        if (data.game_info)
-          infoHtml += `<div style="text-align: center; margin-bottom: 0.25rem;">${data.game_info}</div>`;
-        if (data.passing)
-          infoHtml += `<div><strong>passing:</strong> ${data.passing}</div>`;
-        if (data.rushing)
-          infoHtml += `<div><strong>rushing:</strong> ${data.rushing}</div>`;
-        if (data.receiving)
-          infoHtml += `<div><strong>receiving:</strong> ${data.receiving}</div>`;
-        if (data.misc)
-          infoHtml += `<div><strong>misc:</strong> ${data.misc}</div>`;
-        if (data.kicking)
-          infoHtml += `<div><strong>kicking:</strong> ${data.kicking}</div>`;
-        if (data.defense)
-          infoHtml += `<div>${data.defense}</div>`;
-        
-        if (!infoHtml) {
-          infoDiv.innerHTML = '<div class="text-muted">Keine Statistiken vorhanden.</div>';
-        } else {
-          infoDiv.innerHTML = infoHtml;
-        }
-    }
     
     async function loadCareerData(player = '') {
-        const careerTbody   = document.getElementById('career-table');  // ← tbody!
+        const careerTbody   = document.getElementById('career-table');
         if (!player.trim()) {
             tableBody.innerHTML = "";
             return;
@@ -131,7 +87,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         .ilike('player_name', `%${player}%`)
         .single();
     
-      // Vorderseite
       const front = container.querySelector('.retro-front');
       front.innerHTML = `
         <img class="retro-player-photo" 
@@ -153,7 +108,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         </div>
       `;
     
-      // Rückseite
       const back = container.querySelector('.retro-back');
       back.innerHTML = `
         <div class="retro-back-name">${data.player_name}</div>
@@ -195,9 +149,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         </div>
       `;
     
-      // Flip-Event
       container.onclick = () => container.classList.toggle('flipped');
-
       container.classList.remove('hidden');
     }
 
@@ -221,8 +173,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     searchInput.addEventListener("focus", function () {
         this.value = "";
-        /* tableBody.innerHTML = ""; */
         suggestionsContainer.innerHTML = "";
-        /* infoDiv.innerHTML = ""; */
     });
 });

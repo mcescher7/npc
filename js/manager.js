@@ -283,20 +283,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         modal.show();
     }
 
-    /*
-    document.getElementById("manager-matchups-table").addEventListener("click", function(e) {
-        const row = e.target.closest("tr");
-        if (!row || !managerId) return;
-
-        const opponentId = row.dataset.opponent_id;
-        const opponentName = row.dataset.opponent_name;
-
-        if (opponentId) {
-            showMatchDetails(managerId, opponentId, opponentName);
-        }
-    });
-    */
-
     managerSelect.addEventListener("change", (event) => {
         managerId = parseInt(event.target.value, 10) || null;
         selectedManagerName = managerSelect.options[managerSelect.selectedIndex].text;

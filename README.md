@@ -1,57 +1,96 @@
-<header>
+# Nathan Peterman Cup
 
-<!--
-  <<< Author notes: Course header >>>
-  Include a 1280×640 image, course title in sentence case, and a concise description in emphasis.
-  In your repository settings: enable template repository, add your 1280×640 social image, auto delete head branches.
-  Add your open source license, GitHub uses MIT license.
--->
+Eine Fantasy Football Liga-Statistik-Webanwendung für den Nathan Peterman Cup. Diese Webseite zeigt umfassende Statistiken, Rekorde und historische Daten unserer Fantasy Football Liga.
 
-# GitHub Pages
+## 🏈 Features
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+- **Liga-Übersicht**: Ewige Tabelle und Saison-Informationen
+- **Saison-Details**: Playoff-Brackets, Regular Season Standings, wöchentliche Ergebnisse und Draft-Boards
+- **Manager-Stats**: Individuelle Statistiken, Rekorde und Head-to-Head Records
+- **Spieler-Daten**: Spielersuche mit interaktiven Retro-Trading-Cards
+- **Rekorde**: Top Performances und historische Bestmarken
 
-</header>
+## 📊 Tech Stack
 
-<!--
-  <<< Author notes: Finish >>>
-  Review what we learned, ask for feedback, provide next steps.
--->
+- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
+- **CSS Framework**: Bootstrap 5.3
+- **Datenbank**: Supabase
+- **Hosting**: GitHub Pages
+- **Weitere Libraries**: jQuery, DataTables
 
-## Finish
+## 📁 Projektstruktur
 
-_Congratulations friend, you've completed this course!_
+```
+npc/
+├── assets/          # Bilder und Favicons
+├── components/      # Wiederverwendbare Komponenten (Menü)
+├── css/             # Stylesheets
+│   ├── styles.css
+│   └── saisons.css
+├── js/              # JavaScript-Dateien
+│   ├── script.js
+│   ├── liga.js
+│   ├── manager.js
+│   ├── saisons.js
+│   ├── spieler.js
+│   ├── rekorde_manager.js
+│   └── rekorde_spieler.js
+├── pages/           # HTML-Seiten
+│   ├── liga.html
+│   ├── manager.html
+│   ├── saisons.html
+│   ├── spieler.html
+│   ├── rekorde_manager.html
+│   └── rekorde_spieler.html
+├── index.html       # Startseite
+└── README.md
+```
 
-<img src=https://octodex.github.com/images/constructocat2.jpg alt=celebrate width=300 align=right>
+## 🚀 Installation & Entwicklung
 
-Your blog is now live and has been deployed!
+1. Repository klonen:
+```bash
+git clone https://github.com/mcescher7/npc.git
+cd npc
+```
 
-Here's a recap of all the tasks you've accomplished in your repository:
+2. Lokalen Server starten (z.B. mit Python):
+```bash
+python -m http.server 8000
+```
 
-- You enabled GitHub Pages.
-- You selected a theme using the config file.
-- You learned about proper directory format and file naming conventions in Jekyll.
-- You created your first blog post with Jekyll!
+3. Im Browser öffnen:
+```
+http://localhost:8000
+```
 
-### What's next?
+## 🌐 Live-Version
 
-- Keep working on your GitHub Pages site... we love seeing what you come up with!
-- We'd love to hear what you thought of this course [in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages).
-- [Take another GitHub Skills course](https://github.com/skills).
-- [Read the GitHub Getting Started docs](https://docs.github.com/en/get-started).
-- To find projects to contribute to, check out [GitHub Explore](https://github.com/explore).
+Die Webseite ist live auf GitHub Pages verfügbar:
+[https://mcescher7.github.io/npc/](https://mcescher7.github.io/npc/)
 
-<footer>
+## ⚙️ Features im Detail
 
-<!--
-  <<< Author notes: Footer >>>
-  Add a link to get support, GitHub status page, code of conduct, license link.
--->
+### Dark Mode
+Die Seite unterstützt einen Dark/Light Mode Toggle, der die Präferenz im Browser speichert.
+
+### Responsive Design
+Vollständig responsive Layouts für Desktop, Tablet und Mobile.
+
+### Interaktive Elemente
+- Klickbare Tabellen für Details
+- Filterbare Spieler-Rekorde nach Position
+- Draft-Board mit Farbcodierung nach Position
+- Animierte Trading Cards mit Flip-Effekt
+
+## 📝 Lizenz
+
+MIT License - siehe [LICENSE](LICENSE) Datei.
+
+## 👥 Mitwirkende
+
+Entwickelt für die Nathan Peterman Cup Fantasy Football Liga.
 
 ---
 
-Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
-
-&copy; 2023 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
-
-</footer>
+**Live:** [mcescher7.github.io/npc](https://mcescher7.github.io/npc/)

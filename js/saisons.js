@@ -115,16 +115,14 @@ document.addEventListener("DOMContentLoaded", async function() {
       for (let i = 1; i <= weeks; i++) {
         const button = createWeekButton(i);
         if (i === weeks) {
-            button.classList.add('active');  // Letzte aktiv
+            button.classList.add('active');
             const selectedWeek = parseInt(button.dataset.week, 10);
             loadWeeklyMatchups(year, selectedWeek);
         }
         button.addEventListener('click', () => {
-          // Alle deaktivieren
           group.querySelectorAll('.btn').forEach(btn => {
             btn.classList.remove('active');
           });
-          // Aktivieren
           button.classList.add('active');
           const selectedWeek = parseInt(button.dataset.week, 10);
           loadWeeklyMatchups(year, selectedWeek);
@@ -171,7 +169,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
         const rosterContent = document.getElementById('roster-content');
 
-        // Roster-Daten für beide Teams laden
         const {
             data: homeRoster
         } = await supabase
@@ -259,12 +256,10 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
 
-        // Hauptpositionen (ohne Bank)
         const mainPositions = [
             'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'
         ];
 
-        // Punkte summieren (nur Hauptpositionen)
         const homeTotal = mainPositions.reduce((sum, pos) => {
             const p = homeMap[pos];
             return sum + (p && typeof p.points === 'number' ? p.points : 0);
@@ -275,7 +270,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             return sum + (p && typeof p.points === 'number' ? p.points : 0);
         }, 0);
 
-        // Kopfzeile bauen: Teamnamen außen, Punktzahlen innen
         rosterContent.innerHTML = `
     <div class="container-fluid px-0">
         <div class="table-responsive">
@@ -493,7 +487,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // 🔁 Event Listener
     seasonSelect.addEventListener("change", async (e) => {
         const year = parseInt(e.target.value, 10);
         if (!year) return;
@@ -505,6 +498,5 @@ document.addEventListener("DOMContentLoaded", async function() {
         await loadDraftBoard(year);
     });
 
-    // 🚀 Initialisierung
     await loadSeasons();
 });

@@ -1,26 +1,27 @@
-// Das Menü aus der menu.html in die Seite laden
-fetch('menu.html')
+// Das Menü aus der components/menu.html in die Seite laden
+const inPagesFolder = window.location.pathname.includes('/pages/');
+const menuPath = inPagesFolder ? '../components/menu.html' : 'components/menu.html';
+
+fetch(menuPath)
   .then(response => response.text())
   .then(data => {
     document.getElementById('menu-container').innerHTML = data;
-    setActiveMenuItem();  // Funktion zum Aktivieren des aktiven Menüpunktes nach dem Laden
-    initDarkModeToggle(); // Dark Mode Toggle initialisieren
+    setActiveMenuItem();
+    initDarkModeToggle();
   })
   .catch(error => console.error('Fehler beim Laden des Menüs:', error));
 
 // Funktion zum Aktivieren des aktiven Menüpunktes
 function setActiveMenuItem() {
-  // Aktuellen Dateinamen extrahieren (z. B. "saisons.html")
   const currentPage = location.pathname.split('/').pop();
 
-  // Alle Links im Menü durchgehen und bei Übereinstimmung "active" setzen
-  document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-    if (link.getAttribute('href') === currentPage) {
+  document.querySelectorAll('.navbar-nav .nav-link, .dropdown-item').forEach(link => {
+    const linkPage = link.getAttribute('href')?.split('/').pop();
+    if (linkPage === currentPage) {
       link.classList.add('active');
     }
   });
 }
-
 
 function initDarkModeToggle() {
   const html = document.documentElement;
@@ -28,7 +29,6 @@ function initDarkModeToggle() {
   const icon = document.getElementById('themeIcon');
   if (!btn || !icon) return;
 
-  // Gespeichertes Theme laden oder Standard "dark"
   const savedTheme = localStorage.getItem('bsTheme') || 'dark';
   html.setAttribute('data-bs-theme', savedTheme);
   icon.textContent = savedTheme === 'dark' ? 'light_mode' : 'dark_mode';
@@ -41,4 +41,3 @@ function initDarkModeToggle() {
     icon.textContent = next === 'dark' ? 'light_mode' : 'dark_mode';
   });
 }
-
