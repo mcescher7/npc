@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const {
             data,
             error
-        } = await supabase
+        } = await supabaseClient
             .from("seasons")
             .select("year")
             .order("year", {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const {
             data,
             error
-        } = await supabase
+        } = await supabaseClient
             .from("regular_season_standings")
             .select("rank, name, teamname, w, l, pf, pa")
             .eq("year", year)
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       if (!group) return;
       group.innerHTML = '';
       
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('seasons')
         .select('weeks')
         .eq('year', year)
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const {
             data,
             error
-        } = await supabase
+        } = await supabaseClient
             .from("matchup_table")
             .select("team1, team1_id, points1, points2, team2, team2_id")
             .eq("year", year)
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const {
             data: homeRoster
-        } = await supabase
+        } = await supabaseClient
             .from('roster_info')
             .select('position, player_name, points, stats, game_info, timeslot, projection')
             .eq('manager_id', home_id)
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const {
             data: awayRoster
-        } = await supabase
+        } = await supabaseClient
             .from('roster_info')
             .select('position, player_name, points, stats, game_info, timeslot, projection')
             .eq('manager_id', away_id)
@@ -305,7 +305,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const {
             data,
             error
-        } = await supabase
+        } = await supabaseClient
             .from("award_winners")
             .select("award, player")
             .eq("year", year)
@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const {
             data,
             error
-        } = await supabase
+        } = await supabaseClient
             .from("draft_board")
             .select("round, pick_no, teamname, first_name, last_name, position, keeper_id")
             .eq("year", year)
@@ -391,7 +391,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const {
             data,
             error
-        } = await supabase
+        } = await supabaseClient
             .from("playoff_matches")
             .select("*")
             .eq("year", year);
