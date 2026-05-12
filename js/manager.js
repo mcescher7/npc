@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", async function() {
-    const SUPABASE_URL = "https://hcjinenoxuulhcoadmgh.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_BGv-lH87VHMk9fO33rZ-fw_yPBh5OSX";
-
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const managerSelect = document.getElementById("manager-select");
     let managerId = null;
     let selectedManagerName = "";
