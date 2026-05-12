@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const SUPABASE_URL = "https://hcjinenoxuulhcoadmgh.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjamluZW5veHV1bGhjb2FkbWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgxODMzNjMsImV4cCI6MjA1Mzc1OTM2M30.LSNcn8Vl0D5Admpc5S7gyS2HkTGJr0fe30JdiJJOfC0";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     async function loadTopPerformances(position = "all") {
         let query = supabaseClient.from("top_10_performances").select("*")
           .order("points", { ascending: false })
