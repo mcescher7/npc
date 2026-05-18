@@ -52,11 +52,13 @@ document.addEventListener("DOMContentLoaded", async function() {
             const newestYear = data[data.length - 1].year;
             seasonSelect.value = newestYear;
 
-            await loadBracket(newestYear);
-            await loadRegSeason(newestYear);
-            await loadWeeks(newestYear);
-            await loadAwards(newestYear);
-            await loadDraftBoard(newestYear);
+            await Promise.all([
+                loadBracket(newestYear),
+                loadRegSeason(newestYear),
+                loadWeeks(newestYear),
+                loadAwards(newestYear),
+                loadDraftBoard(newestYear)
+            ]);
         }
     }
 
@@ -165,23 +167,20 @@ document.addEventListener("DOMContentLoaded", async function() {
         const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
         const rosterContent = document.getElementById('roster-content');
 
-        const {
-            data: homeRoster
-        } = await supabaseClient
-            .from('roster_info')
-            .select('position, player_name, points, stats, game_info, timeslot, projection')
-            .eq('manager_id', home_id)
-            .eq('year', year)
-            .eq('week', week);
-
-        const {
-            data: awayRoster
-        } = await supabaseClient
-            .from('roster_info')
-            .select('position, player_name, points, stats, game_info, timeslot, projection')
-            .eq('manager_id', away_id)
-            .eq('year', year)
-            .eq('week', week);
+        const [{ data: homeRoster }, { data: awayRoster }] = await Promise.all([
+            supabaseClient
+                .from('roster_info')
+                .select('position, player_name, points, stats, game_info, timeslot, projection')
+                .eq('manager_id', home_id)
+                .eq('year', year)
+                .eq('week', week),
+            supabaseClient
+                .from('roster_info')
+                .select('position, player_name, points, stats, game_info, timeslot, projection')
+                .eq('manager_id', away_id)
+                .eq('year', year)
+                .eq('week', week)
+        ]);
 
         const positions = [
             'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
@@ -487,11 +486,13 @@ document.addEventListener("DOMContentLoaded", async function() {
         const year = parseInt(e.target.value, 10);
         if (!year) return;
 
-        await loadBracket(year);
-        await loadRegSeason(year);
-        await loadWeeks(year);
-        await loadAwards(year);
-        await loadDraftBoard(year);
+        await Promise.all([
+            loadBracket(year),
+            loadRegSeason(year),
+            loadWeeks(year),
+            loadAwards(year),
+            loadDraftBoard(year)
+        ]);
     });
 
     await loadSeasons();
