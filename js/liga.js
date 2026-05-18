@@ -92,6 +92,5 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    await loadStandingsData();
-    await loadSeasonData();
+    await Promise.all([loadStandingsData(), loadSeasonData()]);
 });
