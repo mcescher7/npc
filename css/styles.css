@@ -86,3 +86,126 @@
 .hidden {
   display: none !important;
 }
+
+/* Spieler-Zeitstrahl */
+.year-divider {
+  position: relative;
+  text-align: center;
+  margin: 1.4rem 0 0.8rem;
+  z-index: 1;
+}
+
+.year-divider span {
+  background: #1a1a2e;
+  padding: 3px 16px;
+  border: 2px solid #d4a017;
+  border-radius: 20px;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #d4a017;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-container {
+  position: relative;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 0.5rem 0;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #8B7355;
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: calc(50% + 20px);
+  margin-bottom: 0.45rem;
+  position: relative;
+}
+
+.timeline-item.drop {
+  justify-content: flex-start;
+  padding-right: 0;
+  padding-left: calc(50% + 20px);
+}
+
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #8B7355;
+}
+
+.timeline-item.add::after {
+  background: #7cff7c;
+}
+
+.timeline-item.drop::after {
+  background: #ff7c7c;
+}
+
+.timeline-card {
+  background: #22223a;
+  border: 1px solid #55536a;
+  border-radius: 6px;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+}
+
+.tc-date {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.tc-name {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.tc-source {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+@media (max-width: 576px) {
+  .timeline-container::before {
+    left: 14px;
+  }
+
+  .timeline-item,
+  .timeline-item.drop {
+    justify-content: flex-start;
+    padding-left: 32px;
+    padding-right: 0;
+  }
+
+  .timeline-item::after {
+    left: 14px;
+  }
+
+  .timeline-card {
+    white-space: normal;
+    flex-wrap: wrap;
+  }
+}
