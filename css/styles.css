@@ -209,3 +209,43 @@
     flex-wrap: wrap;
   }
 }
+
+/* Timeline contrast fixes for light mode */
+[data-bs-theme="light"] .timeline-container::before {
+  background: #6c757d;
+}
+
+[data-bs-theme="light"] .year-divider span {
+  background: #ffffff;
+  color: #8b6a00;
+  border-color: #d4a017;
+}
+
+[data-bs-theme="light"] .timeline-card {
+  background: #ffffff;
+  border: 1px solid #c9c9c9;
+  color: #212529;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+}
+
+[data-bs-theme="light"] .tc-date,
+[data-bs-theme="light"] .tc-source {
+  color: #6c757d;
+  opacity: 1;
+}
+
+[data-bs-theme="light"] .tc-name {
+  color: #212529;
+}
+
+[data-bs-theme="light"] .timeline-item::after {
+  border-color: #6c757d;
+}
+
+[data-bs-theme="light"] .timeline-item.add::after {
+  background: #198754;
+}
+
+[data-bs-theme="light"] .timeline-item.drop::after {
+  background: #dc3545;
+}
