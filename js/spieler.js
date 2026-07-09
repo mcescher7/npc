@@ -97,11 +97,40 @@ document.addEventListener("DOMContentLoaded", async function() {
             .ilike('player_name', `%${player}%`)
             .single();
 
+        // Build achievement strips (only shown when value > 0 / present)
+        const strips = [];
+        if (data.championships > 0)
+            strips.push(`<div class="retro-achievement-strip"><span>${data.championships}x NPC Champion</span></div>`);
+        if (data.team_of_year > 0)
+            strips.push(`<div class="retro-achievement-strip"><span>${data.team_of_year}× Team of the Year</span></div>`);
+        if (data.team_of_week > 0)
+            strips.push(`<div class="retro-achievement-strip"><span>${data.team_of_week}× Team of the Week</span></div>`);
+
         const front = container.querySelector('.retro-front');
         front.innerHTML = `
-            <img class="retro-player-photo" src="${data.espn_id ? `https://a.espncdn.com/i/headshots/nfl/players/full/${data.espn_id}.png` : 'https://a.espncdn.com/i/headshots/nfl/players/full/3128720.png'}" alt="${data.player_name}">
+            <div class="retro-corner tl"></div>
+            <div class="retro-corner tr"></div>
+            <div class="retro-corner bl"></div>
+            <div class="retro-corner br"></div>
+
+            <div class="retro-ovr-badge">
+                <span class="retro-ovr-label">OVR</span>
+                <span class="retro-ovr-number">${data.ovr ?? 96}</span>
+            </div>
+
+            <div class="retro-photo-wrap">
+                <img class="retro-player-photo"
+                    src="${data.espn_id ? `https://a.espncdn.com/i/headshots/nfl/players/full/${data.espn_id}.png` : 'https://a.espncdn.com/i/headshots/nfl/players/full/3128720.png'}"
+                    alt="${data.player_name}"
+                    loading="lazy">
+            </div>
+
             <div class="retro-name-bar">${data.player_name}</div>
-            ${data.awards ? `<div class="retro-awards"><div class="retro-award-badge">${data.awards}</div></div>` : ''}
+
+            ${data.awards ? `<div class="retro-award-strip"><span>${data.awards}</span></div>` : ''}
+
+            ${strips.length > 0 ? `<div class="retro-achievement-strips">${strips.join('')}</div>` : ''}
+
             <div class="retro-front-stats">
                 <div><label>Games</label><strong>${data.games || 0}</strong></div>
                 <div><label>PPG</label><strong>${data.ppg || 0}</strong></div>
@@ -111,23 +140,28 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const back = container.querySelector('.retro-back');
         back.innerHTML = `
+            <div class="retro-corner tl"></div>
+            <div class="retro-corner tr"></div>
+            <div class="retro-corner bl"></div>
+            <div class="retro-corner br"></div>
+
             <div class="retro-back-name">${data.player_name}</div>
-            <div class="retro-back-meta">${data.position} • #${data.number}</div>
+            <div class="retro-back-meta">${data.position} · #${data.number}</div>
             <div class="retro-back-stats">
                 <div class="retro-back-section">
                     <h3>Career Stats</h3>
-                    ${data.passing ? `<div class="retro-stat-row"><span>PASSING</span><span>${data.passing}</span></div>` : ''}
-                    ${data.receiving ? `<div class="retro-stat-row"><span>RECEIVING</span><span>${data.receiving}</span></div>` : ''}
-                    ${data.rushing ? `<div class="retro-stat-row"><span>RUSHING</span><span>${data.rushing}</span></div>` : ''}
-                    ${data.misc ? `<div class="retro-stat-row"><span>MISC</span><span>${data.misc}</span></div>` : ''}
-                    ${data.kicking ? `<div class="retro-stat-row"><span>KICKING</span><span>${data.kicking}</span></div>` : ''}
-                    ${data.defense ? `<div class="retro-stat-row"><span>DEFENSE</span><span>${data.defense}</span></div>` : ''}
+                    ${data.passing  ? `<div class="retro-stat-row"><span>Passing</span><span>${data.passing}</span></div>` : ''}
+                    ${data.receiving ? `<div class="retro-stat-row"><span>Receiving</span><span>${data.receiving}</span></div>` : ''}
+                    ${data.rushing  ? `<div class="retro-stat-row"><span>Rushing</span><span>${data.rushing}</span></div>` : ''}
+                    ${data.misc     ? `<div class="retro-stat-row"><span>Misc</span><span>${data.misc}</span></div>` : ''}
+                    ${data.kicking  ? `<div class="retro-stat-row"><span>Kicking</span><span>${data.kicking}</span></div>` : ''}
+                    ${data.defense  ? `<div class="retro-stat-row"><span>Defense</span><span>${data.defense}</span></div>` : ''}
                 </div>
                 <div class="retro-back-section">
                     <h3>Best Performance</h3>
-                    ${data.best_game_points ? `<div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_points}</span></div>` : ''}
-                    ${data.best_game_info ? `<div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_info}</span></div>` : ''}
-                    ${data.best_game_stats ? `<div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_stats}</span></div>` : ''}
+                    ${data.best_game_points ? `<div class="retro-stat-row retro-stat-row-center"><span class="bp-points">${data.best_game_points}</span></div>` : ''}
+                    ${data.best_game_info   ? `<div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_info}</span></div>` : ''}
+                    ${data.best_game_stats  ? `<div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_stats}</span></div>` : ''}
                 </div>
             </div>
         `;
