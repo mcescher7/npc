@@ -43,17 +43,17 @@
   padding: 0;
 }
 
-/* Shared gradient background for both sides */
-.retro-card::after {
+/* Gloss overlay only on front */
+.retro-front::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg,
-    rgba(255,255,255,0.06) 0%,
+    rgba(255,255,255,0.07) 0%,
     rgba(255,255,255,0) 50%,
     rgba(255,255,255,0.03) 100%);
   pointer-events: none;
-  z-index: 10;
+  z-index: 5;
   border-radius: inherit;
 }
 
@@ -193,6 +193,7 @@
   padding: 22px 20px 20px;
   display: flex;
   flex-direction: column;
+  /* No overflow:hidden here — that was hiding the stats */
 }
 
 .retro-back-name {
@@ -203,6 +204,7 @@
   color: #ffffff;
   letter-spacing: 2px;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .retro-back-meta {
@@ -211,24 +213,31 @@
   color: rgba(255,255,255,0.45);
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-bottom: 18px;
-  padding-bottom: 14px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
 }
 
 .retro-back-stats {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   flex: 1;
-  overflow: hidden;
+  min-height: 0;
+  overflow-y: auto;
 }
+
+/* Hide scrollbar visually but keep functionality */
+.retro-back-stats::-webkit-scrollbar { width: 0; }
+.retro-back-stats { scrollbar-width: none; }
 
 .retro-back-section {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 10px;
   padding: 12px 14px;
+  flex-shrink: 0;
 }
 
 .retro-back-section h3 {
@@ -296,7 +305,7 @@
 [data-bs-theme="light"] .retro-stat-row-center,
 [data-bs-theme="light"] .retro-stat-row-center span { color: #1a1a2e !important; }
 
-/* Light mode: front card */
+/* Light mode: front card stays dark */
 [data-bs-theme="light"] .retro-front {
   background: linear-gradient(160deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
 }
