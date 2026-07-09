@@ -95,14 +95,19 @@ document.addEventListener("DOMContentLoaded", async function() {
             .ilike('player_name', `%${player}%`)
             .single();
 
-        // Achievement strips — correct column names: championships, toty, totw
+        // Achievement strips
         const strips = [];
-        if (data.championships > 0)
-            strips.push(`<div class="retro-achievement-strip"><span>${data.championships}x NPC Champion</span></div>`);
-        if (data.toty > 0)
-            strips.push(`<div class="retro-achievement-strip"><span>${data.toty}\u00d7 Team of the Year</span></div>`);
-        if (data.totw > 0)
+        if (data.championships > 0) {
+            const years = data.championship_years ? ` (${data.championship_years})` : '';
+            strips.push(`<div class="retro-achievement-strip"><span>${data.championships}\u00d7 NPC Champion${years}</span></div>`);
+        }
+        if (data.toty > 0) {
+            const years = data.toty_years ? ` (${data.toty_years})` : '';
+            strips.push(`<div class="retro-achievement-strip"><span>${data.toty}\u00d7 Team of the Year${years}</span></div>`);
+        }
+        if (data.totw > 0) {
             strips.push(`<div class="retro-achievement-strip"><span>${data.totw}\u00d7 Team of the Week</span></div>`);
+        }
 
         const front = container.querySelector('.retro-front');
         front.innerHTML = `
