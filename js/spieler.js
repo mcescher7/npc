@@ -51,7 +51,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             const items = grouped[year].map(row => {
                 const type = row.type === 'add' ? 'add' : 'drop';
                 const source = (row.target || '').toLowerCase().includes('waiver') ? 'Waiver' : 'Free Agent';
-
                 return `
                     <div class="timeline-item ${type}">
                         <div class="timeline-card">
@@ -61,7 +60,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                         </div>
                     </div>`;
             }).join('');
-
             return `
                 <div class="year-divider"><span>${year}</span></div>
                 ${items}`;
@@ -114,8 +112,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             <div class="retro-corner br"></div>
 
             <div class="retro-ovr-badge">
-                <span class="retro-ovr-label">OVR</span>
                 <span class="retro-ovr-number">${data.ovr ?? 96}</span>
+                <span class="retro-ovr-label">OVR</span>
             </div>
 
             <div class="retro-photo-wrap">
@@ -159,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 </div>
                 <div class="retro-back-section">
                     <h3>Best Performance</h3>
-                    ${data.best_game_points ? `<div class="retro-stat-row retro-stat-row-center"><span class="bp-points">${data.best_game_points}</span></div>` : ''}
+                    ${data.best_game_points ? `<div class="retro-stat-row retro-stat-row-center"><span class="bp-points">${data.best_game_points} Points</span></div>` : ''}
                     ${data.best_game_info   ? `<div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_info}</span></div>` : ''}
                     ${data.best_game_stats  ? `<div class="retro-stat-row retro-stat-row-center"><span>${data.best_game_stats}</span></div>` : ''}
                 </div>
