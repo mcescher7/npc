@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             .order('player_name', { ascending: true });
 
         if (error) {
-            console.error('Fehler beim Laden der Vorschläge:', error);
+            console.error('Fehler beim Laden der Vorschl\u00e4ge:', error);
             return;
         }
 
@@ -97,14 +97,14 @@ document.addEventListener("DOMContentLoaded", async function() {
             .ilike('player_name', `%${player}%`)
             .single();
 
-        // Build achievement strips (only shown when value > 0 / present)
+        // Achievement strips — correct column names: championships, toty, totw
         const strips = [];
         if (data.championships > 0)
             strips.push(`<div class="retro-achievement-strip"><span>${data.championships}x NPC Champion</span></div>`);
-        if (data.team_of_year > 0)
-            strips.push(`<div class="retro-achievement-strip"><span>${data.team_of_year}× Team of the Year</span></div>`);
-        if (data.team_of_week > 0)
-            strips.push(`<div class="retro-achievement-strip"><span>${data.team_of_week}× Team of the Week</span></div>`);
+        if (data.toty > 0)
+            strips.push(`<div class="retro-achievement-strip"><span>${data.toty}\u00d7 Team of the Year</span></div>`);
+        if (data.totw > 0)
+            strips.push(`<div class="retro-achievement-strip"><span>${data.totw}\u00d7 Team of the Week</span></div>`);
 
         const front = container.querySelector('.retro-front');
         front.innerHTML = `
@@ -146,16 +146,16 @@ document.addEventListener("DOMContentLoaded", async function() {
             <div class="retro-corner br"></div>
 
             <div class="retro-back-name">${data.player_name}</div>
-            <div class="retro-back-meta">${data.position} · #${data.number}</div>
+            <div class="retro-back-meta">${data.position} \u00b7 #${data.number}</div>
             <div class="retro-back-stats">
                 <div class="retro-back-section">
                     <h3>Career Stats</h3>
-                    ${data.passing  ? `<div class="retro-stat-row"><span>Passing</span><span>${data.passing}</span></div>` : ''}
+                    ${data.passing   ? `<div class="retro-stat-row"><span>Passing</span><span>${data.passing}</span></div>` : ''}
                     ${data.receiving ? `<div class="retro-stat-row"><span>Receiving</span><span>${data.receiving}</span></div>` : ''}
-                    ${data.rushing  ? `<div class="retro-stat-row"><span>Rushing</span><span>${data.rushing}</span></div>` : ''}
-                    ${data.misc     ? `<div class="retro-stat-row"><span>Misc</span><span>${data.misc}</span></div>` : ''}
-                    ${data.kicking  ? `<div class="retro-stat-row"><span>Kicking</span><span>${data.kicking}</span></div>` : ''}
-                    ${data.defense  ? `<div class="retro-stat-row"><span>Defense</span><span>${data.defense}</span></div>` : ''}
+                    ${data.rushing   ? `<div class="retro-stat-row"><span>Rushing</span><span>${data.rushing}</span></div>` : ''}
+                    ${data.misc      ? `<div class="retro-stat-row"><span>Misc</span><span>${data.misc}</span></div>` : ''}
+                    ${data.kicking   ? `<div class="retro-stat-row"><span>Kicking</span><span>${data.kicking}</span></div>` : ''}
+                    ${data.defense   ? `<div class="retro-stat-row"><span>Defense</span><span>${data.defense}</span></div>` : ''}
                 </div>
                 <div class="retro-back-section">
                     <h3>Best Performance</h3>

@@ -155,7 +155,7 @@
 }
 .retro-award-strip::before,
 .retro-award-strip::after {
-  content: '✦';
+  content: '\2726';
   color: #c8a84b;
   font-size: 9px;
   margin: 0 8px;
@@ -229,7 +229,9 @@
 
 /* ── BACK ── */
 .retro-back-name {
-  font-family: 'Cinzel', serif; font-size: 17px;
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 700;
   text-align: center; color: #5a1a00;
   letter-spacing: 3px; text-transform: uppercase;
   flex-shrink: 0; position: relative; z-index: 2; padding-bottom: 4px;
@@ -260,6 +262,7 @@
 .retro-back-section h3 {
   font-family: 'Cinzel', serif;
   font-size: 13px;
+  font-weight: 700;
   color: #8b1e0f;
   text-transform: uppercase; letter-spacing: 2px;
   margin: 0 0 8px; padding-bottom: 6px;
@@ -277,7 +280,7 @@
 }
 .retro-stat-row span:last-child {
   font-family: 'Cinzel', serif;
-  font-size: 13px; font-weight: 700; color: #3a1000;
+  font-size: 13px; font-weight: 400; color: #3a1000;
 }
 .retro-stat-row-center { justify-content: center !important; }
 .retro-stat-row-center span {
@@ -287,8 +290,10 @@
   font-weight: 400 !important;
 }
 .retro-stat-row-center span.bp-points {
-  font-size: 15px !important; font-weight: 700 !important;
-  color: #8b1e0f !important; letter-spacing: 1px !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  color: #8b1e0f !important;
+  letter-spacing: 1px !important;
 }
 
 .retro-card-container.hidden { display: none; }
