@@ -10,7 +10,7 @@
     <script defer src="../js/script.js"></script>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Roboto+Condensed:wght@400;700&display=swap">
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script defer src="../js/supabase-client.js"></script>
     <script defer src="../js/spieler.js"></script>
@@ -24,8 +24,10 @@
         <datalist id="player-suggestions"></datalist>
 
         <div id="player-card-container" class="retro-card-container hidden" data-player-id="1">
-            <div class="retro-card retro-front"></div>
-            <div class="retro-card retro-back"></div>
+            <div class="card-inner">
+                <div class="retro-front"></div>
+                <div class="retro-back"></div>
+            </div>
         </div>
 
         <div id="timeline-container" class="timeline-container hidden">
