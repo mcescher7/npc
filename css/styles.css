@@ -83,17 +83,17 @@
   display: block;
   border: none; border-radius: 0; box-shadow: none; margin: 0;
 }
-/* Team-Logo: zentriert aber etwas nach oben verschoben */
+/* Team-Logo: nach oben ausgerichtet, größer */
 .retro-photo-wrap--logo {
   display: flex;
   align-items: flex-start;
   justify-content: center;
   background: #f5e6cc;
-  padding-top: 10px;
+  padding-top: 4px;
 }
 .retro-team-logo {
   width: auto !important;
-  height: 88% !important;
+  height: 100% !important;
   object-fit: contain !important;
   object-position: center top !important;
   margin-top: 0;
