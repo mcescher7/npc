@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         return `${day}.${month}. ${hours}:${minutes} Uhr`;
     }
 
-    async function loadCareerData(player = '') {
-        if (!player.trim()) {
+    async function loadCareerData(playerId = '') {
+        if (!playerId) {
             careerContainer.innerHTML = '';
             timelineContainer?.classList.add('hidden');
             return;
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const { data, error } = await supabaseClient
             .from('roster_changes')
             .select('*')
-            .ilike('player_name', `%${player}%`)
+            .eq('player_id', playerId)
             .order('time', { ascending: true });
 
         if (error) {
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const grouped = {};
         data.forEach(row => {
-            const year = String(row.time).slice(0, 4);
+            const year = String(row.year);
             if (!grouped[year]) grouped[year] = [];
             grouped[year].push(row);
         });
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <div class="timeline-item ${type}">
                         <div class="timeline-card">
                             <span class="tc-date">${formatDate(row.time)}</span>
-                            <span class="tc-name">${row.manager_name || ''}</span>
+                            <span class="tc-name">${row.manager_name || ''} ${row.target || ''}</span>
                             <span class="tc-source">${source}</span>
                         </div>
                     </div>`;
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             .order('player_name', { ascending: true });
 
         if (error) {
-            console.error('Fehler beim Laden der Vorschl\u00e4ge:', error);
+            console.error('Fehler beim Laden der Vorschläge:', error);
             return;
         }
 
@@ -182,9 +182,22 @@ document.addEventListener("DOMContentLoaded", async function() {
         loadPlayerSuggestions(this.value);
     });
 
-    searchInput.addEventListener('change', function () {
-        renderPlayerCard(this.value);
-        loadCareerData(this.value);
+    searchInput.addEventListener('change', async function () {
+        const playerName = this.value.trim();
+        if (!playerName) return;
+
+        // player_id anhand des Namens aus roster_changes ermitteln
+        const { data: idData } = await supabaseClient
+            .from('roster_changes')
+            .select('player_id')
+            .ilike('player_name', `%${playerName}%`)
+            .limit(1)
+            .single();
+
+        renderPlayerCard(playerName);
+        if (idData?.player_id) {
+            loadCareerData(idData.player_id);
+        }
         searchInput.blur();
     });
 
