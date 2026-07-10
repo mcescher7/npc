@@ -50,13 +50,12 @@ document.addEventListener("DOMContentLoaded", async function() {
         careerContainer.innerHTML = years.map(year => {
             const items = grouped[year].map(row => {
                 const type = row.type === 'add' ? 'add' : 'drop';
-                const source = (row.target || '').toLowerCase().includes('waiver') ? 'Waiver' : 'Free Agent';
                 return `
                     <div class="timeline-item ${type}">
                         <div class="timeline-card">
                             <span class="tc-date">${formatDate(row.time)}</span>
-                            <span class="tc-name">${row.manager_name || ''} ${row.target || ''}</span>
-                            <span class="tc-source">${source}</span>
+                            <span class="tc-name">${row.manager_name || ''}</span>
+                            <span class="tc-source">${row.target || ''}</span>
                         </div>
                     </div>`;
             }).join('');
