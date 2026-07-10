@@ -185,6 +185,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         const playerName = this.value.trim();
         if (!playerName) return;
 
+        // Datalist leeren damit das Dropdown sich schließt
+        suggestionsContainer.innerHTML = '';
+        searchInput.blur();
+
         // player_id anhand des Namens aus roster_changes ermitteln
         const { data: idData } = await supabaseClient
             .from('roster_changes')
@@ -197,7 +201,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (idData?.player_id) {
             loadCareerData(idData.player_id);
         }
-        searchInput.blur();
     });
 
     searchInput.addEventListener('focus', function () {
