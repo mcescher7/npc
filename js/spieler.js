@@ -21,12 +21,10 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function getPhotoUrl(data) {
         if (isDefense(data.player_id)) {
-            // Team-Logo via ESPN Team-ID
             return data.espn_id
                 ? `https://a.espncdn.com/i/teamlogos/nfl/500/${data.espn_id}.png`
                 : '';
         }
-        // Spieler-Headshot
         return data.espn_id
             ? `https://a.espncdn.com/i/headshots/nfl/players/full/${data.espn_id}.png`
             : 'https://a.espncdn.com/i/headshots/nfl/players/full/3128720.png';
@@ -129,6 +127,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         const photoUrl = getPhotoUrl(data);
         const defense = isDefense(data.player_id);
 
+        // Trikotnummer nur anzeigen wenn vorhanden und nicht null
+        const numberStr = (data.number !== null && data.number !== undefined)
+            ? ` \u00b7 #${data.number}`
+            : '';
+
         const front = container.querySelector('.retro-front');
         front.innerHTML = `
             <div class="retro-corner tl"></div>
@@ -169,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             <div class="retro-corner br"></div>
 
             <div class="retro-back-name">${data.player_name}</div>
-            <div class="retro-back-meta">${data.position} \u00b7 #${data.number}</div>
+            <div class="retro-back-meta">${data.position}${numberStr}</div>
             <div class="retro-back-stats">
                 <div class="retro-back-section">
                     <h3>Career Stats</h3>
@@ -206,11 +209,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         const playerName = this.value.trim();
         if (!playerName) return;
 
-        // Datalist leeren damit das Dropdown sich schließt
         suggestionsContainer.innerHTML = '';
         searchInput.blur();
 
-        // player_id anhand des Namens aus roster_changes ermitteln
         const { data: idData } = await supabaseClient
             .from('roster_changes')
             .select('player_id')
