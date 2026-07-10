@@ -14,6 +14,24 @@ document.addEventListener("DOMContentLoaded", async function() {
         return `${day}.${month}. ${hours}:${minutes} Uhr`;
     }
 
+    function isDefense(playerId) {
+        const id = parseInt(playerId);
+        return id >= 99901 && id <= 99932;
+    }
+
+    function getPhotoUrl(data) {
+        if (isDefense(data.player_id)) {
+            // Team-Logo via ESPN Team-ID
+            return data.espn_id
+                ? `https://a.espncdn.com/i/teamlogos/nfl/500/${data.espn_id}.png`
+                : '';
+        }
+        // Spieler-Headshot
+        return data.espn_id
+            ? `https://a.espncdn.com/i/headshots/nfl/players/full/${data.espn_id}.png`
+            : 'https://a.espncdn.com/i/headshots/nfl/players/full/3128720.png';
+    }
+
     async function loadCareerData(playerId = '') {
         if (!playerId) {
             careerContainer.innerHTML = '';
@@ -108,6 +126,9 @@ document.addEventListener("DOMContentLoaded", async function() {
             strips.push(`<div class="retro-achievement-strip"><span>${data.totw}\u00d7 Team of the Week</span></div>`);
         }
 
+        const photoUrl = getPhotoUrl(data);
+        const defense = isDefense(data.player_id);
+
         const front = container.querySelector('.retro-front');
         front.innerHTML = `
             <div class="retro-corner tl"></div>
@@ -120,11 +141,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <span class="retro-ovr-label">OVR</span>
             </div>
 
-            <div class="retro-photo-wrap">
-                <img class="retro-player-photo"
-                    src="${data.espn_id ? `https://a.espncdn.com/i/headshots/nfl/players/full/${data.espn_id}.png` : 'https://a.espncdn.com/i/headshots/nfl/players/full/3128720.png'}"
+            <div class="retro-photo-wrap${defense ? ' retro-photo-wrap--logo' : ''}">
+                ${photoUrl ? `<img class="retro-player-photo${defense ? ' retro-team-logo' : ''}"
+                    src="${photoUrl}"
                     alt="${data.player_name}"
-                    loading="lazy">
+                    loading="lazy">` : ''}
             </div>
 
             <div class="retro-name-bar">${data.player_name}</div>
