@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const toggleErgebnisse   = document.getElementById("toggle-ergebnisse");
     const toggleTotw         = document.getElementById("toggle-totw");
 
-    const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
+    const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
     const createOption = (value, text) => {
         const option = document.createElement("option");
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // ── TOTW laden (sortiert nach Positionsreihenfolge) ─────────────────
+    // ── TOTW laden (sortiert nach Positionsreihenfolge, DEF → D/ST) ────────
     async function loadTotw(year, week) {
         showSpinner(totwTableBody, 3);
         if (!year || !week) return;
@@ -192,9 +192,10 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         totwTableBody.innerHTML = '';
         data.forEach(row => {
+            const displayPos = row.position === 'DEF' ? 'D/ST' : (row.position ?? '-');
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${row.position ?? '-'}</td>
+                <td>${displayPos}</td>
                 <td>${row.player_name ?? '-'}</td>
                 <td>${row.points !== null ? row.points.toFixed(2) : '-'}</td>
             `;
