@@ -59,25 +59,64 @@
             </table>
         </div>
 
-        <h2>Ergebnisse</h2>
-        <div class="mb-3">
-            <label class="form-label">Woche:</label>
-            <div class="btn-group w-100 flex-wrap week-buttons-group" role="group" id="week-buttons-group"></div>
+        <!-- Ergebnisse / TOTW -->
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
+            <!-- Wochenauswahl (nur bei Ergebnisse-Panel sichtbar) -->
+            <div class="d-flex align-items-center gap-2" id="ergebnisse-woche-controls">
+                <label for="week-select" class="form-label mb-0 fw-bold">Woche:</label>
+                <select id="week-select" class="form-select form-select-sm" style="width:auto;">
+                    <option disabled selected>Lade&hellip;</option>
+                </select>
+            </div>
+            <!-- TOTW-Wochenauswahl (nur bei TOTW-Panel sichtbar, initial versteckt) -->
+            <div class="d-flex align-items-center gap-2 d-none" id="totw-woche-controls">
+                <label for="totw-week-select" class="form-label mb-0 fw-bold">Woche:</label>
+                <select id="totw-week-select" class="form-select form-select-sm" style="width:auto;">
+                    <option disabled selected>Lade&hellip;</option>
+                </select>
+            </div>
+            <!-- Toggle -->
+            <div class="btn-group" role="group" aria-label="Ansicht wechseln">
+                <input type="radio" class="btn-check" name="ergebnisse-toggle" id="toggle-ergebnisse" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary" for="toggle-ergebnisse">Ergebnisse</label>
+                <input type="radio" class="btn-check" name="ergebnisse-toggle" id="toggle-totw" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="toggle-totw">TOTW</label>
+            </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <caption>Klicke auf ein Spiel, um Details anzuzeigen.</caption>
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">Team 1</th>
-                        <th scope="col">Punkte 1</th>
-                        <th scope="col"></th>
-                        <th scope="col">Punkte 2</th>
-                        <th scope="col">Team 2</th>
-                    </tr>
-                </thead>
-                <tbody id="weekly-results-table"></tbody>
-            </table>
+
+        <!-- Panel: Ergebnisse -->
+        <div id="panel-ergebnisse">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <caption>Klicke auf ein Spiel, um Details anzuzeigen.</caption>
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Team 1</th>
+                            <th scope="col">Punkte 1</th>
+                            <th scope="col"></th>
+                            <th scope="col">Punkte 2</th>
+                            <th scope="col">Team 2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weekly-results-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel: TOTW (initial versteckt) -->
+        <div id="panel-totw" class="d-none">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Position</th>
+                            <th>Spieler</th>
+                            <th>Punkte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="totw-table"></tbody>
+                </table>
+            </div>
         </div>
 
         <h2>Awards</h2>
