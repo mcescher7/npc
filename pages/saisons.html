@@ -61,20 +61,23 @@
 
         <!-- Ergebnisse / TOTW -->
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
-            <!-- Wochenauswahl (nur bei Ergebnisse-Panel sichtbar) -->
+
+            <!-- Wochenauswahl Ergebnisse -->
             <div class="d-flex align-items-center gap-2" id="ergebnisse-woche-controls">
-                <label for="week-select" class="form-label mb-0 fw-bold">Woche:</label>
-                <select id="week-select" class="form-select form-select-sm" style="width:auto;">
-                    <option disabled selected>Lade&hellip;</option>
+                <h2 class="mb-0">Woche</h2>
+                <select id="week-select" class="form-select" style="width:auto; font-size:1.5rem; padding:0.1rem 2rem 0.1rem 0.5rem;">
+                    <option disabled selected>&#8230;</option>
                 </select>
             </div>
-            <!-- TOTW-Wochenauswahl (nur bei TOTW-Panel sichtbar, initial versteckt) -->
+
+            <!-- Wochenauswahl TOTW (initial versteckt) -->
             <div class="d-flex align-items-center gap-2 d-none" id="totw-woche-controls">
-                <label for="totw-week-select" class="form-label mb-0 fw-bold">Woche:</label>
-                <select id="totw-week-select" class="form-select form-select-sm" style="width:auto;">
-                    <option disabled selected>Lade&hellip;</option>
+                <h2 class="mb-0">Woche</h2>
+                <select id="totw-week-select" class="form-select" style="width:auto; font-size:1.5rem; padding:0.1rem 2rem 0.1rem 0.5rem;">
+                    <option disabled selected>&#8230;</option>
                 </select>
             </div>
+
             <!-- Toggle -->
             <div class="btn-group" role="group" aria-label="Ansicht wechseln">
                 <input type="radio" class="btn-check" name="ergebnisse-toggle" id="toggle-ergebnisse" autocomplete="off" checked>

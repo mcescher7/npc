@@ -7,12 +7,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     const awardTableBody  = document.getElementById("awards-table");
     const totwTableBody   = document.getElementById("totw-table");
 
-    const panelErgebnisse      = document.getElementById("panel-ergebnisse");
-    const panelTotw            = document.getElementById("panel-totw");
-    const ergebnisseControls   = document.getElementById("ergebnisse-woche-controls");
-    const totwControls         = document.getElementById("totw-woche-controls");
-    const toggleErgebnisse     = document.getElementById("toggle-ergebnisse");
-    const toggleTotw           = document.getElementById("toggle-totw");
+    const panelErgebnisse    = document.getElementById("panel-ergebnisse");
+    const panelTotw          = document.getElementById("panel-totw");
+    const ergebnisseControls = document.getElementById("ergebnisse-woche-controls");
+    const totwControls       = document.getElementById("totw-woche-controls");
+    const toggleErgebnisse   = document.getElementById("toggle-ergebnisse");
+    const toggleTotw         = document.getElementById("toggle-totw");
+
+    const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
 
     const createOption = (value, text) => {
         const option = document.createElement("option");
@@ -106,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // ── Wochen laden (Dropdown) ────────────────────────────────────
+    // ── Wochen laden (Dropdown, nur Zahlen) ────────────────────────────
     async function loadWeeks(year) {
         weekSelect.innerHTML = '';
         totwWeekSelect.innerHTML = '';
@@ -124,8 +126,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const totalWeeks = data.weeks;
         for (let i = 1; i <= totalWeeks; i++) {
-            weekSelect.appendChild(createOption(i, `Woche ${i}`));
-            totwWeekSelect.appendChild(createOption(i, `Woche ${i}`));
+            weekSelect.appendChild(createOption(i, i));
+            totwWeekSelect.appendChild(createOption(i, i));
         }
         weekSelect.value     = totalWeeks;
         totwWeekSelect.value = totalWeeks;
@@ -168,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // ── TOTW laden ─────────────────────────────────────────────────
+    // ── TOTW laden (sortiert nach Positionsreihenfolge) ─────────────────
     async function loadTotw(year, week) {
         showSpinner(totwTableBody, 3);
         if (!year || !week) return;
@@ -177,11 +179,16 @@ document.addEventListener("DOMContentLoaded", async function() {
             .from('totw')
             .select('position, player_name, points')
             .eq('year', year)
-            .eq('week', week)
-            .order('position');
+            .eq('week', week);
 
         if (error) return logError('Laden des TOTW', error);
         if (!data || data.length === 0) return showNoData(totwTableBody, 3);
+
+        data.sort((a, b) => {
+            const ai = TOTW_ORDER.indexOf(a.position);
+            const bi = TOTW_ORDER.indexOf(b.position);
+            return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+        });
 
         totwTableBody.innerHTML = '';
         data.forEach(row => {
@@ -358,6 +365,138 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             container.appendChild(div);
         });
+    }
+
+    // ── Roster Modal ───────────────────────────────────────────────
+    async function showRosters(home_id, home_team, away_id, away_team, year, week) {
+        const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
+        const rosterContent = document.getElementById('roster-content');
+
+        const [{ data: homeRoster }, { data: awayRoster }] = await Promise.all([
+            supabaseClient
+                .from('roster_info')
+                .select('position, player_name, points, stats, game_info, timeslot, projection')
+                .eq('manager_id', home_id)
+                .eq('year', year)
+                .eq('week', week),
+            supabaseClient
+                .from('roster_info')
+                .select('position, player_name, points, stats, game_info, timeslot, projection')
+                .eq('manager_id', away_id)
+                .eq('year', year)
+                .eq('week', week)
+        ]);
+
+        const positions = [
+            'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
+            'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10',
+            'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
+        ];
+
+        const homeMap = Object.fromEntries((homeRoster || []).map(p => [p.position, p]));
+        const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
+
+        const validPositions = positions.filter(pos =>
+            (homeMap[pos] && homeMap[pos].player_name) || (awayMap[pos] && awayMap[pos].player_name)
+        );
+
+        function renderRow(pos, index) {
+            const homePlayer = homeMap[pos];
+            const awayPlayer = awayMap[pos];
+            const rowClass = index % 2 === 1 ? 'table-active' : '';
+
+            return `
+            <tr class="${rowClass}">
+                <td class="text-end pe-3 align-middle" style="width:40%;">
+                    ${homePlayer ? `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${homePlayer.player_name}</span>
+                            <span class="fw-bold">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${
+                                homePlayer.game_info && homePlayer.timeslot
+                                  ? `${homePlayer.game_info} - ${homePlayer.timeslot}`
+                                  : '&nbsp;'
+                              }</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.projection !== null && homePlayer.projection !== undefined ? homePlayer.projection.toFixed(2) : '&nbsp;'}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">&nbsp;</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.stats}</span>
+                        </div>
+                    ` : ''}
+                </td>
+                <td class="text-center align-top" style="width:10%;">
+                    <span class="badge bg-secondary">${pos}</span>
+                </td>
+                <td class="text-start ps-3 align-middle" style="width:40%;">
+                    ${awayPlayer ? `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
+                            <span class="fw-bold">${awayPlayer.player_name}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.projection !== null && awayPlayer.projection !== undefined ? awayPlayer.projection.toFixed(2) : '&nbsp;'}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${
+                                awayPlayer.game_info && awayPlayer.timeslot
+                                  ? `${awayPlayer.game_info} - ${awayPlayer.timeslot}`
+                                  : '&nbsp;'
+                              }</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.stats}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">&nbsp;</span>
+                        </div>
+                    ` : ''}
+                </td>
+            </tr>
+        `;
+        }
+
+        const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
+
+        const mainPositions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
+
+        const homeTotal = mainPositions.reduce((sum, pos) => {
+            const p = homeMap[pos];
+            return sum + (p && typeof p.points === 'number' ? p.points : 0);
+        }, 0);
+
+        const awayTotal = mainPositions.reduce((sum, pos) => {
+            const p = awayMap[pos];
+            return sum + (p && typeof p.points === 'number' ? p.points : 0);
+        }, 0);
+
+        rosterContent.innerHTML = `
+    <div class="container-fluid px-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-sm mb-0">
+               <thead>
+                  <tr>
+                    <th style="width: 40%;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="fs-3">${home_team}</span>
+                        <span class="fs-3">${homeTotal.toFixed(2)}</span>
+                      </div>
+                    </th>
+                    <th style="width: 10%;"></th>
+                    <th style="width: 40%;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="fs-3">${awayTotal.toFixed(2)}</span>
+                        <span class="fs-3">${away_team}</span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+    </div>
+`;
+        modal.show();
     }
 
     // ── Event Listeners ────────────────────────────────────────────
