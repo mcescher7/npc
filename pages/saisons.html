@@ -61,7 +61,6 @@
 
         <!-- Ergebnisse / TOTW -->
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
-
             <!-- Wochenauswahl Ergebnisse -->
             <div class="d-flex align-items-center gap-2" id="ergebnisse-woche-controls">
                 <h2 class="mb-0">Woche</h2>
@@ -69,7 +68,6 @@
                     <option disabled selected>&#8230;</option>
                 </select>
             </div>
-
             <!-- Wochenauswahl TOTW (initial versteckt) -->
             <div class="d-flex align-items-center gap-2 d-none" id="totw-woche-controls">
                 <h2 class="mb-0">Woche</h2>
@@ -77,8 +75,7 @@
                     <option disabled selected>&#8230;</option>
                 </select>
             </div>
-
-            <!-- Toggle -->
+            <!-- Toggle Ergebnisse/TOTW -->
             <div class="btn-group" role="group" aria-label="Ansicht wechseln">
                 <input type="radio" class="btn-check" name="ergebnisse-toggle" id="toggle-ergebnisse" autocomplete="off" checked>
                 <label class="btn btn-outline-secondary" for="toggle-ergebnisse">Ergebnisse</label>
@@ -122,17 +119,47 @@
             </div>
         </div>
 
-        <h2>Awards</h2>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">Award</th>
-                        <th scope="col">Spieler</th>
-                    </tr>
-                </thead>
-                <tbody id="awards-table"></tbody>
-            </table>
+        <!-- Awards / TOTY -->
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
+            <h2 class="mb-0">Awards</h2>
+            <!-- Toggle Honors/TOTY -->
+            <div class="btn-group" role="group" aria-label="Awards Ansicht">
+                <input type="radio" class="btn-check" name="awards-toggle" id="toggle-honors" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary" for="toggle-honors">Honors</label>
+                <input type="radio" class="btn-check" name="awards-toggle" id="toggle-toty" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="toggle-toty">TOTY</label>
+            </div>
+        </div>
+
+        <!-- Panel: Honors -->
+        <div id="panel-honors">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Award</th>
+                            <th scope="col">Spieler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="awards-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel: TOTY (initial versteckt) -->
+        <div id="panel-toty" class="d-none">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Position</th>
+                            <th>Spieler</th>
+                            <th>Punkte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="toty-table"></tbody>
+                </table>
+            </div>
         </div>
 
         <h2>Draft</h2>

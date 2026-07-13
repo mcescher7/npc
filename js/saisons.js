@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const weeklyTableBody = document.getElementById("weekly-results-table");
     const awardTableBody  = document.getElementById("awards-table");
     const totwTableBody   = document.getElementById("totw-table");
+    const totyTableBody   = document.getElementById("toty-table");
 
     const panelErgebnisse    = document.getElementById("panel-ergebnisse");
     const panelTotw          = document.getElementById("panel-totw");
@@ -13,6 +14,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     const totwControls       = document.getElementById("totw-woche-controls");
     const toggleErgebnisse   = document.getElementById("toggle-ergebnisse");
     const toggleTotw         = document.getElementById("toggle-totw");
+
+    const panelHonors  = document.getElementById("panel-honors");
+    const panelToty    = document.getElementById("panel-toty");
+    const toggleHonors = document.getElementById("toggle-honors");
+    const toggleToty   = document.getElementById("toggle-toty");
 
     const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
@@ -35,7 +41,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         element.innerHTML = `<tr><td colspan="${cols}" class="text-center"><div class="spinner-border spinner-border-sm text-secondary" role="status"><span class="visually-hidden">Laden\u2026</span></div></td></tr>`;
     };
 
-    // ── Toggle-Logik ───────────────────────────────────────────────
+    const formatPosition = pos => pos === 'DEF' ? 'D/ST' : (pos ?? '-');
+
+    // ── Toggle Ergebnisse / TOTW ───────────────────────────────────────
     toggleErgebnisse.addEventListener("change", () => {
         panelErgebnisse.classList.remove("d-none");
         panelTotw.classList.add("d-none");
@@ -48,6 +56,17 @@ document.addEventListener("DOMContentLoaded", async function() {
         panelErgebnisse.classList.add("d-none");
         totwControls.classList.remove("d-none");
         ergebnisseControls.classList.add("d-none");
+    });
+
+    // ── Toggle Awards / TOTY ────────────────────────────────────────
+    toggleHonors.addEventListener("change", () => {
+        panelHonors.classList.remove("d-none");
+        panelToty.classList.add("d-none");
+    });
+
+    toggleToty.addEventListener("change", () => {
+        panelToty.classList.remove("d-none");
+        panelHonors.classList.add("d-none");
     });
 
     // ── Saisons laden ──────────────────────────────────────────────
@@ -73,6 +92,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 loadRegSeason(newestYear),
                 loadWeeks(newestYear),
                 loadAwards(newestYear),
+                loadToty(newestYear),
                 loadDraftBoard(newestYear)
             ]);
         }
@@ -108,7 +128,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // ── Wochen laden (Dropdown, nur Zahlen) ────────────────────────────
+    // ── Wochen laden ────────────────────────────────────────────────
     async function loadWeeks(year) {
         weekSelect.innerHTML = '';
         totwWeekSelect.innerHTML = '';
@@ -119,10 +139,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             .eq('year', year)
             .single();
 
-        if (error || !data) {
-            logError('Laden der Wochen', error);
-            return;
-        }
+        if (error || !data) { logError('Laden der Wochen', error); return; }
 
         const totalWeeks = data.weeks;
         for (let i = 1; i <= totalWeeks; i++) {
@@ -170,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // ── TOTW laden (sortiert nach Positionsreihenfolge, DEF → D/ST) ────────
+    // ── TOTW laden ─────────────────────────────────────────────────
     async function loadTotw(year, week) {
         showSpinner(totwTableBody, 3);
         if (!year || !week) return;
@@ -192,10 +209,9 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         totwTableBody.innerHTML = '';
         data.forEach(row => {
-            const displayPos = row.position === 'DEF' ? 'D/ST' : (row.position ?? '-');
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${displayPos}</td>
+                <td>${formatPosition(row.position)}</td>
                 <td>${row.player_name ?? '-'}</td>
                 <td>${row.points !== null ? row.points.toFixed(2) : '-'}</td>
             `;
@@ -203,7 +219,39 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // ── Awards ─────────────────────────────────────────────────────
+    // ── TOTY laden (week = 0) ────────────────────────────────────────
+    async function loadToty(year) {
+        showSpinner(totyTableBody, 3);
+        if (!year) return;
+
+        const { data, error } = await supabaseClient
+            .from('totw')
+            .select('position, player_name, points')
+            .eq('year', year)
+            .eq('week', 0);
+
+        if (error) return logError('Laden des TOTY', error);
+        if (!data || data.length === 0) return showNoData(totyTableBody, 3);
+
+        data.sort((a, b) => {
+            const ai = TOTW_ORDER.indexOf(a.position);
+            const bi = TOTW_ORDER.indexOf(b.position);
+            return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+        });
+
+        totyTableBody.innerHTML = '';
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${formatPosition(row.position)}</td>
+                <td>${row.player_name ?? '-'}</td>
+                <td>${row.points !== null ? row.points.toFixed(2) : '-'}</td>
+            `;
+            totyTableBody.appendChild(tr);
+        });
+    }
+
+    // ── Awards (Honors) ─────────────────────────────────────────────
     async function loadAwards(year) {
         showSpinner(awardTableBody, 2);
         if (!year) return;
@@ -306,9 +354,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const qfColumn = document.getElementById("quarterfinals");
         const hasQuarterfinals = data.some(g => g.round === "QF");
-        if (qfColumn) {
-            qfColumn.classList.toggle("d-none", !hasQuarterfinals);
-        }
+        if (qfColumn) qfColumn.classList.toggle("d-none", !hasQuarterfinals);
 
         sortedData.forEach(game => {
             const roundId = game.round === "QF" ? "quarterfinals" :
@@ -341,9 +387,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                     (game.w_rank < game.l_rank ? "w" : "l");
                 const bottomSeed = topSeed === "w" ? "l" : "w";
 
-                const topRank    = game[`${topSeed}_rank`];
-                const topName    = game[`${topSeed}_name`];
-                const topPoints  = (game[`${topSeed}_points`] ?? 0).toFixed(2);
+                const topRank      = game[`${topSeed}_rank`];
+                const topName      = game[`${topSeed}_name`];
+                const topPoints    = (game[`${topSeed}_points`] ?? 0).toFixed(2);
                 const bottomRank   = game[`${bottomSeed}_rank`];
                 const bottomName   = game[`${bottomSeed}_name`];
                 const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2);
@@ -363,7 +409,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <span class="${bottomClass}">${bottomPoints}</span>
                 </div>`;
             }
-
             container.appendChild(div);
         });
     }
@@ -405,7 +450,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             const homePlayer = homeMap[pos];
             const awayPlayer = awayMap[pos];
             const rowClass = index % 2 === 1 ? 'table-active' : '';
-
             return `
             <tr class="${rowClass}">
                 <td class="text-end pe-3 align-middle" style="width:40%;">
@@ -415,11 +459,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                             <span class="fw-bold">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${
-                                homePlayer.game_info && homePlayer.timeslot
-                                  ? `${homePlayer.game_info} - ${homePlayer.timeslot}`
-                                  : '&nbsp;'
-                              }</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.game_info && homePlayer.timeslot ? `${homePlayer.game_info} - ${homePlayer.timeslot}` : '&nbsp;'}</span>
                             <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.projection !== null && homePlayer.projection !== undefined ? homePlayer.projection.toFixed(2) : '&nbsp;'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
@@ -439,11 +479,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.projection !== null && awayPlayer.projection !== undefined ? awayPlayer.projection.toFixed(2) : '&nbsp;'}</span>
-                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${
-                                awayPlayer.game_info && awayPlayer.timeslot
-                                  ? `${awayPlayer.game_info} - ${awayPlayer.timeslot}`
-                                  : '&nbsp;'
-                              }</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.game_info && awayPlayer.timeslot ? `${awayPlayer.game_info} - ${awayPlayer.timeslot}` : '&nbsp;'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.stats}</span>
@@ -451,19 +487,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                         </div>
                     ` : ''}
                 </td>
-            </tr>
-        `;
+            </tr>`;
         }
 
         const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
-
         const mainPositions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
 
         const homeTotal = mainPositions.reduce((sum, pos) => {
             const p = homeMap[pos];
             return sum + (p && typeof p.points === 'number' ? p.points : 0);
         }, 0);
-
         const awayTotal = mainPositions.reduce((sum, pos) => {
             const p = awayMap[pos];
             return sum + (p && typeof p.points === 'number' ? p.points : 0);
@@ -490,13 +523,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
-                    ${tableRows}
-                </tbody>
+                <tbody>${tableRows}</tbody>
             </table>
         </div>
-    </div>
-`;
+    </div>`;
         modal.show();
     }
 
@@ -509,6 +539,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             loadRegSeason(year),
             loadWeeks(year),
             loadAwards(year),
+            loadToty(year),
             loadDraftBoard(year)
         ]);
     });
