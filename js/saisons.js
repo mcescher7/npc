@@ -14,20 +14,25 @@ document.addEventListener("DOMContentLoaded", async function() {
     };
 
     const createWeekButton = (week) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'btn btn-outline-secondary';
-      button.textContent = week;
-      button.dataset.week = week;
-      return button;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-outline-secondary';
+        button.textContent = week;
+        button.dataset.week = week;
+        button.setAttribute('aria-pressed', 'false');
+        return button;
     };
 
     const logError = (context, error) => {
-        console.error(`❌ Fehler bei ${context}:`, error);
+        console.error(`\u274C Fehler bei ${context}:`, error);
     };
 
     const showNoData = (element, cols) => {
         element.innerHTML = `<tr><td colspan="${cols}" class="text-center">Keine Daten vorhanden</td></tr>`;
+    };
+
+    const showSpinner = (element, cols) => {
+        element.innerHTML = `<tr><td colspan="${cols}" class="text-center"><div class="spinner-border spinner-border-sm text-secondary" role="status"><span class="visually-hidden">Laden\u2026</span></div></td></tr>`;
     };
 
     async function loadSeasons() {
@@ -63,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadRegSeason(year) {
-        regTableBody.innerHTML = "";
+        showSpinner(regTableBody, 7);
         if (!year || isNaN(year)) return;
 
         const {
@@ -78,6 +83,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (error) return logError("Laden der Tabelle", error);
         if (!data || data.length === 0) return showNoData(regTableBody, 7);
 
+        regTableBody.innerHTML = "";
         data.forEach(manager => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -94,43 +100,44 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadWeeks(year) {
-      const group = document.getElementById('week-buttons-group');
-      if (!group) return;
-      group.innerHTML = '';
-      
-      const { data, error } = await supabaseClient
-        .from('seasons')
-        .select('weeks')
-        .eq('year', year)
-        .single();
-        
-      if (error || !data) {
-        console.error('Fehler beim Laden der Wochen', error);
-        return;
-      }
-      
-      const weeks = data.weeks;
-      for (let i = 1; i <= weeks; i++) {
-        const button = createWeekButton(i);
-        if (i === weeks) {
-            button.classList.add('active');
-            const selectedWeek = parseInt(button.dataset.week, 10);
-            loadWeeklyMatchups(year, selectedWeek);
+        const group = document.getElementById('week-buttons-group');
+        if (!group) return;
+        group.innerHTML = '';
+
+        const { data, error } = await supabaseClient
+            .from('seasons')
+            .select('weeks')
+            .eq('year', year)
+            .single();
+
+        if (error || !data) {
+            console.error('Fehler beim Laden der Wochen', error);
+            return;
         }
-        button.addEventListener('click', () => {
-          group.querySelectorAll('.btn').forEach(btn => {
-            btn.classList.remove('active');
-          });
-          button.classList.add('active');
-          const selectedWeek = parseInt(button.dataset.week, 10);
-          loadWeeklyMatchups(year, selectedWeek);
-        });
-        group.appendChild(button);
-      }
+
+        const weeks = data.weeks;
+        for (let i = 1; i <= weeks; i++) {
+            const button = createWeekButton(i);
+            if (i === weeks) {
+                button.classList.add('active');
+                button.setAttribute('aria-pressed', 'true');
+                loadWeeklyMatchups(year, parseInt(button.dataset.week, 10));
+            }
+            button.addEventListener('click', () => {
+                group.querySelectorAll('.btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
+                });
+                button.classList.add('active');
+                button.setAttribute('aria-pressed', 'true');
+                loadWeeklyMatchups(year, parseInt(button.dataset.week, 10));
+            });
+            group.appendChild(button);
+        }
     }
 
     async function loadWeeklyMatchups(year, week) {
-        weeklyTableBody.innerHTML = "";
+        showSpinner(weeklyTableBody, 5);
         if (!year || !week) return;
 
         const {
@@ -145,6 +152,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (error) return logError("Laden der Matchups", error);
         if (!data || data.length === 0) return showNoData(weeklyTableBody, 5);
 
+        weeklyTableBody.innerHTML = "";
         data.forEach(row => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -217,7 +225,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                             <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.projection !== null && homePlayer.projection !== undefined ? homePlayer.projection.toFixed(2) : '&nbsp;'}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${'&nbsp;'}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">&nbsp;</span>
                             <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.stats}</span>
                         </div>
                     ` : ''}
@@ -239,9 +247,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                                   : '&nbsp;'
                               }</span>
                         </div>
-                         <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.stats}</span>
-                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${'&nbsp;'}</span>
+                            <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">&nbsp;</span>
                         </div>
                     ` : ''}
                 </td>
@@ -298,7 +306,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadAwards(year) {
-        awardTableBody.innerHTML = "";
+        showSpinner(awardTableBody, 2);
         if (!year) return;
 
         const {
@@ -313,6 +321,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (error) return logError("Laden der Awards", error);
         if (!data || data.length === 0) return showNoData(awardTableBody, 2);
 
+        awardTableBody.innerHTML = "";
         data.forEach(row => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -354,7 +363,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         for (let r = 1; r <= maxRounds; r++) {
             const leftLabel = document.createElement("div");
             leftLabel.className = "round-label-left";
-            leftLabel.textContent = (r % 2 === 1) ? `${r} →` : `${r} ←`;
+            leftLabel.textContent = (r % 2 === 1) ? `${r} \u2192` : `${r} \u2190`;
             board.appendChild(leftLabel);
 
             let picks = data.filter(p => p.round === r);
@@ -376,7 +385,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             const rightLabel = document.createElement("div");
             rightLabel.className = "round-label-right";
-            rightLabel.textContent = (r % 2 === 1) ? `→ ${r}` : `← ${r}`;
+            rightLabel.textContent = (r % 2 === 1) ? `\u2192 ${r}` : `\u2190 ${r}`;
             board.appendChild(rightLabel);
         }
     }
@@ -397,11 +406,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         if (error) return logError("Laden des Brackets", error);
 
-        const roundOrder = {
-            "QF": 1,
-            "SF": 2,
-            "F": 3
-        };
+        const roundOrder = { "QF": 1, "SF": 2, "F": 3 };
         const sortedData = data.slice().sort((a, b) => {
             if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round];
             return a.slot - b.slot;
@@ -430,50 +435,39 @@ document.addEventListener("DOMContentLoaded", async function() {
             if (isBye) {
                 div.innerHTML = `
                 <div class="d-flex justify-content-between">
-                    <div class="me-2 flex-grow-1">
-                        <small class="text-muted">${game.w_rank}</small> ${game.w_name}
-                    </div>
+                    <div class="me-2 flex-grow-1"><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
                     <span class="text-muted"></span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <div class="me-2 flex-grow-1">
-                        <small class="text-muted">–</small> <span class="text-secondary">BYE</span>
-                    </div>
+                    <div class="me-2 flex-grow-1"><small class="text-muted">\u2013</small> <span class="text-secondary">BYE</span></div>
                     <span class="text-muted"></span>
                 </div>`;
             } else {
-                let topSeed, bottomSeed;
                 const wSlot = game.w_slot;
                 const lSlot = game.l_slot;
-                topSeed = (wSlot !== null && lSlot !== null) ? (wSlot < lSlot ? "w" : "l") :
+                const topSeed = (wSlot !== null && lSlot !== null) ? (wSlot < lSlot ? "w" : "l") :
                     (game.w_rank < game.l_rank ? "w" : "l");
-                bottomSeed = topSeed === "w" ? "l" : "w";
+                const bottomSeed = topSeed === "w" ? "l" : "w";
 
                 const topRank = game[`${topSeed}_rank`];
                 const topName = game[`${topSeed}_name`];
                 const topPoints = (game[`${topSeed}_points`] ?? 0).toFixed(2);
-
                 const bottomRank = game[`${bottomSeed}_rank`];
                 const bottomName = game[`${bottomSeed}_name`];
                 const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2);
 
                 const topClass = (game.w_rank === topRank) ? "color-green" : "color-red";
                 const bottomClass = (game.w_rank === bottomRank) ? "color-green" : "color-red";
-
                 const topNameClass = (game.round === "F" && game.w_rank === topRank) ? "text-warning fw-bold" : "";
                 const bottomNameClass = (game.round === "F" && game.w_rank === bottomRank) ? "text-warning fw-bold" : "";
 
                 div.innerHTML = `
                 <div class="d-flex justify-content-between">
-                    <div class="me-2 flex-grow-1">
-                        <small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span>
-                    </div>
+                    <div class="me-2 flex-grow-1"><small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span></div>
                     <span class="${topClass}">${topPoints}</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <div class="me-2 flex-grow-1">
-                        <small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span>
-                    </div>
+                    <div class="me-2 flex-grow-1"><small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span></div>
                     <span class="${bottomClass}">${bottomPoints}</span>
                 </div>`;
             }

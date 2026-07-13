@@ -98,20 +98,32 @@
     padding: 0.23rem;
 }
 
- .bracket-col {
-      min-width: 180px;
-    }
-    .match {
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 0.5rem;
-      text-align: center;
-    }
+.bracket-col {
+    min-width: 180px;
+}
+
+.match {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+}
 
 .bracket-scroll {
-  overflow-x: auto;
-  white-space: nowrap;
-  padding-bottom: 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 1rem;
+}
+
+/* Bracket inner min-width (ersetzt Inline-Style) */
+.bracket-inner {
+    min-width: 700px;
+}
+
+/* Wochen-Buttons (ersetzt Inline-Style) */
+.week-buttons-group {
+    max-width: 650px;
+    margin: 0 auto;
 }

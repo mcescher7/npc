@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Alle Saisons des Nathan Peterman Cups – Playoffs, Regular Season, Ergebnisse, Awards und Draft.">
     <title>Nathan Peterman Cup</title>
     <link rel="icon" href="../assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="../css/saisons.css">
@@ -13,86 +14,79 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script defer src="../js/supabase-client.js"></script>
-    <script defer src="../js/saisons.js"></script>    
+    <script defer src="../js/saisons.js"></script>
 </head>
 <body>
+    <a href="#main-content" class="visually-hidden-focusable">Zum Inhalt springen</a>
     <div id="menu-container"></div>
-    
-    <div class="container mt-4">
+
+    <main id="main-content" class="container mt-4">
         <h1 class="text-center">Saisons</h1>
 
         <div class="mb-3">
-            <label for="season-select" class="form-label">Wähle eine Saison:</label>
+            <label for="season-select" class="form-label">W&auml;hle eine Saison:</label>
             <select id="season-select" class="form-select">
+                <option disabled selected>Lade Saisons&hellip;</option>
             </select>
         </div>
 
         <h2>Playoffs</h2>
-
-
         <div class="container">
-  <div class="bracket-scroll">
-    <div class="d-flex" style="min-width: 700px;">
-      <div class="d-flex flex-column justify-content-around me-4" id="quarterfinals"></div>
-      <div class="d-flex flex-column justify-content-around me-4" id="semifinals"></div>
-      <div class="d-flex flex-column justify-content-around" id="finals"></div>
-    </div>
-  </div>
-</div>
-
-
+            <div class="bracket-scroll">
+                <div class="d-flex bracket-inner">
+                    <div class="d-flex flex-column justify-content-around me-4" id="quarterfinals"></div>
+                    <div class="d-flex flex-column justify-content-around me-4" id="semifinals"></div>
+                    <div class="d-flex flex-column justify-content-around" id="finals"></div>
+                </div>
+            </div>
+        </div>
 
         <h2>Regular Season</h2>
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th>Platz</th>
-                        <th>Manager</th>
-                        <th>Team</th>
-                        <th>W</th>
-                        <th>L</th>
-                        <th>PF</th>
-                        <th>PA</th>
+                        <th scope="col">Platz</th>
+                        <th scope="col">Manager</th>
+                        <th scope="col">Team</th>
+                        <th scope="col">W</th>
+                        <th scope="col">L</th>
+                        <th scope="col">PF</th>
+                        <th scope="col">PA</th>
                     </tr>
                 </thead>
-                <tbody id="regular-season-table">
-                    <!-- SQL-Ergebnisse werden hier eingefügt -->
-                </tbody>
+                <tbody id="regular-season-table"></tbody>
             </table>
         </div>
 
         <h2>Ergebnisse</h2>
         <div class="mb-3">
-          <label class="form-label">Woche:</label>
-          <div class="btn-group w-100 flex-wrap" role="group" id="week-buttons-group" style="max-width: 650px; margin: 0 auto;">
-            <!-- Buttons werden per JS eingefügt -->
-          </div>
+            <label class="form-label">Woche:</label>
+            <div class="btn-group w-100 flex-wrap week-buttons-group" role="group" id="week-buttons-group"></div>
         </div>
         <div class="table-responsive">
             <table class="table table-striped table-hover">
+                <caption>Klicke auf ein Spiel, um Details anzuzeigen.</caption>
                 <thead class="table-dark">
                     <tr>
-                        <th>Team 1</th>
-                        <th>Punkte 1</th>
-                        <th></th>
-                        <th>Punkte 2</th>
-                        <th>Team 2</th>
+                        <th scope="col">Team 1</th>
+                        <th scope="col">Punkte 1</th>
+                        <th scope="col"></th>
+                        <th scope="col">Punkte 2</th>
+                        <th scope="col">Team 2</th>
                     </tr>
                 </thead>
                 <tbody id="weekly-results-table"></tbody>
-                <caption>Klicke auf ein Spiel, um Details anzuzeigen.</caption>
             </table>
         </div>
-        
 
         <h2>Awards</h2>
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
-                        <th>Award</th>
-                        <th>Spieler</th>
+                        <th scope="col">Award</th>
+                        <th scope="col">Spieler</th>
                     </tr>
                 </thead>
                 <tbody id="awards-table"></tbody>
@@ -101,26 +95,21 @@
 
         <h2>Draft</h2>
         <div id="draft-scroll-wrapper" class="overflow-auto">
-        <div id="draft-board" class="draft-board"></div>
+            <div id="draft-board" class="draft-board"></div>
         </div>
-        
-    </div>
+    </main>
 
-    <!-- Modal für Roster-Anzeige -->
-    <div class="modal fade" id="rosterModal" tabindex="-1" aria-labelledby="rosterModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="rosterModalLabel">Matchdetails</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
-          </div>
-          <div class="modal-body" id="roster-content">
-            <!-- Die Tabellen werden hier per JS eingefügt -->
-          </div>
+    <!-- Modal f&uuml;r Roster-Anzeige -->
+    <div class="modal fade" id="rosterModal" tabindex="-1" aria-labelledby="rosterModalLabel" aria-modal="true" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rosterModalLabel">Matchdetails</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schlie&szlig;en"></button>
+                </div>
+                <div class="modal-body" id="roster-content"></div>
+            </div>
         </div>
-      </div>
     </div>
-
-    
 </body>
 </html>
