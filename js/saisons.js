@@ -280,7 +280,8 @@ async function fetchPlayoffOddsForSeason(year) {
             console.warn("Keine Playoff-Odds-Daten gefunden.");
             return;
         }
-
+        console.log("Playoff Odds rows:", rows);
+               
         const datasets = transformOddsToDatasets(rows);
         const ctx = canvas.getContext("2d");
 
