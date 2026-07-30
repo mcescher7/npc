@@ -89,11 +89,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 panelRegularTable.classList.add("d-none");
                 panelRegularPlayoff.classList.remove("d-none");
 
-                // Graph nur einmal initialisieren
-                if (!window.regularPlayoffChartInitialized) {
-                    await initRegularPlayoffChart();
-                    window.regularPlayoffChartInitialized = true;
-                }
+                await initRegularPlayoffChart();
             }
         });
     }
