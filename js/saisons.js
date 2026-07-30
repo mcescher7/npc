@@ -49,26 +49,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const formatPosition = pos => pos === 'DEF' ? 'D/ST' : (pos ?? '-');
 
-        // ── Playoff Odds laden ───────────────────────────────────────────
-    async function fetchPlayoffOddsForSeason(year) {
-        if (!year) return [];
-
-        const { data, error } = await supabaseClient
-            .from("playoff_odds")
-            .select("year, week, manager_id, playoff_pct, bye_pct")
-            .eq("year", year)
-            .order("week", { ascending: true });
-
-        if (error) {
-            logError("Laden der Playoff-Odds", error);
-            return [];
-        }
-
-        // data ist jetzt ein Array von Zeilen mit week / manager_id / playoff_pct / bye_pct
-        return data || [];
-    }
-    
-
     // ── Toggle Ergebnisse / TOTW ───────────────────────────────────────
     toggleErgebnisse.addEventListener("change", () => {
         panelErgebnisse.classList.remove("d-none");
@@ -237,21 +217,22 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
         // ── Playoff Odds laden ───────────────────────────────────────────
-    async function fetchPlayoffOddsForSeason(year) {
+        async function fetchPlayoffOddsForSeason(year) {
         if (!year) return [];
-
+    
         const { data, error } = await supabaseClient
             .from("playoff_odds")
             .select("year, week, manager_id, playoff_pct, bye_pct")
             .eq("year", year)
             .order("week", { ascending: true });
-
+    
         if (error) {
             logError("Laden der Playoff-Odds", error);
             return [];
         }
-
-        // data ist jetzt ein Array von Zeilen mit week / manager_id / playoff_pct / bye_pct
+    
+        console.log("[Playoff Odds] Jahr:", year, "Datensätze:", data?.length ?? 0, data);
+    
         return data || [];
     }
 
