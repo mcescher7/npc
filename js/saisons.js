@@ -298,7 +298,15 @@ async function fetchPlayoffOddsForSeason(year) {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: "bottom" },
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            usePointStyle: true,   // nutzt pointStyle statt Rechteck
+                            pointStyle: "circle",  // einfarbiger Punkt
+                            boxWidth: 8,
+                            boxHeight: 8
+                        }
+                    },
                     tooltip: {
                         callbacks: {
                             label: (context) => {
