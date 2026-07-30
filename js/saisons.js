@@ -673,7 +673,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             loadWeeks(year),
             loadAwards(year),
             loadToty(year),
-            loadDraftBoard(year)
+            loadDraftBoard(year),
+             // Wenn Playoff-% gerade aktiv ist, Graph für neues Jahr neu laden
+            if (regularTogglePlayoff && regularTogglePlayoff.checked) {
+                await initRegularPlayoffChart();
+            }
         ]);
     });
 
