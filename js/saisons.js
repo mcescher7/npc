@@ -20,6 +20,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     const toggleHonors = document.getElementById("toggle-honors");
     const toggleToty   = document.getElementById("toggle-toty");
 
+    // Regular Season Toggle / Panels
+    const regularToggleTable   = document.getElementById("toggle-regular-table");
+    const regularTogglePlayoff = document.getElementById("toggle-regular-playoff");
+    const panelRegularTable    = document.getElementById("panel-regular-table");
+    const panelRegularPlayoff  = document.getElementById("panel-regular-playoff");
+
     const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
     const createOption = (value, text) => {
@@ -42,6 +48,26 @@ document.addEventListener("DOMContentLoaded", async function() {
     };
 
     const formatPosition = pos => pos === 'DEF' ? 'D/ST' : (pos ?? '-');
+
+        // ── Playoff Odds laden ───────────────────────────────────────────
+    async function fetchPlayoffOddsForSeason(year) {
+        if (!year) return [];
+
+        const { data, error } = await supabaseClient
+            .from("playoff_odds")
+            .select("year, week, manager_id, playoff_pct, bye_pct")
+            .eq("year", year)
+            .order("week", { ascending: true });
+
+        if (error) {
+            logError("Laden der Playoff-Odds", error);
+            return [];
+        }
+
+        // data ist jetzt ein Array von Zeilen mit week / manager_id / playoff_pct / bye_pct
+        return data || [];
+    }
+    
 
     // ── Toggle Ergebnisse / TOTW ───────────────────────────────────────
     toggleErgebnisse.addEventListener("change", () => {
@@ -68,6 +94,29 @@ document.addEventListener("DOMContentLoaded", async function() {
         panelToty.classList.remove("d-none");
         panelHonors.classList.add("d-none");
     });
+
+        // ── Toggle Regular Season Tabelle / Playoff-% ─────────────────────
+    if (regularToggleTable && regularTogglePlayoff && panelRegularTable && panelRegularPlayoff) {
+        regularToggleTable.addEventListener("change", () => {
+            if (regularToggleTable.checked) {
+                panelRegularTable.classList.remove("d-none");
+                panelRegularPlayoff.classList.add("d-none");
+            }
+        });
+
+        regularTogglePlayoff.addEventListener("change", async () => {
+            if (regularTogglePlayoff.checked) {
+                panelRegularTable.classList.add("d-none");
+                panelRegularPlayoff.classList.remove("d-none");
+
+                // Graph nur einmal initialisieren
+                if (!window.regularPlayoffChartInitialized) {
+                    await initRegularPlayoffChart();
+                    window.regularPlayoffChartInitialized = true;
+                }
+            }
+        });
+    }
 
     // ── Saisons laden ──────────────────────────────────────────────
     async function loadSeasons() {
@@ -184,6 +233,113 @@ document.addEventListener("DOMContentLoaded", async function() {
                 showRosters(row.team1_id, row.team1, row.team2_id, row.team2, year, week);
             });
             weeklyTableBody.appendChild(tr);
+        });
+    }
+
+        // ── Playoff Odds laden ───────────────────────────────────────────
+    async function fetchPlayoffOddsForSeason(year) {
+        if (!year) return [];
+
+        const { data, error } = await supabaseClient
+            .from("playoff_odds")
+            .select("year, week, manager_id, playoff_pct, bye_pct")
+            .eq("year", year)
+            .order("week", { ascending: true });
+
+        if (error) {
+            logError("Laden der Playoff-Odds", error);
+            return [];
+        }
+
+        // data ist jetzt ein Array von Zeilen mit week / manager_id / playoff_pct / bye_pct
+        return data || [];
+    }
+
+    function transformOddsToDatasets(rows) {
+        const byManager = {};
+
+        rows.forEach(row => {
+            const managerId   = row.manager_id;
+            const week        = row.week;
+            const playoffPct  = row.playoff_pct;
+
+            if (managerId == null || week == null || playoffPct == null) return;
+
+            if (!byManager[managerId]) byManager[managerId] = [];
+            byManager[managerId].push({ x: week, y: playoffPct * 100 }); // Prozent
+        });
+
+        // Punkte pro Manager nach Woche sortieren
+        Object.values(byManager).forEach(points => points.sort((a, b) => a.x - b.x));
+
+        const palette = [
+            "#2563eb", "#dc2626", "#16a34a", "#7c3aed",
+            "#f97316", "#0ea5e9", "#ea580c", "#6366f1",
+            "#22c55e", "#e11d48", "#0f766e", "#a855f7"
+        ];
+
+        return Object.entries(byManager).map(([managerId, points], idx) => ({
+            // Label: hier im simplest case die manager_id, später kannst du über eine Mapping-Funktion den Manager-Namen einsetzen
+            label: `Manager ${managerId}`,
+            data: points,
+            borderColor: palette[idx % palette.length],
+            backgroundColor: "transparent",
+            tension: 0.35
+        }));
+    }
+    
+        async function initRegularPlayoffChart() {
+        const canvas = document.getElementById("regular-playoff-chart");
+        if (!canvas || typeof Chart === "undefined") {
+            console.warn("Chart-Canvas oder Chart.js nicht verfügbar.");
+            return;
+        }
+
+        const year = parseInt(seasonSelect.value, 10);
+        if (!year) {
+            console.warn("Keine Saison gewählt – Playoff-Graph wird nicht geladen.");
+            return;
+        }
+
+        const rows = await fetchPlayoffOddsForSeason(year);
+        if (!rows.length) {
+            console.warn("Keine Playoff-Odds-Daten gefunden.");
+            return;
+        }
+
+        const datasets = transformOddsToDatasets(rows);
+        const ctx = canvas.getContext("2d");
+
+        new Chart(ctx, {
+            type: "line",
+            data: { datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: "bottom" },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const val = context.parsed.y.toFixed(1);
+                                return `${context.dataset.label}: ${val}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: "linear",
+                        title: { display: true, text: "Woche" },
+                        ticks: { stepSize: 1 }
+                    },
+                    y: {
+                        min: 0,
+                        max: 100,
+                        title: { display: true, text: "Playoff-Wahrscheinlichkeit (%)" }
+                    }
+                }
+            }
         });
     }
 
