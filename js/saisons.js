@@ -240,7 +240,7 @@ async function fetchPlayoffOddsForSeason(year) {
             if (managerId == null || week == null || playoffPct == null) return;
 
             if (!byManager[managerId]) byManager[managerId] = [];
-            byManager[managerId].push({ x: week, y: playoffPct * 100 }); // Prozent
+            byManager[managerId].push({ x: week, y: playoffPct });
         });
 
         // Punkte pro Manager nach Woche sortieren
