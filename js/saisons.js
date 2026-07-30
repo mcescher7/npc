@@ -213,24 +213,24 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
         // ── Playoff Odds laden ───────────────────────────────────────────
-        async function fetchPlayoffOddsForSeason(year) {
-        if (!year) return [];
-    
-        const { data, error } = await supabaseClient
-            .from("playoff_odds")
-            .select("year, week, manager_id, playoff_pct, bye_pct")
-            .eq("year", year)
-            .order("week", { ascending: true });
-    
-        if (error) {
-            logError("Laden der Playoff-Odds", error);
-            return [];
-        }
-    
-        console.log("[Playoff Odds] Jahr:", year, "Datensätze:", data?.length ?? 0, data);
-    
-        return data || [];
+async function fetchPlayoffOddsForSeason(year) {
+    console.log("SeasonSelect value:", seasonSelect.value, "Parameter year:", year);
+
+    const { data, error } = await supabaseClient
+        .from("playoff_odds")
+        .select("year, week, manager_id, playoff_pct, bye_pct")
+        //.eq("year", year)           // temporär aus kommentieren
+        .order("week", { ascending: true });
+
+    if (error) {
+        logError("Laden der Playoff-Odds", error);
+        return [];
     }
+
+    console.log("[Playoff Odds RAW] length:", data?.length ?? 0, data?.slice(0, 5));
+
+    return data || [];
+}
 
     function transformOddsToDatasets(rows) {
         const byManager = {};
