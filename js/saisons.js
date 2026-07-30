@@ -674,11 +674,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             loadAwards(year),
             loadToty(year),
             loadDraftBoard(year),
-             // Wenn Playoff-% gerade aktiv ist, Graph für neues Jahr neu laden
+        ]);
+         // Wenn Playoff-% gerade aktiv ist, Graph für neues Jahr neu laden
             if (regularTogglePlayoff && regularTogglePlayoff.checked) {
                 await initRegularPlayoffChart();
             }
-        ]);
     });
 
     weekSelect.addEventListener("change", async () => {
