@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const regularTogglePlayoff = document.getElementById("toggle-regular-playoff");
     const panelRegularTable    = document.getElementById("panel-regular-table");
     const panelRegularPlayoff  = document.getElementById("panel-regular-playoff");
+    let regularPlayoffChart = null; // globale Referenz für den RS-Chart
 
     const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
@@ -261,7 +262,7 @@ async function fetchPlayoffOddsForSeason(year) {
         }));
     }
     
-        async function initRegularPlayoffChart() {
+           async function initRegularPlayoffChart() {
         const canvas = document.getElementById("regular-playoff-chart");
         if (!canvas || typeof Chart === "undefined") {
             console.warn("Chart-Canvas oder Chart.js nicht verfügbar.");
@@ -283,7 +284,13 @@ async function fetchPlayoffOddsForSeason(year) {
         const datasets = transformOddsToDatasets(rows);
         const ctx = canvas.getContext("2d");
 
-        new Chart(ctx, {
+        // Falls bereits ein Chart auf diesem Canvas existiert: zerstören
+        if (regularPlayoffChart) {
+            regularPlayoffChart.destroy();
+            regularPlayoffChart = null;
+        }
+
+        regularPlayoffChart = new Chart(ctx, {
             type: "line",
             data: { datasets },
             options: {
