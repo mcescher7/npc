@@ -334,9 +334,13 @@ document.addEventListener("DOMContentLoaded", async function() {
                         ticks: { stepSize: 1 }
                     },
                     y: {
-                        min: 0,
-                        max: 100,
-                        title: { display: true, text: "Playoff-Wahrscheinlichkeit (%)" }
+                        min: -2,
+                        max: 102,
+                        title: { display: true, text: "Playoff-Wahrscheinlichkeit (%)" },
+                        ticks: {
+                            stepSize: 10,
+                            callback: (value) => value
+                        }
                     }
                 }
             }
