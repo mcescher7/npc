@@ -130,6 +130,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadRegSeason(year) {
         showSpinner(regTableBody, 7);
         if (!year || isNaN(year)) return;
+
+        managerOrder = [];
+        Object.keys(managerNames).forEach(k => delete managerNames[k]);
     
         const { data, error } = await supabaseClient
             .from("regular_season_standings")
