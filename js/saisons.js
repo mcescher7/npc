@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     label: managerNames[managerId] || `Manager ${managerId}`,
                     data: byManager[managerId],
                     borderColor: palette[idx % palette.length],
-                    backgroundColor: "transparent",
+                    backgroundColor: palette[idx % palette.length],
                     tension: 0.35
                 }));
         }
