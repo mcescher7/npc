@@ -698,6 +698,23 @@ document.addEventListener("DOMContentLoaded", async function() {
         await loadTotw(year, week);
     });
 
+    regularToggleTable.addEventListener("change", () => {
+        if (regularToggleTable.checked) {
+            panelRegularTable.classList.remove("d-none");
+            panelRegularPlayoff.classList.add("d-none");
+        }
+    });
+    
+    regularTogglePlayoff.addEventListener("change", async () => {
+        if (regularTogglePlayoff.checked) {
+            panelRegularTable.classList.add("d-none");
+            panelRegularPlayoff.classList.remove("d-none");
+    
+            const metric = toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct";
+            await initRegularPlayoffChart(metric);
+        }
+    });
+    
     togglePlayoffPct.addEventListener("change", async () => {
         if (togglePlayoffPct.checked) {
             await initRegularPlayoffChart("playoff_pct");
