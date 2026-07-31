@@ -333,15 +333,14 @@ document.addEventListener("DOMContentLoaded", async function() {
                         title: { display: true, text: "Woche" },
                         ticks: { stepSize: 1 }
                     },
-                    y: {
-                        min: -2,
-                        max: 102,
-                        title: { display: true, text: "Playoff-Wahrscheinlichkeit (%)" },
-                        ticks: {
-                            stepSize: 10,
-                            callback: (value) => value
-                        }
+                   y: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    title: { display: true, text: "Playoff-Wahrscheinlichkeit (%)" },
+                    ticks: {
+                        stepSize: 10
                     }
+                }
                 }
             }
         });
