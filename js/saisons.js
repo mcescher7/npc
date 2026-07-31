@@ -266,18 +266,13 @@ document.addEventListener("DOMContentLoaded", async function() {
         
             return managerOrder
                 .filter(managerId => byManager[managerId])
-                .map((managerId, idx) => {
-                    const color = palette[idx % palette.length];
-                    return {
-                        label: managerNames[managerId] || `Manager ${managerId}`,
-                        data: byManager[managerId],
-                        borderColor: color,
-                        backgroundColor: color,
-                        pointRadius: 0,
-                        pointHoverRadius: 4,
-                        tension: 0.35
-                    };
-                });
+                .map((managerId, idx) => ({
+                    label: managerNames[managerId] || `Manager ${managerId}`,
+                    data: byManager[managerId],
+                    borderColor: palette[idx % palette.length],
+                    backgroundColor: "transparent",
+                    tension: 0.35
+                }));
         }
     
         async function initRegularPlayoffChart(metric = "playoff_pct") {
@@ -307,7 +302,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     plugins: {
                         legend: {
                             position: "bottom",
-                            labels: { usePointStyle: true, pointStyle: "circle",  pointStyleWidth: 6 }
+                            labels: { usePointStyle: true, pointStyle: "circle" }
                         }
                     },
                     scales: {
