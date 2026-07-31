@@ -75,10 +75,17 @@
         </div>
         
         <!-- Panel: Playoff-% (Graph) – initial versteckt -->
-        <div id="panel-regular-playoff" class="d-none">
-            <div class="regular-playoff-chart-wrapper" style="height:360px;">
-                <canvas id="regular-playoff-chart"></canvas>
+        <div class="d-flex justify-content-end mb-2">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Playoff oder Bye">
+                <input type="radio" class="btn-check" name="regular-odds-toggle" id="toggle-playoff-pct" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary" for="toggle-playoff-pct">Playoff-%</label>
+        
+                <input type="radio" class="btn-check" name="regular-odds-toggle" id="toggle-bye-pct" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="toggle-bye-pct">Bye-%</label>
             </div>
+        </div>
+        <div class="regular-playoff-chart-wrapper" style="height:360px;">
+            <canvas id="regular-playoff-chart"></canvas>
         </div>
 
         <!-- Ergebnisse / TOTW -->
