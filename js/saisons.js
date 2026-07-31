@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const panelRegularTable    = document.getElementById("panel-regular-table");
     const panelRegularPlayoff  = document.getElementById("panel-regular-playoff");
     let regularPlayoffChart = null; // globale Referenz für den RS-Chart
+    const managerNames = {};
 
     const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
@@ -128,18 +129,22 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function loadRegSeason(year) {
         showSpinner(regTableBody, 7);
         if (!year || isNaN(year)) return;
-
+    
         const { data, error } = await supabaseClient
             .from("regular_season_standings")
-            .select("rank, name, teamname, w, l, pf, pa")
+            .select("rank, name, teamname, w, l, pf, pa, manager_id")
             .eq("year", year)
             .order("rank");
-
+    
         if (error) return logError("Laden der Tabelle", error);
         if (!data || data.length === 0) return showNoData(regTableBody, 7);
-
+    
         regTableBody.innerHTML = "";
         data.forEach(manager => {
+            if (manager.manager_id != null) {
+                managerNames[manager.manager_id] = manager.name;
+            }
+    
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${manager.rank}</td>
@@ -252,9 +257,8 @@ async function fetchPlayoffOddsForSeason(year) {
             "#22c55e", "#e11d48", "#0f766e", "#a855f7"
         ];
 
-        return Object.entries(byManager).map(([managerId, points], idx) => ({
-            // Label: hier im simplest case die manager_id, später kannst du über eine Mapping-Funktion den Manager-Namen einsetzen
-            label: `Manager ${managerId}`,
+       return Object.entries(byManager).map(([managerId, points], idx) => ({
+            label: managerNames[managerId] || `Manager ${managerId}`,
             data: points,
             borderColor: palette[idx % palette.length],
             backgroundColor: "transparent",
