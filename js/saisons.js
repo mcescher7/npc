@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const panelRegularPlayoff  = document.getElementById("panel-regular-playoff");
     let regularPlayoffChart = null; // globale Referenz für den RS-Chart
     const managerNames = {};
+    let managerOrder = [];
 
     const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
@@ -143,6 +144,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         data.forEach(manager => {
             if (manager.manager_id != null) {
                 managerNames[manager.manager_id] = manager.name;
+                managerOrder.push(manager.manager_id);
             }
     
             const tr = document.createElement("tr");
@@ -219,47 +221,49 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
         // ── Playoff Odds laden ───────────────────────────────────────────
-async function fetchPlayoffOddsForSeason(year) {
-    const { data, error } = await supabaseClient
-        .from("playoff_odds")
-        .select("year, week, manager_id, playoff_pct, bye_pct")
-        .eq("year", year)
-        .order("week", { ascending: true });
+        async function fetchPlayoffOddsForSeason(year) {
+            const { data, error } = await supabaseClient
+                .from("playoff_odds")
+                .select("year, week, manager_id, playoff_pct, bye_pct")
+                .eq("year", year)
+                .order("week", { ascending: true });
+        
+            if (error) {
+                logError("Laden der Playoff-Odds", error);
+                return [];
+            }
+        
+            return data || [];
+        }
 
-    if (error) {
-        logError("Laden der Playoff-Odds", error);
-        return [];
-    }
-
-    return data || [];
-}
-
-    function transformOddsToDatasets(rows) {
+       function transformOddsToDatasets(rows) {
         const byManager = {};
-
+    
         rows.forEach(row => {
-            const managerId   = row.manager_id;
-            const week        = row.week;
-            const playoffPct  = row.playoff_pct;
-
+            const managerId = row.manager_id;
+            const week = row.week;
+            const playoffPct = row.playoff_pct;
+    
             if (managerId == null || week == null || playoffPct == null) return;
-
+    
             if (!byManager[managerId]) byManager[managerId] = [];
             byManager[managerId].push({ x: week, y: playoffPct });
         });
-
-        // Punkte pro Manager nach Woche sortieren
+    
         Object.values(byManager).forEach(points => points.sort((a, b) => a.x - b.x));
 
         const palette = [
-            "#2563eb", "#dc2626", "#16a34a", "#7c3aed",
-            "#f97316", "#0ea5e9", "#ea580c", "#6366f1",
-            "#22c55e", "#e11d48", "#0f766e", "#a855f7"
+            "#3366CC", "#DC3912", "#FF9900", "#109618",
+            "#990099", "#0099C6", "#DD4477", "#66AA00",
+            "#B82E2E", "#316395", "#994499", "#22AA99",
+            "#AAAA11", "#6633CC", "#E67300", "#8B0707",
         ];
-
-       return Object.entries(byManager).map(([managerId, points], idx) => ({
+           
+      return managerOrder
+        .filter(managerId => byManager[managerId])
+        .map((managerId, idx) => ({
             label: managerNames[managerId] || `Manager ${managerId}`,
-            data: points,
+            data: byManager[managerId],
             borderColor: palette[idx % palette.length],
             backgroundColor: "transparent",
             tension: 0.35
