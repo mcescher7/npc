@@ -273,11 +273,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                         data: byManager[managerId],
                         borderColor: color,
                         backgroundColor: color,
-                        pointBackgroundColor: color,
-                        pointBorderColor: color,
                         pointRadius: 0,
                         pointHoverRadius: 4,
-                        pointStyle: "circle",
                         tension: 0.35
                     };
                 });
