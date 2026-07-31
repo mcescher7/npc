@@ -310,7 +310,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     plugins: {
                         legend: {
                             position: "bottom",
-                            labels: { usePointStyle: true, pointStyle: "circle" }
+                            labels: { usePointStyle: true, pointStyle: "circle",  pointStyleWidth: 6 }
                         }
                     },
                     scales: {
