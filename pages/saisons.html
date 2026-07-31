@@ -43,18 +43,17 @@
         </div>
 
                <!-- Regular Season -->
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
+       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
             <h2 class="mb-0">Regular Season</h2>
-            <!-- Toggle Tabelle / Playoff-% -->
             <div class="btn-group" role="group" aria-label="Regular Season Ansicht">
                 <input type="radio" class="btn-check" name="regular-season-toggle" id="toggle-regular-table" autocomplete="off" checked>
                 <label class="btn btn-outline-secondary" for="toggle-regular-table">Tabelle</label>
+        
                 <input type="radio" class="btn-check" name="regular-season-toggle" id="toggle-regular-playoff" autocomplete="off">
                 <label class="btn btn-outline-secondary" for="toggle-regular-playoff">Playoff-%</label>
             </div>
         </div>
         
-        <!-- Panel: Regular Season Tabelle -->
         <div id="panel-regular-table">
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
@@ -74,18 +73,19 @@
             </div>
         </div>
         
-        <!-- Panel: Playoff-% (Graph) – initial versteckt -->
-        <div class="d-flex justify-content-end mb-2">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Playoff oder Bye">
-                <input type="radio" class="btn-check" name="regular-odds-toggle" id="toggle-playoff-pct" autocomplete="off" checked>
-                <label class="btn btn-outline-secondary" for="toggle-playoff-pct">Playoff-%</label>
+        <div id="panel-regular-playoff" class="d-none">
+            <div class="d-flex justify-content-end mb-2">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Playoff oder Bye">
+                    <input type="radio" class="btn-check" name="regular-odds-toggle" id="toggle-playoff-pct" autocomplete="off" checked>
+                    <label class="btn btn-outline-secondary" for="toggle-playoff-pct">Playoff-%</label>
         
-                <input type="radio" class="btn-check" name="regular-odds-toggle" id="toggle-bye-pct" autocomplete="off">
-                <label class="btn btn-outline-secondary" for="toggle-bye-pct">Bye-%</label>
+                    <input type="radio" class="btn-check" name="regular-odds-toggle" id="toggle-bye-pct" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="toggle-bye-pct">Bye-%</label>
+                </div>
             </div>
-        </div>
-        <div class="regular-playoff-chart-wrapper" style="height:360px;">
-            <canvas id="regular-playoff-chart"></canvas>
+            <div class="regular-playoff-chart-wrapper" style="height:360px;">
+                <canvas id="regular-playoff-chart"></canvas>
+            </div>
         </div>
 
         <!-- Ergebnisse / TOTW -->
