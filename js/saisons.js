@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     let regularPlayoffChart = null; // globale Referenz für den RS-Chart
     const managerNames = {};
     let managerOrder = [];
+    const togglePlayoffPct = document.getElementById("toggle-playoff-pct");
+    const toggleByePct = document.getElementById("toggle-bye-pct");
 
     const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
@@ -239,113 +241,90 @@ document.addEventListener("DOMContentLoaded", async function() {
             return data || [];
         }
 
-       function transformOddsToDatasets(rows) {
-        const byManager = {};
-    
-        rows.forEach(row => {
-            const managerId = row.manager_id;
-            const week = row.week;
-            const playoffPct = row.playoff_pct;
-    
-            if (managerId == null || week == null || playoffPct == null) return;
-    
-            if (!byManager[managerId]) byManager[managerId] = [];
-            byManager[managerId].push({ x: week, y: playoffPct });
-        });
-    
-        Object.values(byManager).forEach(points => points.sort((a, b) => a.x - b.x));
-
-        const palette = [
-            "#3366CC", "#DC3912", "#FF9900", "#109618",
-            "#990099", "#0099C6", "#DD4477", "#66AA00",
-            "#B82E2E", "#316395", "#994499", "#22AA99",
-            "#AAAA11", "#6633CC", "#E67300", "#8B0707",
-        ];
-           
-      return managerOrder
-        .filter(managerId => byManager[managerId])
-        .map((managerId, idx) => ({
-            label: managerNames[managerId] || `Manager ${managerId}`,
-            data: byManager[managerId],
-            borderColor: palette[idx % palette.length],
-            backgroundColor: "transparent",
-            tension: 0.35
-        }));
-    }
-    
-           async function initRegularPlayoffChart() {
-        const canvas = document.getElementById("regular-playoff-chart");
-        if (!canvas || typeof Chart === "undefined") {
-            console.warn("Chart-Canvas oder Chart.js nicht verfügbar.");
-            return;
+        function transformOddsToDatasets(rows, metric = "playoff_pct") {
+            const byManager = {};
+        
+            rows.forEach(row => {
+                const managerId = row.manager_id;
+                const week = row.week;
+                const value = row[metric];
+        
+                if (managerId == null || week == null || value == null) return;
+        
+                if (!byManager[managerId]) byManager[managerId] = [];
+                byManager[managerId].push({ x: week, y: value });
+            });
+        
+            Object.values(byManager).forEach(points => points.sort((a, b) => a.x - b.x));
+        
+            const palette = [
+                "#3366CC", "#DC3912", "#FF9900", "#109618",
+                "#990099", "#0099C6", "#DD4477", "#66AA00",
+                "#B82E2E", "#316395", "#994499", "#22AA99",
+                "#AAAA11", "#6633CC", "#E67300", "#8B0707",
+            ];
+        
+            return managerOrder
+                .filter(managerId => byManager[managerId])
+                .map((managerId, idx) => ({
+                    label: managerNames[managerId] || `Manager ${managerId}`,
+                    data: byManager[managerId],
+                    borderColor: palette[idx % palette.length],
+                    backgroundColor: "transparent",
+                    tension: 0.35
+                }));
         }
-
-        const year = parseInt(seasonSelect.value, 10);
-        if (!year) {
-            console.warn("Keine Saison gewählt – Playoff-Graph wird nicht geladen.");
-            return;
-        }
-
-        const rows = await fetchPlayoffOddsForSeason(year);
-        if (!rows.length) {
-            console.warn("Keine Playoff-Odds-Daten gefunden.");
-            return;
-        }
-        console.log("Playoff Odds rows:", rows);
-               
-        const datasets = transformOddsToDatasets(rows);
-        const ctx = canvas.getContext("2d");
-
-        // Falls bereits ein Chart auf diesem Canvas existiert: zerstören
-        if (regularPlayoffChart) {
-            regularPlayoffChart.destroy();
-            regularPlayoffChart = null;
-        }
-
-        regularPlayoffChart = new Chart(ctx, {
-            type: "line",
-            data: { datasets },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: "bottom",
-                        labels: {
-                            usePointStyle: true,   // nutzt pointStyle statt Rechteck
-                            pointStyle: "circle",  // einfarbiger Punkt
-                            boxWidth: 8,
-                            boxHeight: 8
+    
+        async function initRegularPlayoffChart(metric = "playoff_pct") {
+            const canvas = document.getElementById("regular-playoff-chart");
+            if (!canvas || typeof Chart === "undefined") return;
+        
+            const year = parseInt(seasonSelect.value, 10);
+            if (!year) return;
+        
+            const rows = await fetchPlayoffOddsForSeason(year);
+            if (!rows.length) return;
+        
+            const datasets = transformOddsToDatasets(rows, metric);
+            const ctx = canvas.getContext("2d");
+        
+            if (regularPlayoffChart) {
+                regularPlayoffChart.destroy();
+                regularPlayoffChart = null;
+            }
+        
+            regularPlayoffChart = new Chart(ctx, {
+                type: "line",
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: { usePointStyle: true, pointStyle: "circle" }
                         }
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => {
-                                const val = context.parsed.y.toFixed(1);
-                                return `${context.dataset.label}: ${val}%`;
+                    scales: {
+                        x: {
+                            type: "linear",
+                            title: { display: true, text: "Woche" },
+                            ticks: { stepSize: 1 }
+                        },
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { stepSize: 10 },
+                            title: {
+                                display: true,
+                                text: metric === "playoff_pct" ? "Playoff-Wahrscheinlichkeit (%)" : "Bye-Wahrscheinlichkeit (%)"
                             }
                         }
                     }
-                },
-                scales: {
-                    x: {
-                        type: "linear",
-                        title: { display: true, text: "Woche" },
-                        ticks: { stepSize: 1 }
-                    },
-                   y: {
-                    suggestedMin: 0,
-                    suggestedMax: 100,
-                    title: { display: true, text: "Playoff-Wahrscheinlichkeit (%)" },
-                    ticks: {
-                        stepSize: 10
-                    }
                 }
-                }
-            }
-        });
-    }
-
+            });
+        }
+    
     // ── TOTW laden ─────────────────────────────────────────────────
     async function loadTotw(year, week) {
         showSpinner(totwTableBody, 3);
@@ -701,10 +680,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             loadToty(year),
             loadDraftBoard(year),
         ]);
-         // Wenn Playoff-% gerade aktiv ist, Graph für neues Jahr neu laden
-            if (regularTogglePlayoff && regularTogglePlayoff.checked) {
-                await initRegularPlayoffChart();
-            }
+        if (regularTogglePlayoff && regularTogglePlayoff.checked) {
+            const metric = toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct";
+            await initRegularPlayoffChart(metric);
+        }
     });
 
     weekSelect.addEventListener("change", async () => {
@@ -717,6 +696,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         const year = parseInt(seasonSelect.value, 10);
         const week = parseInt(totwWeekSelect.value, 10);
         await loadTotw(year, week);
+    });
+
+    togglePlayoffPct.addEventListener("change", async () => {
+        if (togglePlayoffPct.checked) {
+            await initRegularPlayoffChart("playoff_pct");
+        }
+    });
+    
+    toggleByePct.addEventListener("change", async () => {
+        if (toggleByePct.checked) {
+            await initRegularPlayoffChart("bye_pct");
+        }
     });
 
     // ── Initialisierung ────────────────────────────────────────────
