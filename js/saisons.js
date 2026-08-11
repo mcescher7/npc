@@ -191,8 +191,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
     
     function renderScheduleMatrix(data) {
-      const allPlay = data.filter(d => String(d.schedule) === "0");
-      const swapData = data.filter(d => String(d.schedule) !== "0");
+      const allPlay = data.filter(d => d.schedule === null);
+      const swapData = data.filter(d => d.schedule !== null);
     
       const managers = [...new Set(swapData.map(d => d.manager))].sort();
       const rowOrder = managers;
