@@ -194,18 +194,27 @@ document.addEventListener("DOMContentLoaded", async function() {
       const allPlay = data.filter(d => d.schedule === null);
       const swapData = data.filter(d => d.schedule !== null);
     
-      const managers = [...new Set(swapData.map(d => d.manager))].sort();
-      const rowOrder = managers;
-      const colOrder = managers;
+    const managers = [...new Set(swapData.map(d => d.manager))].sort();
     
-      const lookup = {};
-      swapData.forEach(d => {
-        lookup[d.manager] = lookup[d.manager] || {};
-        lookup[d.manager][d.schedule] = d;
-      });
+    const lookup = {};
+    swapData.forEach(d => {
+      lookup[d.manager] = lookup[d.manager] || {};
+      lookup[d.manager][d.schedule] = d;
+    });
     
-      const allPlayLookup = {};
-      allPlay.forEach(d => { allPlayLookup[d.manager] = d; });
+    const allPlayLookup = {};
+    allPlay.forEach(d => { allPlayLookup[d.manager] = d; });
+    
+    const sortByAllPlayPct = (a, b) => {
+      const apA = allPlayLookup[a];
+      const apB = allPlayLookup[b];
+      const pctA = apA ? winPct(apA.wins, apA.losses, apA.ties) : -1;
+      const pctB = apB ? winPct(apB.wins, apB.losses, apB.ties) : -1;
+      return pctB - pctA;
+    };
+
+    const rowOrder = [...managers].sort(sortByAllPlayPct);
+    const colOrder = [...managers].sort(sortByAllPlayPct);
     
       const headRow = document.getElementById("schedule-matrix-head");
       headRow.innerHTML = '<th class="corner-cell"></th>' +
