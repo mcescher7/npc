@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     let managerOrder = [];
     const togglePlayoffPct = document.getElementById("toggle-playoff-pct");
     const toggleByePct = document.getElementById("toggle-bye-pct");
+    const regularToggleSchedule = document.getElementById("toggle-regular-schedule");
+    const panelRegularSchedule = document.getElementById("panel-regular-schedule");
 
     const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
 
@@ -53,6 +55,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     };
 
     const formatPosition = pos => pos === 'DEF' ? 'D/ST' : (pos ?? '-');
+
+    const formatRecord = (w, l, t) => (t === 0 ? `${w}-${l}` : `${w}-${l}-${t}`);
+
+    const winPct = (w, l, t) => {
+      const total = w + l + t;
+      if (total === 0) return 0;
+      return (w + 0.5 * t) / total;
+    };
 
     // ── Toggle Ergebnisse / TOTW ───────────────────────────────────────
     toggleErgebnisse.addEventListener("change", () => {
@@ -164,6 +174,87 @@ document.addEventListener("DOMContentLoaded", async function() {
             `;
             regTableBody.appendChild(tr);
         });
+    }
+
+    async function loadScheduleMatrix(year) {
+      if (!year || isNaN(year)) return;
+    
+      const { data, error } = await supabaseClient
+        .from("schedule_swap")
+        .select("year, manager, schedule, wins, losses, ties")
+        .eq("year", year);
+    
+      if (error) return logError("Laden der Schedule-Matrix", error);
+      if (!data || data.length === 0) return;
+    
+      renderScheduleMatrix(data);
+    }
+    
+    function renderScheduleMatrix(data) {
+      const allPlay = data.filter(d => String(d.schedule) === "0");
+      const swapData = data.filter(d => String(d.schedule) !== "0");
+    
+      const managers = [...new Set(swapData.map(d => d.manager))].sort();
+      const rowOrder = managers;
+      const colOrder = managers;
+    
+      const lookup = {};
+      swapData.forEach(d => {
+        lookup[d.manager] = lookup[d.manager] || {};
+        lookup[d.manager][d.schedule] = d;
+      });
+    
+      const allPlayLookup = {};
+      allPlay.forEach(d => { allPlayLookup[d.manager] = d; });
+    
+      const headRow = document.getElementById("schedule-matrix-head");
+      headRow.innerHTML = '<th class="corner-cell"></th>' +
+        colOrder.map(c => `<th>${c}</th>`).join("") +
+        '<th class="gesamt-head">Gesamt</th>';
+    
+      const body = document.getElementById("schedule-matrix-body");
+      body.innerHTML = "";
+    
+      rowOrder.forEach(rowManager => {
+        const tr = document.createElement("tr");
+        const th = document.createElement("th");
+        th.className = "row-header";
+        th.textContent = rowManager;
+        tr.appendChild(th);
+    
+        const rowCells = colOrder.map(colSchedule => {
+          const rec = lookup[rowManager]?.[colSchedule];
+          const pct = rec ? winPct(rec.wins, rec.losses, rec.ties) : null;
+          return { colSchedule, rec, pct };
+        });
+    
+        const validPcts = rowCells.filter(c => c.pct !== null).map(c => c.pct);
+        const maxPct = Math.max(...validPcts);
+        const minPct = Math.min(...validPcts);
+    
+        rowCells.forEach(({ colSchedule, rec, pct }) => {
+          const td = document.createElement("td");
+          if (rec) {
+            const isBest = pct === maxPct;
+            const isWorst = pct === minPct && maxPct !== minPct;
+            if (isBest) td.classList.add("best-record");
+            else if (isWorst) td.classList.add("worst-record");
+            if (colSchedule === rowManager) td.classList.add("diagonal-cell");
+            td.innerHTML = `<span class="cell-wlt">${formatRecord(rec.wins, rec.losses, rec.ties)}</span>`;
+          } else {
+            td.textContent = "–";
+          }
+          tr.appendChild(td);
+        });
+    
+        const gesamtTd = document.createElement("td");
+        gesamtTd.className = "gesamt-cell";
+        const ap = allPlayLookup[rowManager];
+        gesamtTd.textContent = ap ? formatRecord(ap.wins, ap.losses, ap.ties) : "–";
+        tr.appendChild(gesamtTd);
+    
+        body.appendChild(tr);
+      });
     }
 
     // ── Wochen laden ────────────────────────────────────────────────
@@ -684,6 +775,9 @@ document.addEventListener("DOMContentLoaded", async function() {
             const metric = toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct";
             await initRegularPlayoffChart(metric);
         }
+        if (regularToggleSchedule && regularToggleSchedule.checked) {
+          await loadScheduleMatrix(year);
+        }
     });
 
     weekSelect.addEventListener("change", async () => {
@@ -702,6 +796,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (regularToggleTable.checked) {
             panelRegularTable.classList.remove("d-none");
             panelRegularPlayoff.classList.add("d-none");
+            panelRegularSchedule.classList.add("d-none");
         }
     });
     
@@ -709,10 +804,20 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (regularTogglePlayoff.checked) {
             panelRegularTable.classList.add("d-none");
             panelRegularPlayoff.classList.remove("d-none");
-    
+            panelRegularSchedule.classList.add("d-none");  
             const metric = toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct";
             await initRegularPlayoffChart(metric);
         }
+    });
+
+    regularToggleSchedule.addEventListener("change", async () => {
+      if (regularToggleSchedule.checked) {
+        panelRegularTable.classList.add("d-none");
+        panelRegularPlayoff.classList.add("d-none");
+        panelRegularSchedule.classList.remove("d-none");
+        const year = parseInt(seasonSelect.value, 10);
+        await loadScheduleMatrix(year);
+      }
     });
     
     togglePlayoffPct.addEventListener("change", async () => {
