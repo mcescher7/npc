@@ -127,3 +127,127 @@
     max-width: 650px;
     margin: 0 auto;
 }
+
+/* ===== Regular Season: Schedule-Tab (Matrix) ===== */
+#panel-regular-schedule {
+  --sm-border: #eaecef;
+  --sm-header-bg: #f7f8fa;
+  --sm-header-fg: #1a1d21;
+  --sm-diag-bg: #eef0f3;
+  --sm-best: #1a9e52;
+  --sm-worst: #d63b3b;
+  --sm-gesamt-bg: #fafbfc;
+}
+
+#panel-regular-schedule .schedule-matrix-wrapper {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--sm-border);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, .06);
+  background: #fff;
+}
+
+.schedule-matrix {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  min-width: 680px;
+  font-size: .9rem;
+  font-family: inherit;
+}
+
+.schedule-matrix thead th {
+  background: var(--sm-header-bg);
+  color: var(--sm-header-fg);
+  font-weight: 600;
+  font-size: .8rem;
+  letter-spacing: .02em;
+  text-align: center;
+  padding: .75rem .6rem;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--sm-border);
+}
+
+.schedule-matrix thead th.corner-cell {
+  left: 0;
+  z-index: 3;
+  background: var(--sm-header-bg);
+  width: 1px;
+  padding: 0;
+}
+
+.schedule-matrix thead th.gesamt-head {
+  border-left: 1px solid var(--sm-border);
+  color: #495057;
+}
+
+.schedule-matrix tbody th.row-header {
+  background: #fff;
+  text-align: left;
+  padding: .65rem .9rem;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  font-weight: 600;
+  font-size: .88rem;
+  color: #1a1d21;
+  white-space: nowrap;
+  border-right: 1px solid var(--sm-border);
+  border-bottom: 1px solid var(--sm-border);
+  width: 1px;
+}
+
+.schedule-matrix tbody td {
+  text-align: center;
+  padding: .65rem .55rem;
+  border-bottom: 1px solid var(--sm-border);
+  white-space: nowrap;
+  color: #495057;
+  transition: background-color .15s ease;
+}
+
+.schedule-matrix tbody tr:last-child td,
+.schedule-matrix tbody tr:last-child th.row-header {
+  border-bottom: none;
+}
+
+.schedule-matrix tbody tr:hover td,
+.schedule-matrix tbody tr:hover th.row-header {
+  background-color: #f5f7fa;
+}
+
+.schedule-matrix .cell-wlt {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .01em;
+}
+
+.schedule-matrix td.diagonal-cell {
+  background-color: var(--sm-diag-bg);
+}
+
+.schedule-matrix tbody tr:hover td.diagonal-cell {
+  background-color: #e4e7eb;
+}
+
+.schedule-matrix td.best-record .cell-wlt {
+  color: var(--sm-best);
+}
+
+.schedule-matrix td.worst-record .cell-wlt {
+  color: var(--sm-worst);
+}
+
+.schedule-matrix td.gesamt-cell {
+  border-left: 1px solid var(--sm-border);
+  background: var(--sm-gesamt-bg);
+  font-weight: 700;
+  color: #1a1d21;
+}
+
+.schedule-matrix tbody tr:hover td.gesamt-cell {
+  background-color: #eef1f4;
+}
