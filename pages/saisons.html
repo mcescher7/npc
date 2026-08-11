@@ -51,6 +51,9 @@
         
                 <input type="radio" class="btn-check" name="regular-season-toggle" id="toggle-regular-playoff" autocomplete="off">
                 <label class="btn btn-outline-secondary" for="toggle-regular-playoff">Playoff-%</label>
+
+                <input type="radio" class="btn-check" name="regular-season-toggle" id="toggle-regular-schedule" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="toggle-regular-schedule">Schedule</label>
             </div>
         </div>
         
@@ -86,6 +89,17 @@
             <div class="regular-playoff-chart-wrapper" style="height:360px;">
                 <canvas id="regular-playoff-chart"></canvas>
             </div>
+        </div>
+
+        <div id="panel-regular-schedule" class="d-none">
+          <div class="schedule-matrix-wrapper">
+            <table class="schedule-matrix">
+              <thead>
+                <tr id="schedule-matrix-head"></tr>
+              </thead>
+              <tbody id="schedule-matrix-body"></tbody>
+            </table>
+          </div>
         </div>
 
         <!-- Ergebnisse / TOTW -->
