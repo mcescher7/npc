@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script defer src="../js/supabase-client.js"></script>
+    <script defer src="../js/data-service.js"></script>
     <script defer src="../js/saisons.js"></script>
 </head>
 <body>
@@ -25,9 +26,9 @@
         <h1 class="text-center">Saisons</h1>
 
         <div class="mb-3">
-            <label for="season-select" class="form-label">W&auml;hle eine Saison:</label>
+            <label for="season-select" class="form-label">Wähle eine Saison:</label>
             <select id="season-select" class="form-select">
-                <option disabled selected>Lade Saisons&hellip;</option>
+                <option disabled selected>Lade Saisons…</option>
             </select>
         </div>
 
@@ -108,14 +109,14 @@
             <div class="d-flex align-items-center gap-2" id="ergebnisse-woche-controls">
                 <h2 class="mb-0">Woche</h2>
                 <select id="week-select" class="form-select" style="width:auto; font-size:1.5rem; padding:0.1rem 2rem 0.1rem 0.5rem;">
-                    <option disabled selected>&#8230;</option>
+                    <option disabled selected>…</option>
                 </select>
             </div>
             <!-- Wochenauswahl TOTW (initial versteckt) -->
             <div class="d-flex align-items-center gap-2 d-none" id="totw-woche-controls">
                 <h2 class="mb-0">Woche</h2>
                 <select id="totw-week-select" class="form-select" style="width:auto; font-size:1.5rem; padding:0.1rem 2rem 0.1rem 0.5rem;">
-                    <option disabled selected>&#8230;</option>
+                    <option disabled selected>…</option>
                 </select>
             </div>
             <!-- Toggle Ergebnisse/TOTW -->
@@ -211,13 +212,13 @@
         </div>
     </main>
 
-    <!-- Modal f&uuml;r Roster-Anzeige -->
+    <!-- Modal für Roster-Anzeige -->
     <div class="modal fade" id="rosterModal" tabindex="-1" aria-labelledby="rosterModalLabel" aria-modal="true" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="rosterModalLabel">Matchdetails</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schlie&szlig;en"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                 </div>
                 <div class="modal-body" id="roster-content"></div>
             </div>
