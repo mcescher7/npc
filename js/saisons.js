@@ -149,7 +149,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Regular Season ─────────────────────────────────────────────
     async function loadRegSeason(year) {
-        console.log("sectionRegularSeason:", sectionRegularSeason);
       showSpinner(regTableBody, 7);
 
     if (!year || isNaN(year)) {
