@@ -69,6 +69,11 @@ document.addEventListener("DOMContentLoaded", async function() {
       }
     }
 
+    function hasByeOdds(rows) {
+        if (!Array.isArray(rows) || rows.length === 0) return false; 
+        return rows.some(row => row.bye_pct != null && row.bye_pct > 0);
+    }
+
     const formatPosition = pos => pos === 'DEF' ? 'D/ST' : (pos ?? '-');
 
     const formatRecord = (w, l, t) => (t === 0 ? `${w}-${l}` : `${w}-${l}-${t}`);
@@ -392,55 +397,75 @@ document.addEventListener("DOMContentLoaded", async function() {
                 }));
         }
     
-        async function initRegularPlayoffChart(metric = "playoff_pct") {
-            const canvas = document.getElementById("regular-playoff-chart");
-            if (!canvas || typeof Chart === "undefined") return;
-        
-            const year = parseInt(seasonSelect.value, 10);
-            if (!year) return;
-        
-            const rows = await fetchPlayoffOddsForSeason(year);
-            if (!rows.length) return;
-        
-            const datasets = transformOddsToDatasets(rows, metric);
-            const ctx = canvas.getContext("2d");
-        
-            if (regularPlayoffChart) {
-                regularPlayoffChart.destroy();
-                regularPlayoffChart = null;
-            }
-        
-            regularPlayoffChart = new Chart(ctx, {
-                type: "line",
-                data: { datasets },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: "bottom",
-                            labels: { usePointStyle: true, pointStyle: "circle" }
-                        }
+    async function initRegularPlayoffChart(metric = "playoff_pct") {
+        const canvas = document.getElementById("regular-playoff-chart");
+        if (!canvas || typeof Chart === "undefined") return;
+    
+        const year = parseInt(seasonSelect.value, 10);
+        if (!year) return;
+    
+        const rows = await fetchPlayoffOddsForSeason(year);
+        if (!rows.length) return;
+    
+        // Prüfen, ob bye_pct überhaupt sinnvolle Werte liefert
+        const byeAvailable = hasByeOdds(rows);
+    
+        // Toggle ein-/ausblenden
+        const byeToggleContainer = toggleByePct.closest(".btn-group-sm");
+        if (byeToggleContainer) {
+            byeToggleContainer.classList.toggle("d-none", !byeAvailable);
+        }
+    
+        // Wenn Bye nicht verfügbar ist, auf playoff_pct umschalten
+        const effectiveMetric = byeAvailable ? metric : "playoff_pct";
+    
+        // Falls der Bye-Radio gerade ausgewählt war, aber Bye nicht verfügbar ist,
+        // den Playoff-Radio aktivieren
+        if (!byeAvailable && toggleByePct.checked) {
+            togglePlayoffPct.checked = true;
+        }
+    
+        const datasets = transformOddsToDatasets(rows, effectiveMetric);
+        const ctx = canvas.getContext("2d");
+    
+        if (regularPlayoffChart) {
+            regularPlayoffChart.destroy();
+            regularPlayoffChart = null;
+        }
+    
+        regularPlayoffChart = new Chart(ctx, {
+            type: "line",
+            data: { datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: { usePointStyle: true, pointStyle: "circle" }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: "linear",
+                        title: { display: true, text: "Woche" },
+                        ticks: { stepSize: 1 }
                     },
-                    scales: {
-                        x: {
-                            type: "linear",
-                            title: { display: true, text: "Woche" },
-                            ticks: { stepSize: 1 }
-                        },
-                        y: {
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            ticks: { stepSize: 10 },
-                            title: {
-                                display: true,
-                                text: metric === "playoff_pct" ? "Playoff-Wahrscheinlichkeit (%)" : "Bye-Wahrscheinlichkeit (%)"
-                            }
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { stepSize: 10 },
+                        title: {
+                            display: true,
+                            text: effectiveMetric === "playoff_pct"
+                                ? "Playoff-Wahrscheinlichkeit (%)"
+                                : "Bye-Wahrscheinlichkeit (%)"
                         }
                     }
                 }
-            });
-        }
+            }
+        });
+    }
     
     // ── TOTW laden ─────────────────────────────────────────────────
     async function loadTotw(year, week) {
@@ -846,9 +871,22 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
     
     toggleByePct.addEventListener("change", async () => {
-        if (toggleByePct.checked) {
-            await initRegularPlayoffChart("bye_pct");
+        if (!toggleByePct.checked) return;
+    
+        const year = parseInt(seasonSelect.value, 10);
+        if (!year) return;
+    
+        const rows = await fetchPlayoffOddsForSeason(year);
+        const byeAvailable = hasByeOdds(rows);
+    
+        if (!byeAvailable) {
+            // Kein Bye verfügbar → zurück zu playoff_pct
+            togglePlayoffPct.checked = true;
+            await initRegularPlayoffChart("playoff_pct");
+            return;
         }
+    
+        await initRegularPlayoffChart("bye_pct");
     });
 
     // ── Initialisierung ────────────────────────────────────────────
