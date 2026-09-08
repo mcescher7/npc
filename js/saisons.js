@@ -149,6 +149,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Regular Season ─────────────────────────────────────────────
     async function loadRegSeason(year) {
+        console.log("sectionRegularSeason:", sectionRegularSeason);
       showSpinner(regTableBody, 7);
 
     if (!year || isNaN(year)) {
@@ -161,7 +162,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     
       try {
         const data = await DataService.getRegularSeasonStandings(year);
-          console.log("Regular-Season-Daten:", data);
     
         if (!data || data.length === 0) {
           toggleSectionVisibility(sectionRegularSeason, false);
@@ -319,7 +319,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     
       try {
         const data = await DataService.getWeeklyMatchups(year, week);
-          console.log("Wöchentliche Ergebnisdaten:", data);
     
         if (!data || data.length === 0) {
           toggleSectionVisibility(sectionWoche, false);
