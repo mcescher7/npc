@@ -32,16 +32,73 @@
             </select>
         </div>
 
-        <h2>Playoffs</h2>
-        <div class="container">
-            <div class="bracket-scroll">
-                <div class="d-flex bracket-inner">
-                    <div class="d-flex flex-column justify-content-around me-4" id="quarterfinals"></div>
-                    <div class="d-flex flex-column justify-content-around me-4" id="semifinals"></div>
-                    <div class="d-flex flex-column justify-content-around" id="finals"></div>
-                </div>
-            </div>
+    <!-- Postseason -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
+      <h2 class="mb-0">Postseason</h2>
+      <div class="btn-group" role="group" aria-label="Postseason Ansicht">
+        <input type="radio" class="btn-check" name="postseason-toggle"
+               id="toggle-postseason-playoffs" autocomplete="off" checked>
+        <label class="btn btn-outline-secondary" for="toggle-postseason-playoffs">
+          Playoffs
+        </label>
+    
+        <input type="radio" class="btn-check" name="postseason-toggle"
+               id="toggle-postseason-honors" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="toggle-postseason-honors">
+          Honors
+        </label>
+    
+        <input type="radio" class="btn-check" name="postseason-toggle"
+               id="toggle-postseason-toty" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="toggle-postseason-toty">
+          TOTY
+        </label>
+      </div>
+    </div>
+    
+    <!-- Playoff-Bracket -->
+    <div id="panel-postseason-playoffs">
+      <div class="container">
+        <div class="bracket-scroll">
+          <div class="d-flex bracket-inner">
+            <div class="d-flex flex-column justify-content-around me-4" id="quarterfinals"></div>
+            <div class="d-flex flex-column justify-content-around me-4" id="semifinals"></div>
+            <div class="d-flex flex-column justify-content-around" id="finals"></div>
+          </div>
         </div>
+      </div>
+    </div>
+    
+    <!-- Honors -->
+    <div id="panel-postseason-honors" class="d-none">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Award</th>
+              <th scope="col">Spieler</th>
+            </tr>
+          </thead>
+          <tbody id="awards-table"></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- TOTY -->
+    <div id="panel-postseason-toty" class="d-none">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Position</th>
+              <th scope="col">Spieler</th>
+              <th scope="col">Punkte</th>
+            </tr>
+          </thead>
+          <tbody id="toty-table"></tbody>
+        </table>
+      </div>
+    </div>
 
                <!-- Regular Season -->
        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
@@ -162,49 +219,7 @@
                 </table>
             </div>
         </div>
-
-        <!-- Awards / TOTY -->
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 mt-4">
-            <h2 class="mb-0">Awards</h2>
-            <!-- Toggle Honors/TOTY -->
-            <div class="btn-group" role="group" aria-label="Awards Ansicht">
-                <input type="radio" class="btn-check" name="awards-toggle" id="toggle-honors" autocomplete="off" checked>
-                <label class="btn btn-outline-secondary" for="toggle-honors">Honors</label>
-                <input type="radio" class="btn-check" name="awards-toggle" id="toggle-toty" autocomplete="off">
-                <label class="btn btn-outline-secondary" for="toggle-toty">TOTY</label>
-            </div>
-        </div>
-
-        <!-- Panel: Honors -->
-        <div id="panel-honors">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col">Award</th>
-                            <th scope="col">Spieler</th>
-                        </tr>
-                    </thead>
-                    <tbody id="awards-table"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Panel: TOTY (initial versteckt) -->
-        <div id="panel-toty" class="d-none">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Position</th>
-                            <th>Spieler</th>
-                            <th>Punkte</th>
-                        </tr>
-                    </thead>
-                    <tbody id="toty-table"></tbody>
-                </table>
-            </div>
-        </div>
+        
 
         <h2>Draft</h2>
         <div id="draft-scroll-wrapper" class="overflow-auto">
