@@ -8,17 +8,19 @@ document.addEventListener("DOMContentLoaded", async function() {
     const totwTableBody   = document.getElementById("totw-table");
     const totyTableBody   = document.getElementById("toty-table");
 
+    const panelPostseasonPlayoffs = document.getElementById("panel-postseason-playoffs");
+    const panelPostseasonHonors = document.getElementById("panel-postseason-honors");
+    const panelPostseasonToty = document.getElementById("panel-postseason-toty");
+    const togglePostseasonPlayoffs = document.getElementById("toggle-postseason-playoffs");
+    const togglePostseasonHonors = document.getElementById("toggle-postseason-honors");
+    const togglePostseasonToty = document.getElementById("toggle-postseason-toty");
+
     const panelErgebnisse    = document.getElementById("panel-ergebnisse");
     const panelTotw          = document.getElementById("panel-totw");
     const ergebnisseControls = document.getElementById("ergebnisse-woche-controls");
     const totwControls       = document.getElementById("totw-woche-controls");
     const toggleErgebnisse   = document.getElementById("toggle-ergebnisse");
     const toggleTotw         = document.getElementById("toggle-totw");
-
-    const panelHonors  = document.getElementById("panel-honors");
-    const panelToty    = document.getElementById("panel-toty");
-    const toggleHonors = document.getElementById("toggle-honors");
-    const toggleToty   = document.getElementById("toggle-toty");
 
     // Regular Season Toggle / Panels
     const regularToggleTable   = document.getElementById("toggle-regular-table");
@@ -79,15 +81,29 @@ document.addEventListener("DOMContentLoaded", async function() {
         ergebnisseControls.classList.add("d-none");
     });
 
-    // ── Toggle Awards / TOTY ────────────────────────────────────────
-    toggleHonors.addEventListener("change", () => {
-        panelHonors.classList.remove("d-none");
-        panelToty.classList.add("d-none");
+    function showPostseasonPanel(panel) {
+      [panelPostseasonPlayoffs, panelPostseasonHonors, panelPostseasonToty]
+        .forEach((currentPanel) => currentPanel.classList.add("d-none"));
+    
+      panel.classList.remove("d-none");
+    }
+    
+    togglePostseasonPlayoffs.addEventListener("change", () => {
+      if (togglePostseasonPlayoffs.checked) {
+        showPostseasonPanel(panelPostseasonPlayoffs);
+      }
     });
-
-    toggleToty.addEventListener("change", () => {
-        panelToty.classList.remove("d-none");
-        panelHonors.classList.add("d-none");
+    
+    togglePostseasonHonors.addEventListener("change", () => {
+      if (togglePostseasonHonors.checked) {
+        showPostseasonPanel(panelPostseasonHonors);
+      }
+    });
+    
+    togglePostseasonToty.addEventListener("change", () => {
+      if (togglePostseasonToty.checked) {
+        showPostseasonPanel(panelPostseasonToty);
+      }
     });
 
         // ── Toggle Regular Season Tabelle / Playoff-% ─────────────────────
