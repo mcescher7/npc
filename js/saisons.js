@@ -119,25 +119,6 @@ document.addEventListener("DOMContentLoaded", async function() {
       }
     });
 
-        // ── Toggle Regular Season Tabelle / Playoff-% ─────────────────────
-    if (regularToggleTable && regularTogglePlayoff && panelRegularTable && panelRegularPlayoff) {
-        regularToggleTable.addEventListener("change", () => {
-            if (regularToggleTable.checked) {
-                panelRegularTable.classList.remove("d-none");
-                panelRegularPlayoff.classList.add("d-none");
-            }
-        });
-
-        regularTogglePlayoff.addEventListener("change", async () => {
-            if (regularTogglePlayoff.checked) {
-                panelRegularTable.classList.add("d-none");
-                panelRegularPlayoff.classList.remove("d-none");
-
-                await initRegularPlayoffChart();
-            }
-        });
-    }
-
     // ── Saisons laden ──────────────────────────────────────────────
     async function loadSeasons() {
         try {
@@ -168,8 +149,13 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Regular Season ─────────────────────────────────────────────
     async function loadRegSeason(year) {
+      toggleSectionVisibility(sectionRegularSeason, false);
       showSpinner(regTableBody, 7);
-      if (!year || isNaN(year)) return;
+
+    if (!year || isNaN(year)) {
+         toggleSectionVisibility(sectionRegularSeason, false);
+          return;
+      }
     
       managerOrder = [];
       Object.keys(managerNames).forEach(k => delete managerNames[k]);
@@ -325,8 +311,12 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Wöchentliche Ergebnisse ────────────────────────────────────
     async function loadWeeklyMatchups(year, week) {
+      toggleSectionVisibility(sectionWoche, false);
       showSpinner(weeklyTableBody, 5);
-      if (!year || !week) return;
+      if (!year || !week) {
+            toggleSectionVisibility(sectionWoche, false);
+            return;
+        }
     
       try {
         const data = await DataService.getWeeklyMatchups(year, week);
@@ -596,6 +586,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Bracket ────────────────────────────────────────────────────
     async function loadBracket(year) {
+          toggleSectionVisibility(sectionPostseason, false);
       ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
         const container = document.getElementById(id);
         if (container) container.innerHTML = "";
