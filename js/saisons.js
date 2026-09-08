@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     const totwTableBody   = document.getElementById("totw-table");
     const totyTableBody   = document.getElementById("toty-table");
 
+    const sectionPostseason = document.getElementById("section-postseason");
+    const sectionRegularSeason = document.getElementById("section-regular-season");
+    const sectionWoche = document.getElementById("section-woche");
+
     const panelPostseasonPlayoffs = document.getElementById("panel-postseason-playoffs");
     const panelPostseasonHonors = document.getElementById("panel-postseason-honors");
     const panelPostseasonToty = document.getElementById("panel-postseason-toty");
@@ -55,6 +59,15 @@ document.addEventListener("DOMContentLoaded", async function() {
     const showSpinner = (element, cols) => {
         element.innerHTML = `<tr><td colspan="${cols}" class="text-center"><div class="spinner-border spinner-border-sm text-secondary" role="status"><span class="visually-hidden">Laden…</span></div></td></tr>`;
     };
+
+    function toggleSectionVisibility(section, hasData) {
+      if (!section) return;
+      if (hasData) {
+        section.classList.remove("d-none");
+      } else {
+        section.classList.add("d-none");
+      }
+    }
 
     const formatPosition = pos => pos === 'DEF' ? 'D/ST' : (pos ?? '-');
 
@@ -155,39 +168,45 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Regular Season ─────────────────────────────────────────────
     async function loadRegSeason(year) {
-        showSpinner(regTableBody, 7);
-        if (!year || isNaN(year)) return;
-
-        managerOrder = [];
-        Object.keys(managerNames).forEach(k => delete managerNames[k]);
+      showSpinner(regTableBody, 7);
+      if (!year || isNaN(year)) return;
     
-        try {
-            const data = await DataService.getRegularSeasonStandings(year);
-        
-            if (!data || data.length === 0) return showNoData(regTableBody, 7);
-        
-            regTableBody.innerHTML = "";
-            data.forEach(manager => {
-                if (manager.manager_id != null) {
-                    managerNames[manager.manager_id] = manager.name;
-                    managerOrder.push(manager.manager_id);
-                }
-        
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${manager.rank}</td>
-                    <td>${manager.name}</td>
-                    <td>${manager.teamname}</td>
-                    <td>${manager.w}</td>
-                    <td>${manager.l}</td>
-                    <td>${manager.pf.toFixed(2)}</td>
-                    <td>${manager.pa.toFixed(2)}</td>
-                `;
-                regTableBody.appendChild(tr);
-            });
-        } catch (error) {
-            logError("Laden der Tabelle", error);
+      managerOrder = [];
+      Object.keys(managerNames).forEach(k => delete managerNames[k]);
+    
+      try {
+        const data = await DataService.getRegularSeasonStandings(year);
+    
+        if (!data || data.length === 0) {
+          toggleSectionVisibility(sectionRegularSeason, false);
+          return;
         }
+    
+        toggleSectionVisibility(sectionRegularSeason, true);
+    
+        regTableBody.innerHTML = "";
+        data.forEach(manager => {
+          if (manager.manager_id != null) {
+            managerNames[manager.manager_id] = manager.name;
+            managerOrder.push(manager.manager_id);
+          }
+    
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${manager.rank}</td>
+            <td>${manager.name}</td>
+            <td>${manager.teamname}</td>
+            <td>${manager.w}</td>
+            <td>${manager.l}</td>
+            <td>${manager.pf.toFixed(2)}</td>
+            <td>${manager.pa.toFixed(2)}</td>
+          `;
+          regTableBody.appendChild(tr);
+        });
+      } catch (error) {
+        logError("Laden der Tabelle", error);
+        toggleSectionVisibility(sectionRegularSeason, false);
+      }
     }
 
     async function loadScheduleMatrix(year) {
@@ -306,33 +325,39 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Wöchentliche Ergebnisse ────────────────────────────────────
     async function loadWeeklyMatchups(year, week) {
-        showSpinner(weeklyTableBody, 5);
-        if (!year || !week) return;
-
-        try {
-            const data = await DataService.getWeeklyMatchups(year, week);
-
-            if (!data || data.length === 0) return showNoData(weeklyTableBody, 5);
-
-            weeklyTableBody.innerHTML = "";
-            data.forEach(row => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${row.team1}</td>
-                    <td>${row.points1.toFixed(2)}</td>
-                    <td>-</td>
-                    <td>${row.points2.toFixed(2)}</td>
-                    <td>${row.team2}</td>
-                `;
-                tr.style.cursor = "pointer";
-                tr.addEventListener("click", () => {
-                    showRosters(row.team1_id, row.team1, row.team2_id, row.team2, year, week);
-                });
-                weeklyTableBody.appendChild(tr);
-            });
-        } catch (error) {
-            logError("Laden der Matchups", error);
+      showSpinner(weeklyTableBody, 5);
+      if (!year || !week) return;
+    
+      try {
+        const data = await DataService.getWeeklyMatchups(year, week);
+    
+        if (!data || data.length === 0) {
+          toggleSectionVisibility(sectionWoche, false);
+          return;
         }
+    
+        toggleSectionVisibility(sectionWoche, true);
+    
+        weeklyTableBody.innerHTML = "";
+        data.forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.team1}</td>
+            <td>${row.points1.toFixed(2)}</td>
+            <td>-</td>
+            <td>${row.points2.toFixed(2)}</td>
+            <td>${row.team2}</td>
+          `;
+          tr.style.cursor = "pointer";
+          tr.addEventListener("click", () => {
+            showRosters(row.team1_id, row.team1, row.team2_id, row.team2, year, week);
+          });
+          weeklyTableBody.appendChild(tr);
+        });
+      } catch (error) {
+        logError("Laden der Matchups", error);
+        toggleSectionVisibility(sectionWoche, false);
+      }
     }
 
         // ── Playoff Odds laden ───────────────────────────────────────────
@@ -571,82 +596,90 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ── Bracket ────────────────────────────────────────────────────
     async function loadBracket(year) {
-        ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
-            const container = document.getElementById(id);
-            if (container) container.innerHTML = "";
-        });
-
-        try {
-            const data = await DataService.getPlayoffMatches(year);
-
-            const roundOrder = { "QF": 1, "SF": 2, "F": 3 };
-            const sortedData = data.slice().sort((a, b) => {
-                if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round];
-                return a.slot - b.slot;
-            });
-
-            const qfColumn = document.getElementById("quarterfinals");
-            const hasQuarterfinals = data.some(g => g.round === "QF");
-            if (qfColumn) qfColumn.classList.toggle("d-none", !hasQuarterfinals);
-
-            sortedData.forEach(game => {
-                const roundId = game.round === "QF" ? "quarterfinals" :
-                    game.round === "SF" ? "semifinals" :
-                    game.round === "F"  ? "finals" : null;
-
-                const container = roundId ? document.getElementById(roundId) : null;
-                if (!container) return;
-
-                const div = document.createElement("div");
-                div.className = "card my-2 p-2 text-start";
-                div.style.maxWidth = "250px";
-
-                const isBye = game.l_name === null;
-
-                if (isBye) {
-                    div.innerHTML = `
-                    <div class="d-flex justify-content-between">
-                        <div class="me-2 flex-grow-1"><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
-                        <span class="text-muted"></span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div class="me-2 flex-grow-1"><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
-                        <span class="text-muted"></span>
-                    </div>`;
-                } else {
-                    const wSlot = game.w_slot;
-                    const lSlot = game.l_slot;
-                    const topSeed = (wSlot !== null && lSlot !== null) ? (wSlot < lSlot ? "w" : "l") :
-                        (game.w_rank < game.l_rank ? "w" : "l");
-                    const bottomSeed = topSeed === "w" ? "l" : "w";
-
-                    const topRank      = game[`${topSeed}_rank`];
-                    const topName      = game[`${topSeed}_name`];
-                    const topPoints    = (game[`${topSeed}_points`] ?? 0).toFixed(2);
-                    const bottomRank   = game[`${bottomSeed}_rank`];
-                    const bottomName   = game[`${bottomSeed}_name`];
-                    const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2);
-
-                    const topClass    = (game.w_rank === topRank)    ? "color-green" : "color-red";
-                    const bottomClass = (game.w_rank === bottomRank) ? "color-green" : "color-red";
-                    const topNameClass    = (game.round === "F" && game.w_rank === topRank)    ? "text-warning fw-bold" : "";
-                    const bottomNameClass = (game.round === "F" && game.w_rank === bottomRank) ? "text-warning fw-bold" : "";
-
-                    div.innerHTML = `
-                    <div class="d-flex justify-content-between">
-                        <div class="me-2 flex-grow-1"><small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span></div>
-                        <span class="${topClass}">${topPoints}</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div class="me-2 flex-grow-1"><small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span></div>
-                        <span class="${bottomClass}">${bottomPoints}</span>
-                    </div>`;
-                }
-                container.appendChild(div);
-            });
-        } catch (error) {
-            logError("Laden des Brackets", error);
+      ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
+        const container = document.getElementById(id);
+        if (container) container.innerHTML = "";
+      });
+    
+      try {
+        const data = await DataService.getPlayoffMatches(year);
+    
+        if (!data || data.length === 0) {
+          toggleSectionVisibility(sectionPostseason, false);
+          return;
         }
+    
+        toggleSectionVisibility(sectionPostseason, true);
+    
+        const roundOrder = { "QF": 1, "SF": 2, "F": 3 };
+        const sortedData = data.slice().sort((a, b) => {
+          if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round];
+          return a.slot - b.slot;
+        });
+    
+        const qfColumn = document.getElementById("quarterfinals");
+        const hasQuarterfinals = data.some(g => g.round === "QF");
+        if (qfColumn) qfColumn.classList.toggle("d-none", !hasQuarterfinals);
+    
+        sortedData.forEach(game => {
+          const roundId = game.round === "QF" ? "quarterfinals" :
+              game.round === "SF" ? "semifinals" :
+              game.round === "F"  ? "finals" : null;
+    
+          const container = roundId ? document.getElementById(roundId) : null;
+          if (!container) return;
+    
+          const div = document.createElement("div");
+          div.className = "card my-2 p-2 text-start";
+          div.style.maxWidth = "250px";
+    
+          const isBye = game.l_name === null;
+    
+          if (isBye) {
+            div.innerHTML = `
+            <div class="d-flex justify-content-between">
+                <div class="me-2 flex-grow-1"><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
+                <span class="text-muted"></span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div class="me-2 flex-grow-1"><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
+                <span class="text-muted"></span>
+            </div>`;
+          } else {
+            const wSlot = game.w_slot;
+            const lSlot = game.l_slot;
+            const topSeed = (wSlot !== null && lSlot !== null) ? (wSlot < lSlot ? "w" : "l") :
+                (game.w_rank < game.l_rank ? "w" : "l");
+            const bottomSeed = topSeed === "w" ? "l" : "w";
+    
+            const topRank      = game[`${topSeed}_rank`];
+            const topName      = game[`${topSeed}_name`];
+            const topPoints    = (game[`${topSeed}_points`] ?? 0).toFixed(2);
+            const bottomRank   = game[`${bottomSeed}_rank`];
+            const bottomName   = game[`${bottomSeed}_name`];
+            const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2);
+    
+            const topClass    = (game.w_rank === topRank)    ? "color-green" : "color-red";
+            const bottomClass = (game.w_rank === bottomRank) ? "color-green" : "color-red";
+            const topNameClass    = (game.round === "F" && game.w_rank === topRank)    ? "text-warning fw-bold" : "";
+            const bottomNameClass = (game.round === "F" && game.w_rank === bottomRank) ? "text-warning fw-bold" : "";
+    
+            div.innerHTML = `
+            <div class="d-flex justify-content-between">
+                <div class="me-2 flex-grow-1"><small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span></div>
+                <span class="${topClass}">${topPoints}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div class="me-2 flex-grow-1"><small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span></div>
+                <span class="${bottomClass}">${bottomPoints}</span>
+            </div>`;
+          }
+          container.appendChild(div);
+        });
+      } catch (error) {
+        logError("Laden des Brackets", error);
+        toggleSectionVisibility(sectionPostseason, false);
+      }
     }
 
     // ── Roster Modal ───────────────────────────────────────────────
