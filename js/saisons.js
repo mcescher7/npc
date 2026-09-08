@@ -1,33 +1,33 @@
 document.addEventListener("DOMContentLoaded", async function() {
-    const seasonSelect = document.getElementById("season-select");
-    const weekSelect = document.getElementById("week-select");
-    const totwWeekSelect = document.getElementById("totw-week-select");
-    const regTableBody = document.getElementById("regular-season-table");
+    const seasonSelect    = document.getElementById("season-select");
+    const weekSelect      = document.getElementById("week-select");
+    const totwWeekSelect  = document.getElementById("totw-week-select");
+    const regTableBody    = document.getElementById("regular-season-table");
     const weeklyTableBody = document.getElementById("weekly-results-table");
-    const awardTableBody = document.getElementById("awards-table");
-    const totwTableBody = document.getElementById("totw-table");
-    const totyTableBody = document.getElementById("toty-table");
-    const panelErgebnisse = document.getElementById("panel-ergebnisse");
-    const panelTotw = document.getElementById("panel-totw");
+    const awardTableBody  = document.getElementById("awards-table");
+    const totwTableBody   = document.getElementById("totw-table");
+    const totyTableBody   = document.getElementById("toty-table");
+
+    const panelErgebnisse    = document.getElementById("panel-ergebnisse");
+    const panelTotw          = document.getElementById("panel-totw");
     const ergebnisseControls = document.getElementById("ergebnisse-woche-controls");
-    const totwControls = document.getElementById("totw-woche-controls");
-    const toggleErgebnisse = document.getElementById("toggle-ergebnisse");
-    const toggleTotw = document.getElementById("toggle-totw");
-    const panelHonors = document.getElementById("panel-honors");
-    const panelToty = document.getElementById("panel-toty");
+    const totwControls       = document.getElementById("totw-woche-controls");
+    const toggleErgebnisse   = document.getElementById("toggle-ergebnisse");
+    const toggleTotw         = document.getElementById("toggle-totw");
+
+    const panelHonors  = document.getElementById("panel-honors");
+    const panelToty    = document.getElementById("panel-toty");
     const toggleHonors = document.getElementById("toggle-honors");
-    const toggleToty = document.getElementById("toggle-toty");
+    const toggleToty   = document.getElementById("toggle-toty");
 
     // Regular Season Toggle / Panels
-    const regularToggleTable = document.getElementById("toggle-regular-table");
+    const regularToggleTable   = document.getElementById("toggle-regular-table");
     const regularTogglePlayoff = document.getElementById("toggle-regular-playoff");
-    const panelRegularTable = document.getElementById("panel-regular-table");
-    const panelRegularPlayoff = document.getElementById("panel-regular-playoff");
+    const panelRegularTable    = document.getElementById("panel-regular-table");
+    const panelRegularPlayoff  = document.getElementById("panel-regular-playoff");
     let regularPlayoffChart = null; // globale Referenz für den RS-Chart
-
     const managerNames = {};
     let managerOrder = [];
-
     const togglePlayoffPct = document.getElementById("toggle-playoff-pct");
     const toggleByePct = document.getElementById("toggle-bye-pct");
     const regularToggleSchedule = document.getElementById("toggle-regular-schedule");
@@ -51,18 +51,20 @@ document.addEventListener("DOMContentLoaded", async function() {
     };
 
     const showSpinner = (element, cols) => {
-        element.innerHTML = `<tr><td colspan="${cols}" class="text-center"><div class="spinner-border spinner-border-sm text-secondary" role="status"><span class="visually-hidden">Laden...</span></div></td></tr>`;
+        element.innerHTML = `<tr><td colspan="${cols}" class="text-center"><div class="spinner-border spinner-border-sm text-secondary" role="status"><span class="visually-hidden">Laden…</span></div></td></tr>`;
     };
 
-    const formatPosition = (pos) => pos === 'DEF' ? 'DST' : (pos ?? '-');
-    const formatRecord = (w, l, t) => t === 0 ? `${w}-${l}` : `${w}-${l}-${t}`;
+    const formatPosition = pos => pos === 'DEF' ? 'D/ST' : (pos ?? '-');
+
+    const formatRecord = (w, l, t) => (t === 0 ? `${w}-${l}` : `${w}-${l}-${t}`);
+
     const winPct = (w, l, t) => {
-        const total = w + l + t;
-        if (total === 0) return 0;
-        return (w + 0.5 * t) / total;
+      const total = w + l + t;
+      if (total === 0) return 0;
+      return (w + 0.5 * t) / total;
     };
 
-    // ── Toggle Ergebnisse / TOTW ────────────────────────────────────────
+    // ── Toggle Ergebnisse / TOTW ───────────────────────────────────────
     toggleErgebnisse.addEventListener("change", () => {
         panelErgebnisse.classList.remove("d-none");
         panelTotw.classList.add("d-none");
@@ -77,28 +79,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         ergebnisseControls.classList.add("d-none");
     });
 
-    // ── Toggle Postseason: Playoffs / Honors / TOTY ────────────────────────────────────────
-    const togglePlayoffs = document.getElementById("toggle-playoffs");
-    const panelPlayoffs = document.getElementById("panel-playoffs");
-    
-    if (togglePlayoffs && panelPlayoffs) {
-        togglePlayoffs.addEventListener("change", () => {
-            panelPlayoffs.classList.remove("d-none");
-            panelHonors.classList.add("d-none");
-            panelToty.classList.add("d-none");
-        });
-    }
-    
+    // ── Toggle Awards / TOTY ────────────────────────────────────────
     toggleHonors.addEventListener("change", () => {
-        panelPlayoffs.classList.add("d-none");
         panelHonors.classList.remove("d-none");
         panelToty.classList.add("d-none");
     });
 
     toggleToty.addEventListener("change", () => {
-        panelPlayoffs.classList.add("d-none");
-        panelHonors.classList.add("d-none");
         panelToty.classList.remove("d-none");
+        panelHonors.classList.add("d-none");
     });
 
         // ── Toggle Regular Season Tabelle / Playoff-% ─────────────────────
@@ -109,26 +98,31 @@ document.addEventListener("DOMContentLoaded", async function() {
                 panelRegularPlayoff.classList.add("d-none");
             }
         });
+
         regularTogglePlayoff.addEventListener("change", async () => {
             if (regularTogglePlayoff.checked) {
                 panelRegularTable.classList.add("d-none");
                 panelRegularPlayoff.classList.remove("d-none");
+
                 await initRegularPlayoffChart();
             }
         });
     }
 
-    // Saisons laden
+    // ── Saisons laden ──────────────────────────────────────────────
     async function loadSeasons() {
         try {
             const data = await DataService.getSeasons();
-            seasonSelect.innerHTML = '';
+            seasonSelect.innerHTML = "";
+
             data.forEach(season => {
                 seasonSelect.appendChild(createOption(season.year, season.year));
             });
+
             if (data.length > 0) {
                 const newestYear = data[data.length - 1].year;
                 seasonSelect.value = newestYear;
+
                 await Promise.all([
                     loadBracket(newestYear),
                     loadRegSeason(newestYear),
@@ -143,27 +137,26 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // Regular Season
+    // ── Regular Season ─────────────────────────────────────────────
     async function loadRegSeason(year) {
         showSpinner(regTableBody, 7);
         if (!year || isNaN(year)) return;
 
-        // Reset manager names
-        Object.keys(managerNames).forEach(k => delete managerNames[k]);
         managerOrder = [];
-
+        Object.keys(managerNames).forEach(k => delete managerNames[k]);
+    
         try {
             const data = await DataService.getRegularSeasonStandings(year);
-            if (!data || data.length === 0) {
-                showNoData(regTableBody, 7);
-                return;
-            }
-            regTableBody.innerHTML = '';
+        
+            if (!data || data.length === 0) return showNoData(regTableBody, 7);
+        
+            regTableBody.innerHTML = "";
             data.forEach(manager => {
-                if (manager.managerid != null) {
-                    managerNames[manager.managerid] = manager.name;
-                    managerOrder.push(manager.managerid);
+                if (manager.manager_id != null) {
+                    managerNames[manager.manager_id] = manager.name;
+                    managerOrder.push(manager.manager_id);
                 }
+        
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td>${manager.rank}</td>
@@ -182,124 +175,130 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function loadScheduleMatrix(year) {
-        if (!year || isNaN(year)) return;
-        try {
-            const data = await DataService.getScheduleMatrix(year);
-            if (data && data.length > 0) {
-                renderScheduleMatrix(data);
-            }
-        } catch (error) {
-            logError("Laden der Schedule-Matrix", error);
-        }
+      if (!year || isNaN(year)) return;
+    
+      try {
+          const data = await DataService.getScheduleMatrix(year);
+          if (data && data.length > 0) {
+              renderScheduleMatrix(data);
+          }
+      } catch (error) {
+          logError("Laden der Schedule-Matrix", error);
+      }
     }
-
+    
     function renderScheduleMatrix(data) {
-        const allPlay = data.filter(d => d.schedule == null);
-        const swapData = data.filter(d => d.schedule != null);
+      const allPlay = data.filter(d => d.schedule === null);
+      const swapData = data.filter(d => d.schedule !== null);
+    
+    const managers = [...new Set(swapData.map(d => d.manager))].sort();
+    
+    const lookup = {};
+    swapData.forEach(d => {
+      lookup[d.manager] = lookup[d.manager] || {};
+      lookup[d.manager][d.schedule] = d;
+    });
+    
+    const allPlayLookup = {};
+    allPlay.forEach(d => { allPlayLookup[d.manager] = d; });
+    
+    const sortByAllPlayPct = (a, b) => {
+      const apA = allPlayLookup[a];
+      const apB = allPlayLookup[b];
+      const pctA = apA ? winPct(apA.wins, apA.losses, apA.ties) : -1;
+      const pctB = apB ? winPct(apB.wins, apB.losses, apB.ties) : -1;
+      return pctB - pctA;
+    };
 
-        const managers = [...new Set(swapData.map(d => d.manager).sort())];
-
-        const lookup = {};
-        swapData.forEach(d => {
-            if (!lookup[d.manager]) lookup[d.manager] = {};
-            lookup[d.manager][d.schedule] = { w: d.wins, l: d.losses, t: d.ties };
+    const rowOrder = [...managers].sort(sortByAllPlayPct);
+    const colOrder = [...managers].sort(sortByAllPlayPct);
+    
+      const headRow = document.getElementById("schedule-matrix-head");
+      headRow.innerHTML = '<th class="corner-cell"></th>' +
+        colOrder.map(c => `<th>${c}</th>`).join("") +
+        '<th class="gesamt-head">Gesamt</th>';
+    
+      const body = document.getElementById("schedule-matrix-body");
+      body.innerHTML = "";
+    
+      rowOrder.forEach(rowManager => {
+        const tr = document.createElement("tr");
+        const th = document.createElement("th");
+        th.className = "row-header";
+        th.textContent = rowManager;
+        tr.appendChild(th);
+    
+        const rowCells = colOrder.map(colSchedule => {
+          const rec = lookup[rowManager]?.[colSchedule];
+          const pct = rec ? winPct(rec.wins, rec.losses, rec.ties) : null;
+          return { colSchedule, rec, pct };
         });
-
-        const allPlayLookup = {};
-        allPlay.forEach(d => {
-            allPlayLookup[d.manager] = d;
+    
+        const validPcts = rowCells.filter(c => c.pct !== null).map(c => c.pct);
+        const maxPct = Math.max(...validPcts);
+        const minPct = Math.min(...validPcts);
+    
+        rowCells.forEach(({ colSchedule, rec, pct }) => {
+          const td = document.createElement("td");
+          if (rec) {
+            const isBest = pct === maxPct;
+            const isWorst = pct === minPct && maxPct !== minPct;
+            if (isBest) td.classList.add("best-record");
+            else if (isWorst) td.classList.add("worst-record");
+            if (colSchedule === rowManager) td.classList.add("diagonal-cell");
+            td.innerHTML = `<span class="cell-wlt">${formatRecord(rec.wins, rec.losses, rec.ties)}</span>`;
+          } else {
+            td.textContent = "–";
+          }
+          tr.appendChild(td);
         });
-
-        const sortByAllPlayPct = (a, b) => {
-            const apA = allPlayLookup[a];
-            const apB = allPlayLookup[b];
-            const pctA = apA ? winPct(apA.wins, apA.losses, apA.ties) : -1;
-            const pctB = apB ? winPct(apB.wins, apB.losses, apB.ties) : -1;
-            return pctB - pctA;
-        };
-
-        const rowOrder = [...managers].sort(sortByAllPlayPct);
-        const colOrder = [...managers].sort(sortByAllPlayPct);
-
-        const headRow = document.getElementById("schedule-matrix-head");
-        headRow.innerHTML = `<th class="corner-cell"></th>` + colOrder.map(c => `<th>${c}</th>`).join('') + `<th class="gesamt-head">Gesamt</th>`;
-
-        const body = document.getElementById("schedule-matrix-body");
-        body.innerHTML = '';
-
-        rowOrder.forEach(rowManager => {
-            const tr = document.createElement("tr");
-            const th = document.createElement("th");
-            th.className = "row-header";
-            th.textContent = rowManager;
-            tr.appendChild(th);
-
-            const rowCells = colOrder.map(colSchedule => {
-                const rec = lookup[rowManager]?.[colSchedule];
-                const pct = rec ? winPct(rec.wins, rec.losses, rec.ties) : null;
-                return { colSchedule, rec, pct };
-            });
-
-            const validPcts = rowCells.filter(c => c.pct != null).map(c => c.pct);
-            const maxPct = Math.max(...validPcts);
-            const minPct = Math.min(...validPcts);
-
-            rowCells.forEach(({ colSchedule, rec, pct }) => {
-                const td = document.createElement("td");
-                if (rec) {
-                    const isBest = pct === maxPct;
-                    const isWorst = pct === minPct && maxPct !== minPct;
-                    if (isBest) td.classList.add("best-record");
-                    else if (isWorst) td.classList.add("worst-record");
-                    if (colSchedule === rowManager) td.classList.add("diagonal-cell");
-                    td.innerHTML = `<span class="cell-wlt">${formatRecord(rec.wins, rec.losses, rec.ties)}</span>`;
-                }
-                tr.appendChild(td);
-            });
-
-            const gesamtTd = document.createElement("td");
-            gesamtTd.className = "gesamt-cell";
-            const ap = allPlayLookup[rowManager];
-            gesamtTd.textContent = ap ? formatRecord(ap.wins, ap.losses, ap.ties) : '';
-            tr.appendChild(gesamtTd);
-
-            body.appendChild(tr);
-        });
+    
+        const gesamtTd = document.createElement("td");
+        gesamtTd.className = "gesamt-cell";
+        const ap = allPlayLookup[rowManager];
+        gesamtTd.textContent = ap ? formatRecord(ap.wins, ap.losses, ap.ties) : "–";
+        tr.appendChild(gesamtTd);
+    
+        body.appendChild(tr);
+      });
     }
 
-    // Wochen laden
+    // ── Wochen laden ────────────────────────────────────────────────
     async function loadWeeks(year) {
         weekSelect.innerHTML = '';
         totwWeekSelect.innerHTML = '';
+
         try {
             const data = await DataService.getSeasonWeeks(year);
+            
             const totalWeeks = data.weeks;
             for (let i = 1; i <= totalWeeks; i++) {
                 weekSelect.appendChild(createOption(i, i));
                 totwWeekSelect.appendChild(createOption(i, i));
             }
-            weekSelect.value = totalWeeks;
+            weekSelect.value     = totalWeeks;
             totwWeekSelect.value = totalWeeks;
+
             await Promise.all([
                 loadWeeklyMatchups(year, totalWeeks),
                 loadTotw(year, totalWeeks)
             ]);
         } catch (error) {
-            logError("Laden der Wochen", error);
+            logError('Laden der Wochen', error);
         }
     }
 
-    // WÃ¶chentliche Ergebnisse
+    // ── Wöchentliche Ergebnisse ────────────────────────────────────
     async function loadWeeklyMatchups(year, week) {
         showSpinner(weeklyTableBody, 5);
         if (!year || !week) return;
+
         try {
             const data = await DataService.getWeeklyMatchups(year, week);
-            if (!data || data.length === 0) {
-                showNoData(weeklyTableBody, 5);
-                return;
-            }
-            weeklyTableBody.innerHTML = '';
+
+            if (!data || data.length === 0) return showNoData(weeklyTableBody, 5);
+
+            weeklyTableBody.innerHTML = "";
             data.forEach(row => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -309,9 +308,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <td>${row.points2.toFixed(2)}</td>
                     <td>${row.team2}</td>
                 `;
-                tr.style.cursor = 'pointer';
+                tr.style.cursor = "pointer";
                 tr.addEventListener("click", () => {
-                    showRosters(row.team1id, row.team1, row.team2id, row.team2, year, week);
+                    showRosters(row.team1_id, row.team1, row.team2_id, row.team2, year, week);
                 });
                 weeklyTableBody.appendChild(tr);
             });
@@ -320,157 +319,173 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // Playoff Odds laden
-    async function fetchPlayoffOddsForSeason(year) {
-        try {
-            return await DataService.getPlayoffOdds(year);
-        } catch (error) {
-            logError("Laden der Playoff-Odds", error);
-            return [];
+        // ── Playoff Odds laden ───────────────────────────────────────────
+        async function fetchPlayoffOddsForSeason(year) {
+            try {
+                return await DataService.getPlayoffOdds(year);
+            } catch (error) {
+                logError("Laden der Playoff-Odds", error);
+                return [];
+            }
         }
-    }
 
-    function transformOddsToDatasets(rows, metric = 'playoffpct') {
-        const byManager = {};
-        rows.forEach(row => {
-            const managerId = row.managerid;
-            const week = row.week;
-            const value = row[metric];
-            if (managerId == null || week == null || value == null) return;
-            if (!byManager[managerId]) byManager[managerId] = [];
-            byManager[managerId].push({ x: week, y: value });
-        });
-        Object.values(byManager).forEach(points => {
-            points.sort((a, b) => a.x - b.x);
-        });
-        const palette = ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#66AA00', '#B82E2E', '#316395', '#994499', '#22AA99', '#AAAA11', '#6633CC', '#E67300', '#8B0707'];
-        return managerOrder
-            .filter(managerId => byManager[managerId])
-            .map((managerId, idx) => ({
-                label: `Manager ${managerId}`,
-                data: byManager[managerId],
-                borderColor: palette[idx % palette.length],
-                backgroundColor: palette[idx % palette.length],
-                tension: 0.35
-            }));
-    }
-
-    async function initRegularPlayoffChart(metric = 'playoffpct') {
-        const canvas = document.getElementById("regular-playoff-chart");
-        if (!canvas || typeof Chart === 'undefined') return;
-        const year = parseInt(seasonSelect.value, 10);
-        if (!year) return;
-        const rows = await fetchPlayoffOddsForSeason(year);
-        if (!rows.length) return;
-        const datasets = transformOddsToDatasets(rows, metric);
-        const ctx = canvas.getContext("2d");
-        if (regularPlayoffChart) {
-            regularPlayoffChart.destroy();
-            regularPlayoffChart = null;
+        function transformOddsToDatasets(rows, metric = "playoff_pct") {
+            const byManager = {};
+        
+            rows.forEach(row => {
+                const managerId = row.manager_id;
+                const week = row.week;
+                const value = row[metric];
+        
+                if (managerId == null || week == null || value == null) return;
+        
+                if (!byManager[managerId]) byManager[managerId] = [];
+                byManager[managerId].push({ x: week, y: value });
+            });
+        
+            Object.values(byManager).forEach(points => points.sort((a, b) => a.x - b.x));
+        
+            const palette = [
+                "#3366CC", "#DC3912", "#FF9900", "#109618",
+                "#990099", "#0099C6", "#DD4477", "#66AA00",
+                "#B82E2E", "#316395", "#994499", "#22AA99",
+                "#AAAA11", "#6633CC", "#E67300", "#8B0707",
+            ];
+        
+            return managerOrder
+                .filter(managerId => byManager[managerId])
+                .map((managerId, idx) => ({
+                    label: managerNames[managerId] || `Manager ${managerId}`,
+                    data: byManager[managerId],
+                    borderColor: palette[idx % palette.length],
+                    backgroundColor: palette[idx % palette.length],
+                    tension: 0.35
+                }));
         }
-        regularPlayoffChart = new Chart(ctx, {
-            type: 'line',
-            data: { datasets },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: 'circle'
+    
+        async function initRegularPlayoffChart(metric = "playoff_pct") {
+            const canvas = document.getElementById("regular-playoff-chart");
+            if (!canvas || typeof Chart === "undefined") return;
+        
+            const year = parseInt(seasonSelect.value, 10);
+            if (!year) return;
+        
+            const rows = await fetchPlayoffOddsForSeason(year);
+            if (!rows.length) return;
+        
+            const datasets = transformOddsToDatasets(rows, metric);
+            const ctx = canvas.getContext("2d");
+        
+            if (regularPlayoffChart) {
+                regularPlayoffChart.destroy();
+                regularPlayoffChart = null;
+            }
+        
+            regularPlayoffChart = new Chart(ctx, {
+                type: "line",
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: { usePointStyle: true, pointStyle: "circle" }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: "linear",
+                            title: { display: true, text: "Woche" },
+                            ticks: { stepSize: 1 }
+                        },
+                        y: {
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { stepSize: 10 },
+                            title: {
+                                display: true,
+                                text: metric === "playoff_pct" ? "Playoff-Wahrscheinlichkeit (%)" : "Bye-Wahrscheinlichkeit (%)"
+                            }
                         }
                     }
-                },
-                scales: {
-                    x: {
-                        type: 'linear',
-                        title: { display: true, text: 'Woche' },
-                        ticks: { stepSize: 1 }
-                    },
-                    y: {
-                        suggestedMin: 0,
-                        suggestedMax: 100,
-                        ticks: { stepSize: 10 },
-                        title: { display: true, text: metric === 'playoffpct' ? 'Playoff-Wahrscheinlichkeit' : 'Bye-Wahrscheinlichkeit' }
-                    }
                 }
-            }
-        });
-    }
-
-    // TOTW laden
+            });
+        }
+    
+    // ── TOTW laden ─────────────────────────────────────────────────
     async function loadTotw(year, week) {
         showSpinner(totwTableBody, 3);
         if (!year || !week) return;
+
         try {
             const data = await DataService.getTotw(year, week);
-            if (!data || data.length === 0) {
-                showNoData(totwTableBody, 3);
-                return;
-            }
+
+            if (!data || data.length === 0) return showNoData(totwTableBody, 3);
+
             data.sort((a, b) => {
                 const ai = TOTW_ORDER.indexOf(a.position);
                 const bi = TOTW_ORDER.indexOf(b.position);
                 return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
             });
+
             totwTableBody.innerHTML = '';
             data.forEach(row => {
-                const tr = document.createElement("tr");
+                const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${formatPosition(row.position)}</td>
-                    <td>${row.playername ?? '-'}</td>
-                    <td>${row.points != null ? row.points.toFixed(2) : '-'}</td>
+                    <td>${row.player_name ?? '-'}</td>
+                    <td>${row.points !== null ? row.points.toFixed(2) : '-'}</td>
                 `;
                 totwTableBody.appendChild(tr);
             });
         } catch (error) {
-            logError("Laden des TOTW", error);
+            logError('Laden des TOTW', error);
         }
     }
 
-    // TOTY laden (week = 0)
+    // ── TOTY laden (week = 0) ────────────────────────────────────────
     async function loadToty(year) {
         showSpinner(totyTableBody, 3);
         if (!year) return;
+
         try {
             const data = await DataService.getToty(year);
-            if (!data || data.length === 0) {
-                showNoData(totyTableBody, 3);
-                return;
-            }
+
+            if (!data || data.length === 0) return showNoData(totyTableBody, 3);
+
             data.sort((a, b) => {
                 const ai = TOTW_ORDER.indexOf(a.position);
                 const bi = TOTW_ORDER.indexOf(b.position);
                 return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
             });
+
             totyTableBody.innerHTML = '';
             data.forEach(row => {
-                const tr = document.createElement("tr");
+                const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${formatPosition(row.position)}</td>
-                    <td>${row.playername ?? '-'}</td>
-                    <td>${row.points != null ? row.points.toFixed(2) : '-'}</td>
+                    <td>${row.player_name ?? '-'}</td>
+                    <td>${row.points !== null ? row.points.toFixed(2) : '-'}</td>
                 `;
                 totyTableBody.appendChild(tr);
             });
         } catch (error) {
-            logError("Laden des TOTY", error);
+            logError('Laden des TOTY', error);
         }
     }
 
-    // Awards / Honors
+    // ── Awards (Honors) ─────────────────────────────────────────────
     async function loadAwards(year) {
         showSpinner(awardTableBody, 2);
         if (!year) return;
+
         try {
             const data = await DataService.getAwards(year);
-            if (!data || data.length === 0) {
-                showNoData(awardTableBody, 2);
-                return;
-            }
-            awardTableBody.innerHTML = '';
+
+            if (!data || data.length === 0) return showNoData(awardTableBody, 2);
+
+            awardTableBody.innerHTML = "";
             data.forEach(row => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -484,30 +499,31 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // Draft Board
+    // ── Draft Board ────────────────────────────────────────────────
     async function loadDraftBoard(year) {
         const board = document.getElementById("draft-board");
-        board.innerHTML = '';
+        board.innerHTML = "";
+
         try {
             const data = await DataService.getDraftBoard(year);
+
             const teams = [...new Set(data.map(p => p.teamname))];
             const maxRounds = Math.max(...data.map(p => p.round));
+            board.className = `draft-board-grid cols-${teams.length + 2}`;
 
-            board.className = `draft-board-grid cols-${teams.length}`;
-
-            // 2Ã¼berschriften
+            board.appendChild(document.createElement("div"));
             teams.forEach(team => {
                 const header = document.createElement("div");
                 header.className = "draft-team-header";
                 header.textContent = team;
                 board.appendChild(header);
             });
-            board.appendChild(document.createElement("div")); // spacer
+            board.appendChild(document.createElement("div"));
 
             for (let r = 1; r <= maxRounds; r++) {
                 const leftLabel = document.createElement("div");
                 leftLabel.className = "round-label-left";
-                leftLabel.textContent = r % 2 === 1 ? r : '';
+                leftLabel.textContent = (r % 2 === 1) ? `${r} →` : `${r} ←`;
                 board.appendChild(leftLabel);
 
                 let picks = data.filter(p => p.round === r);
@@ -515,21 +531,21 @@ document.addEventListener("DOMContentLoaded", async function() {
 
                 picks.forEach(pick => {
                     const div = document.createElement("div");
-                    const posClass = ['QB', 'RB', 'WR', 'TE', 'K', 'DEF'].includes(pick.position) ? pick.position : 'other';
+                    const posClass = ["QB", "RB", "WR", "TE", "K", "DEF"].includes(pick.position) ? pick.position : "other";
                     div.className = `draft-cell ${posClass}`;
-                    const keeperMark = pick.keeperid != null ? `<div class="keeper-mark">K</div>` : '';
+                    const keeperMark = pick.keeper_id !== null ? `<div class="keeper-mark">K</div>` : "";
                     div.innerHTML = `
                         ${keeperMark}
-                        <div class="pick-no">${pick.pickno}</div>
-                        <span>${pick.firstname}</span>
-                        <span class="last-name">${pick.lastname}</span>
+                        <div class="pick-no">#${pick.pick_no}</div>
+                        <span>${pick.first_name}</span>
+                        <span class="last-name">${pick.last_name}</span>
                     `;
                     board.appendChild(div);
                 });
 
                 const rightLabel = document.createElement("div");
                 rightLabel.className = "round-label-right";
-                rightLabel.textContent = r % 2 === 1 ? r : '';
+                rightLabel.textContent = (r % 2 === 1) ? `→ ${r}` : `← ${r}`;
                 board.appendChild(rightLabel);
             }
         } catch (error) {
@@ -537,85 +553,78 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // Bracket
+    // ── Bracket ────────────────────────────────────────────────────
     async function loadBracket(year) {
         ['quarterfinals', 'semifinals', 'finals', 'champion'].forEach(id => {
             const container = document.getElementById(id);
-            if (container) container.innerHTML = '';
+            if (container) container.innerHTML = "";
         });
+
         try {
             const data = await DataService.getPlayoffMatches(year);
-            const roundOrder = { 'QF': 1, 'SF': 2, 'F': 3 };
+
+            const roundOrder = { "QF": 1, "SF": 2, "F": 3 };
             const sortedData = data.slice().sort((a, b) => {
                 if (a.round !== b.round) return roundOrder[a.round] - roundOrder[b.round];
                 return a.slot - b.slot;
             });
 
             const qfColumn = document.getElementById("quarterfinals");
-            const hasQuarterfinals = data.some(g => g.round === 'QF');
+            const hasQuarterfinals = data.some(g => g.round === "QF");
             if (qfColumn) qfColumn.classList.toggle("d-none", !hasQuarterfinals);
 
             sortedData.forEach(game => {
-                const roundId = game.round === 'QF' ? 'quarterfinals' : game.round === 'SF' ? 'semifinals' : game.round === 'F' ? 'finals' : null;
+                const roundId = game.round === "QF" ? "quarterfinals" :
+                    game.round === "SF" ? "semifinals" :
+                    game.round === "F"  ? "finals" : null;
+
                 const container = roundId ? document.getElementById(roundId) : null;
                 if (!container) return;
 
                 const div = document.createElement("div");
                 div.className = "card my-2 p-2 text-start";
-                div.style.maxWidth = '250px';
+                div.style.maxWidth = "250px";
 
-                const isBye = game.lname === null;
+                const isBye = game.l_name === null;
+
                 if (isBye) {
                     div.innerHTML = `
-                        <div class="d-flex justify-content-between">
-                            <div class="me-2 flex-grow-1">
-                                <small class="text-muted">${game.wrank}</small>
-                                ${game.wname}
-                            </div>
-                            <span class="text-muted"></span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div class="me-2 flex-grow-1">
-                                <small class="text-muted"></small>
-                                <span class="text-secondary">BYE</span>
-                            </div>
-                            <span class="text-muted"></span>
-                        </div>
-                    `;
+                    <div class="d-flex justify-content-between">
+                        <div class="me-2 flex-grow-1"><small class="text-muted">${game.w_rank}</small> ${game.w_name}</div>
+                        <span class="text-muted"></span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="me-2 flex-grow-1"><small class="text-muted">–</small> <span class="text-secondary">BYE</span></div>
+                        <span class="text-muted"></span>
+                    </div>`;
                 } else {
-                    const wSlot = game.wslot;
-                    const lSlot = game.lslot;
-                    const topSeed = wSlot != null && lSlot != null ? (wSlot < lSlot ? 'w' : 'l') : (game.wrank < game.lrank ? 'w' : 'l');
-                    const bottomSeed = topSeed === 'w' ? 'l' : 'w';
+                    const wSlot = game.w_slot;
+                    const lSlot = game.l_slot;
+                    const topSeed = (wSlot !== null && lSlot !== null) ? (wSlot < lSlot ? "w" : "l") :
+                        (game.w_rank < game.l_rank ? "w" : "l");
+                    const bottomSeed = topSeed === "w" ? "l" : "w";
 
-                    const topRank = game[`${topSeed}rank`];
-                    const topName = game[`${topSeed}name`];
-                    const topPoints = (game[`${topSeed}points`] ?? 0).toFixed(2);
-                    const bottomRank = game[`${bottomSeed}rank`];
-                    const bottomName = game[`${bottomSeed}name`];
-                    const bottomPoints = (game[`${bottomSeed}points`] ?? 0).toFixed(2);
+                    const topRank      = game[`${topSeed}_rank`];
+                    const topName      = game[`${topSeed}_name`];
+                    const topPoints    = (game[`${topSeed}_points`] ?? 0).toFixed(2);
+                    const bottomRank   = game[`${bottomSeed}_rank`];
+                    const bottomName   = game[`${bottomSeed}_name`];
+                    const bottomPoints = (game[`${bottomSeed}_points`] ?? 0).toFixed(2);
 
-                    const topClass = game.wrank === topRank ? 'color-green' : 'color-red';
-                    const bottomClass = game.wrank === bottomRank ? 'color-green' : 'color-red';
-                    const topNameClass = game.round === 'F' && game.wrank === topRank ? 'text-warning fw-bold' : '';
-                    const bottomNameClass = game.round === 'F' && game.wrank === bottomRank ? 'text-warning fw-bold' : '';
+                    const topClass    = (game.w_rank === topRank)    ? "color-green" : "color-red";
+                    const bottomClass = (game.w_rank === bottomRank) ? "color-green" : "color-red";
+                    const topNameClass    = (game.round === "F" && game.w_rank === topRank)    ? "text-warning fw-bold" : "";
+                    const bottomNameClass = (game.round === "F" && game.w_rank === bottomRank) ? "text-warning fw-bold" : "";
 
                     div.innerHTML = `
-                        <div class="d-flex justify-content-between">
-                            <div class="me-2 flex-grow-1">
-                                <small class="text-muted">${topRank}</small>
-                                <span class="${topNameClass}">${topName}</span>
-                            </div>
-                            <span class="${topClass}">${topPoints}</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div class="me-2 flex-grow-1">
-                                <small class="text-muted">${bottomRank}</small>
-                                <span class="${bottomNameClass}">${bottomName}</span>
-                            </div>
-                            <span class="${bottomClass}">${bottomPoints}</span>
-                        </div>
-                    `;
+                    <div class="d-flex justify-content-between">
+                        <div class="me-2 flex-grow-1"><small class="text-muted">${topRank}</small> <span class="${topNameClass}">${topName}</span></div>
+                        <span class="${topClass}">${topPoints}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="me-2 flex-grow-1"><small class="text-muted">${bottomRank}</small> <span class="${bottomNameClass}">${bottomName}</span></div>
+                        <span class="${bottomClass}">${bottomPoints}</span>
+                    </div>`;
                 }
                 container.appendChild(div);
             });
@@ -624,110 +633,115 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // Roster Modal
-    async function showRosters(homeid, hometeam, awayid, awayteam, year, week) {
-        const modal = new bootstrap.Modal(document.getElementById("rosterModal"));
-        const rosterContent = document.getElementById("roster-content");
+    // ── Roster Modal ───────────────────────────────────────────────
+    async function showRosters(home_id, home_team, away_id, away_team, year, week) {
+        const modal = new bootstrap.Modal(document.getElementById('rosterModal'));
+        const rosterContent = document.getElementById('roster-content');
 
         try {
-            const [homeRoster, awayRoster] = await DataService.getMatchupRosters(homeid, awayid, year, week);
+            const { homeRoster, awayRoster } = await DataService.getMatchupRosters(home_id, away_id, year, week);
 
-            const positions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DST', 'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10', 'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'];
-            const homeMap = Object.fromEntries(homeRoster.map(p => [p.position, p]));
-            const awayMap = Object.fromEntries(awayRoster.map(p => [p.position, p]));
+            const positions = [
+                'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
+                'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10',
+                'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
+            ];
+
+            const homeMap = Object.fromEntries((homeRoster || []).map(p => [p.position, p]));
+            const awayMap = Object.fromEntries((awayRoster || []).map(p => [p.position, p]));
 
             const validPositions = positions.filter(pos =>
-                (homeMap[pos] && homeMap[pos].playername) || (awayMap[pos] && awayMap[pos].playername)
+                (homeMap[pos] && homeMap[pos].player_name) || (awayMap[pos] && awayMap[pos].player_name)
             );
 
             function renderRow(pos, index) {
                 const homePlayer = homeMap[pos];
                 const awayPlayer = awayMap[pos];
                 const rowClass = index % 2 === 1 ? 'table-active' : '';
-                return `<tr class="${rowClass}">
-                    <td class="text-end pe-3 align-middle" style="width: 40%;">
+                return `
+                <tr class="${rowClass}">
+                    <td class="text-end pe-3 align-middle" style="width:40%;">
                         ${homePlayer ? `
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold">${homePlayer.playername}</span>
-                                <span class="fw-bold">${homePlayer.points != null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
+                                <span class="fw-bold">${homePlayer.player_name}</span>
+                                <span class="fw-bold">${homePlayer.points !== null && homePlayer.points !== undefined ? homePlayer.points.toFixed(2) : '-'}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.gameinfo || ''} ${homePlayer.timeslot ? '- ' + homePlayer.timeslot : ''}</span>
-                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.projection != null && homePlayer.projection !== undefined ? homePlayer.projection.toFixed(2) : '-'}</span>
+                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.game_info && homePlayer.timeslot ? `${homePlayer.game_info} - ${homePlayer.timeslot}` : '-'}</span>
+                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.projection !== null && homePlayer.projection !== undefined ? homePlayer.projection.toFixed(2) : '-'}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">&nbsp;</span>
-                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.stats || ''}</span>
+                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${homePlayer.stats}</span>
                             </div>
-                        ` : '<div></div>'}
+                        ` : ''}
                     </td>
-                    <td class="text-center align-top" style="width: 10%;">
+                    <td class="text-center align-top" style="width:10%;">
                         <span class="badge bg-secondary">${pos}</span>
                     </td>
-                    <td class="text-start ps-3 align-middle" style="width: 40%;">
+                    <td class="text-start ps-3 align-middle" style="width:40%;">
                         ${awayPlayer ? `
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold">${awayPlayer.points != null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
-                                <span class="fw-bold">${awayPlayer.playername}</span>
+                                <span class="fw-bold">${awayPlayer.points !== null && awayPlayer.points !== undefined ? awayPlayer.points.toFixed(2) : '-'}</span>
+                                <span class="fw-bold">${awayPlayer.player_name}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.projection != null && awayPlayer.projection !== undefined ? awayPlayer.projection.toFixed(2) : '-'}</span>
-                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.gameinfo || ''} ${awayPlayer.timeslot ? '- ' + awayPlayer.timeslot : ''}</span>
+                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.projection !== null && awayPlayer.projection !== undefined ? awayPlayer.projection.toFixed(2) : '-'}</span>
+                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.game_info && awayPlayer.timeslot ? `${awayPlayer.game_info} - ${awayPlayer.timeslot}` : '-'}</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.stats || ''}</span>
+                                <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">${awayPlayer.stats}</span>
                                 <span class="text-muted small text-nowrap" style="font-size: 0.7rem;">&nbsp;</span>
                             </div>
-                        ` : '<div></div>'}
+                        ` : ''}
                     </td>
                 </tr>`;
             }
 
             const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
-            const mainPositions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DST'];
+            const mainPositions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
+
             const homeTotal = mainPositions.reduce((sum, pos) => {
                 const p = homeMap[pos];
-                return sum + (typeof p?.points === 'number' ? p.points : 0);
+                return sum + (p && typeof p.points === 'number' ? p.points : 0);
             }, 0);
             const awayTotal = mainPositions.reduce((sum, pos) => {
                 const p = awayMap[pos];
-                return sum + (typeof p?.points === 'number' ? p.points : 0);
+                return sum + (p && typeof p.points === 'number' ? p.points : 0);
             }, 0);
 
             rosterContent.innerHTML = `
-                <div class="container-fluid px-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th style="width: 40%;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span class="fs-3">${hometeam}</span>
-                                            <span class="fs-3">${homeTotal.toFixed(2)}</span>
-                                        </div>
-                                    </th>
-                                    <th style="width: 10%;"></th>
-                                    <th style="width: 40%;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span class="fs-3">${awayTotal.toFixed(2)}</span>
-                                            <span class="fs-3">${awayteam}</span>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>${tableRows}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-
+        <div class="container-fluid px-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-sm mb-0">
+                   <thead>
+                      <tr>
+                        <th style="width: 40%;">
+                          <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fs-3">${home_team}</span>
+                            <span class="fs-3">${homeTotal.toFixed(2)}</span>
+                          </div>
+                        </th>
+                        <th style="width: 10%;"></th>
+                        <th style="width: 40%;">
+                          <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="fs-3">${awayTotal.toFixed(2)}</span>
+                            <span class="fs-3">${away_team}</span>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
+            </div>
+        </div>`;
             modal.show();
         } catch (error) {
             logError("Laden der Rosters", error);
         }
     }
 
-    // Event Listeners
+    // ── Event Listeners ────────────────────────────────────────────
     seasonSelect.addEventListener("change", async (e) => {
         const year = parseInt(e.target.value, 10);
         if (!year) return;
@@ -737,14 +751,14 @@ document.addEventListener("DOMContentLoaded", async function() {
             loadWeeks(year),
             loadAwards(year),
             loadToty(year),
-            loadDraftBoard(year)
+            loadDraftBoard(year),
         ]);
         if (regularTogglePlayoff && regularTogglePlayoff.checked) {
-            const metric = toggleByePct && toggleByePct.checked ? 'byepct' : 'playoffpct';
+            const metric = toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct";
             await initRegularPlayoffChart(metric);
         }
         if (regularToggleSchedule && regularToggleSchedule.checked) {
-            await loadScheduleMatrix(year);
+          await loadScheduleMatrix(year);
         }
     });
 
@@ -767,39 +781,39 @@ document.addEventListener("DOMContentLoaded", async function() {
             panelRegularSchedule.classList.add("d-none");
         }
     });
-
+    
     regularTogglePlayoff.addEventListener("change", async () => {
         if (regularTogglePlayoff.checked) {
             panelRegularTable.classList.add("d-none");
             panelRegularPlayoff.classList.remove("d-none");
-            panelRegularSchedule.classList.add("d-none");
-            const metric = toggleByePct && toggleByePct.checked ? 'byepct' : 'playoffpct';
+            panelRegularSchedule.classList.add("d-none");  
+            const metric = toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct";
             await initRegularPlayoffChart(metric);
         }
     });
 
     regularToggleSchedule.addEventListener("change", async () => {
-        if (regularToggleSchedule.checked) {
-            panelRegularTable.classList.add("d-none");
-            panelRegularPlayoff.classList.add("d-none");
-            panelRegularSchedule.classList.remove("d-none");
-            const year = parseInt(seasonSelect.value, 10);
-            await loadScheduleMatrix(year);
-        }
+      if (regularToggleSchedule.checked) {
+        panelRegularTable.classList.add("d-none");
+        panelRegularPlayoff.classList.add("d-none");
+        panelRegularSchedule.classList.remove("d-none");
+        const year = parseInt(seasonSelect.value, 10);
+        await loadScheduleMatrix(year);
+      }
     });
-
+    
     togglePlayoffPct.addEventListener("change", async () => {
         if (togglePlayoffPct.checked) {
-            await initRegularPlayoffChart('playoffpct');
+            await initRegularPlayoffChart("playoff_pct");
         }
     });
-
+    
     toggleByePct.addEventListener("change", async () => {
         if (toggleByePct.checked) {
-            await initRegularPlayoffChart('byepct');
+            await initRegularPlayoffChart("bye_pct");
         }
     });
 
-    // Initialisierung
+    // ── Initialisierung ────────────────────────────────────────────
     await loadSeasons();
 });
