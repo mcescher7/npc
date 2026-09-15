@@ -295,18 +295,19 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         try {
             const data = await DataService.getSeasonWeeks(year);
+            const currentWeek = await DataService.getWeek(year);
             
             const totalWeeks = data.weeks;
-            for (let i = 1; i <= totalWeeks; i++) {
+            for (let i = 1; i <= currentWeek; i++) {
                 weekSelect.appendChild(createOption(i, i));
                 totwWeekSelect.appendChild(createOption(i, i));
             }
-            weekSelect.value     = totalWeeks;
-            totwWeekSelect.value = totalWeeks;
+            weekSelect.value     = currentWeek;
+            totwWeekSelect.value = currentWeek;
 
             await Promise.all([
-                loadWeeklyMatchups(year, totalWeeks),
-                loadTotw(year, totalWeeks)
+                loadWeeklyMatchups(year, currentWeek),
+                loadTotw(year, currentWeek)
             ]);
         } catch (error) {
             logError('Laden der Wochen', error);
