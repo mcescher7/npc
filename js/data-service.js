@@ -61,7 +61,7 @@ const DataService = {
         }
     
         return data ? data.week : null;
-    }
+    },
 
     async getWeeklyMatchups(year, week) {
         const { data, error } = await supabaseClient
