@@ -45,6 +45,24 @@ const DataService = {
     },
 
     // ── Weekly Matchups ────────────────────────────────────────
+    async getWeek(year) {
+        const { data, error } = await supabaseClient
+            .from("rosters")
+            .select("week")
+            .eq("year", year) 
+            .order("week", { ascending: false })
+            .limit(1)
+            .single();
+    
+        if (error) {
+            // Falls für das Jahr gar keine Daten existieren, fängt .single() einen Fehler ab
+            if (error.code === "PGRST116") return null; 
+            throw error;
+        }
+    
+        return data ? data.week : null;
+    }
+
     async getWeeklyMatchups(year, week) {
         const { data, error } = await supabaseClient
             .from("matchup_table")
