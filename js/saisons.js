@@ -705,7 +705,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const { homeRoster, awayRoster } = await DataService.getMatchupRosters(home_id, away_id, year, week);
 
             const positions = [
-                'QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST',
+                'QB', 'QB1', 'QB2', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'FLEX1', 'FLEX2', 'K', 'D/ST',
                 'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7', 'BN8', 'BN9', 'BN10',
                 'BN11', 'BN12', 'BN13', 'BN14', 'BN15', 'BN16'
             ];
