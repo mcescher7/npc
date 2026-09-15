@@ -762,7 +762,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
 
             const tableRows = validPositions.map((pos, idx) => renderRow(pos, idx)).join('');
-            const mainPositions = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'D/ST'];
+            const mainPositions = ['QB', 'QB1', 'QB2', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'FLEX1', 'FLEX2', 'K', 'D/ST'];
 
             const homeTotal = mainPositions.reduce((sum, pos) => {
                 const p = homeMap[pos];
