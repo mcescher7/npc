@@ -2,4 +2,4 @@ pandas
 requests
 sleeper-wrapper
 supabase
-psycopg[binary]
+psycopg
