@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const regularToggleSchedule = document.getElementById("toggle-regular-schedule");
     const panelRegularSchedule = document.getElementById("panel-regular-schedule");
 
-    const TOTW_ORDER = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'K', 'DEF'];
+    const TOTW_ORDER = ['QB', 'QB1', 'QB2', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'FLEX1', 'FLEX2', 'K', 'DEF'];
 
     const createOption = (value, text) => {
         const option = document.createElement("option");
