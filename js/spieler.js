@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         suggestionsContainer.innerHTML = uniquePlayers.map(player => `<option value="${player}"></option>`).join('');
     }
 
-    async function renderPlayerCard(player) {
+async function renderPlayerCard(player) {
         const container = document.querySelector('.retro-card-container');
 
         const { data } = await supabaseClient
@@ -110,18 +110,22 @@ document.addEventListener("DOMContentLoaded", async function() {
             .ilike('player_name', `%${player}%`)
             .single();
 
-        // Achievement strips
+        // Achievement strips (null/undefined sicher abfangen)
+        const championships = data.championships ?? 0;
+        const toty = data.toty ?? 0;
+        const totw = data.totw ?? 0;
+
         const strips = [];
-        if (data.championships > 0) {
+        if (championships > 0) {
             const years = data.championship_years ? ` (${data.championship_years})` : '';
-            strips.push(`<div class="retro-achievement-strip"><span>${data.championships}\u00d7 NPC Champion${years}</span></div>`);
+            strips.push(`<div class="retro-achievement-strip"><span>${championships}\u00d7 NPC Champion${years}</span></div>`);
         }
-        if (data.toty > 0) {
+        if (toty > 0) {
             const years = data.toty_years ? ` (${data.toty_years})` : '';
-            strips.push(`<div class="retro-achievement-strip"><span>${data.toty}\u00d7 Team of the Year${years}</span></div>`);
+            strips.push(`<div class="retro-achievement-strip"><span>${toty}\u00d7 Team of the Year${years}</span></div>`);
         }
-        if (data.totw > 0) {
-            strips.push(`<div class="retro-achievement-strip"><span>${data.totw}\u00d7 Team of the Week</span></div>`);
+        if (totw > 0) {
+            strips.push(`<div class="retro-achievement-strip"><span>${totw}\u00d7 Team of the Week</span></div>`);
         }
 
         const photoUrl = getPhotoUrl(data);
