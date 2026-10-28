@@ -167,7 +167,8 @@ MATERIALIZED_VIEWS = [
     "fantasy_points_view",
     "manager_stats",
     "roster_info",
-    "v_scores"
+    "v_scores",
+    "totw"
 ]
 
 
