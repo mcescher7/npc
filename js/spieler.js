@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     const timelineContainer = document.getElementById('timeline-container');
     const cardContainer = document.getElementById('player-card-container');
 
+    // Lokaler Cache für bereits geladene Spielerdaten
+    const playerCache = {};
+    let debounceTimer = null;
+
     function formatDate(date) {
         const d = new Date(date);
         const day = String(d.getDate()).padStart(2, '0');
@@ -101,14 +105,30 @@ document.addEventListener("DOMContentLoaded", async function() {
         suggestionsContainer.innerHTML = uniquePlayers.map(player => `<option value="${player}"></option>`).join('');
     }
 
-async function renderPlayerCard(player) {
+    async function renderPlayerCard(player) {
         const container = document.querySelector('.retro-card-container');
+        if (!container) return;
 
-        const { data } = await supabaseClient
-            .from('player_info')
-            .select('*')
-            .ilike('player_name', `%${player}%`)
-            .single();
+        let data;
+
+        // Prüfen, ob die Daten bereits im Cache liegen
+        if (playerCache[player]) {
+            data = playerCache[player];
+        } else {
+            const { data: fetchedData, error } = await supabaseClient
+                .from('player_info')
+                .select('*')
+                .ilike('player_name', `%${player}%`)
+                .maybeSingle();
+
+            if (error || !fetchedData) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            data = fetchedData;
+            playerCache[player] = data; // Im Cache speichern
+        }
 
         // Achievement strips (null/undefined sicher abfangen)
         const championships = data.championships ?? 0;
@@ -131,7 +151,6 @@ async function renderPlayerCard(player) {
         const photoUrl = getPhotoUrl(data);
         const defense = isDefense(data.player_id);
 
-        // Trikotnummer nur anzeigen wenn vorhanden und nicht null
         const numberStr = (data.number !== null && data.number !== undefined)
             ? ` \u00b7 #${data.number}`
             : '';
@@ -200,13 +219,20 @@ async function renderPlayerCard(player) {
         container.classList.remove('hidden');
     }
 
+    // ANSATZ 1: Debouncing für das Input-Event (300ms Verzögerung)
     searchInput.addEventListener('input', function () {
-        if (!searchInput.value.trim()) {
+        const query = this.value.trim();
+        if (!query) {
             cardContainer?.classList.add('hidden');
             timelineContainer?.classList.add('hidden');
+            suggestionsContainer.innerHTML = '';
             return;
         }
-        loadPlayerSuggestions(this.value);
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            loadPlayerSuggestions(query);
+        }, 300);
     });
 
     searchInput.addEventListener('change', async function () {
@@ -216,16 +242,24 @@ async function renderPlayerCard(player) {
         suggestionsContainer.innerHTML = '';
         searchInput.blur();
 
-        const { data: idData } = await supabaseClient
-            .from('roster_changes')
-            .select('player_id')
-            .ilike('player_name', `%${playerName}%`)
-            .limit(1)
-            .single();
+        let playerId = null;
+
+        // Prüfen, ob wir die ID über den Cache oder eine schnelle Abfrage bekommen
+        if (playerCache[playerName] && playerCache[playerName].player_id) {
+            playerId = playerCache[playerName].player_id;
+        } else {
+            const { data: idData } = await supabaseClient
+                .from('roster_changes')
+                .select('player_id')
+                .ilike('player_name', `%${playerName}%`)
+                .limit(1)
+                .maybeSingle();
+            playerId = idData?.player_id;
+        }
 
         renderPlayerCard(playerName);
-        if (idData?.player_id) {
-            loadCareerData(idData.player_id);
+        if (playerId) {
+            loadCareerData(playerId);
         }
     });
 
