@@ -291,6 +291,8 @@ def update_rosters(league_nr: int, year: int):
 
     cols = ["manager_id", "year", "week", "points", "opponent_id"] + ROSTER_SLOTS + [f"{c}_points" for c in ROSTER_SLOTS]
     df = pd.DataFrame(data, columns=cols)
+    for col in ROSTER_SLOTS:
+        df[col] = pd.to_numeric(df[col], errors="coerce").astype("Int64")
     df.to_csv(f"rosters_{year}.csv", index=False)
     print("updating rosters complete")
 
