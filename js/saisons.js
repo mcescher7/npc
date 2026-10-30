@@ -216,27 +216,27 @@ document.addEventListener("DOMContentLoaded", async function() {
       const allPlay = data.filter(d => d.schedule === null);
       const swapData = data.filter(d => d.schedule !== null);
     
-    const managers = [...new Set(swapData.map(d => d.manager))].sort();
+      const managers = [...new Set(swapData.map(d => d.manager))].sort();
     
-    const lookup = {};
-    swapData.forEach(d => {
-      lookup[d.manager] = lookup[d.manager] || {};
-      lookup[d.manager][d.schedule] = d;
-    });
+      const lookup = {};
+      swapData.forEach(d => {
+        lookup[d.manager] = lookup[d.manager] || {};
+        lookup[d.manager][d.schedule] = d;
+      });
     
-    const allPlayLookup = {};
-    allPlay.forEach(d => { allPlayLookup[d.manager] = d; });
+      const allPlayLookup = {};
+      allPlay.forEach(d => { allPlayLookup[d.manager] = d; });
     
-    const sortByAllPlayPct = (a, b) => {
-      const apA = allPlayLookup[a];
-      const apB = allPlayLookup[b];
-      const pctA = apA ? winPct(apA.wins, apA.losses, apA.ties) : -1;
-      const pctB = apB ? winPct(apB.wins, apB.losses, apB.ties) : -1;
-      return pctB - pctA;
-    };
+      const sortByAllPlayPct = (a, b) => {
+        const apA = allPlayLookup[a];
+        const apB = allPlayLookup[b];
+        const pctA = apA ? winPct(apA.wins, apA.losses, apA.ties) : -1;
+        const pctB = apB ? winPct(apB.wins, apB.losses, apB.ties) : -1;
+        return pctB - pctA;
+      };
 
-    const rowOrder = [...managers].sort(sortByAllPlayPct);
-    const colOrder = [...managers].sort(sortByAllPlayPct);
+      const rowOrder = [...managers].sort(sortByAllPlayPct);
+      const colOrder = [...managers].sort(sortByAllPlayPct);
     
       const headRow = document.getElementById("schedule-matrix-head");
       headRow.innerHTML = '<th class="corner-cell"></th>' +
@@ -354,49 +354,49 @@ document.addEventListener("DOMContentLoaded", async function() {
       }
     }
 
-        // ── Playoff Odds laden ───────────────────────────────────────────
-        async function fetchPlayoffOddsForSeason(year) {
-            try {
-                return await DataService.getPlayoffOdds(year);
-            } catch (error) {
-                logError("Laden der Playoff-Odds", error);
-                return [];
-            }
+    // ── Playoff Odds laden ───────────────────────────────────────────
+    async function fetchPlayoffOddsForSeason(year) {
+        try {
+            return await DataService.getPlayoffOdds(year);
+        } catch (error) {
+            logError("Laden der Playoff-Odds", error);
+            return [];
         }
+    }
 
-        function transformOddsToDatasets(rows, metric = "playoff_pct") {
-            const byManager = {};
-        
-            rows.forEach(row => {
-                const managerId = row.manager_id;
-                const week = row.week;
-                const value = row[metric];
-        
-                if (managerId == null || week == null || value == null) return;
-        
-                if (!byManager[managerId]) byManager[managerId] = [];
-                byManager[managerId].push({ x: week, y: value });
-            });
-        
-            Object.values(byManager).forEach(points => points.sort((a, b) => a.x - b.x));
-        
-            const palette = [
-                "#3366CC", "#DC3912", "#FF9900", "#109618",
-                "#990099", "#0099C6", "#DD4477", "#66AA00",
-                "#B82E2E", "#316395", "#994499", "#22AA99",
-                "#AAAA11", "#6633CC", "#E67300", "#8B0707",
-            ];
-        
-            return managerOrder
-                .filter(managerId => byManager[managerId])
-                .map((managerId, idx) => ({
-                    label: managerNames[managerId] || `Manager ${managerId}`,
-                    data: byManager[managerId],
-                    borderColor: palette[idx % palette.length],
-                    backgroundColor: palette[idx % palette.length],
-                    tension: 0.35
-                }));
-        }
+    function transformOddsToDatasets(rows, metric = "playoff_pct") {
+        const byManager = {};
+    
+        rows.forEach(row => {
+            const managerId = row.manager_id;
+            const week = row.week;
+            const value = row[metric];
+    
+            if (managerId == null || week == null || value == null) return;
+    
+            if (!byManager[managerId]) byManager[managerId] = [];
+            byManager[managerId].push({ x: week, y: value });
+        });
+    
+        Object.values(byManager).forEach(points => points.sort((a, b) => a.x - b.x));
+    
+        const palette = [
+            "#3366CC", "#DC3912", "#FF9900", "#109618",
+            "#990099", "#0099C6", "#DD4477", "#66AA00",
+            "#B82E2E", "#316395", "#994499", "#22AA99",
+            "#AAAA11", "#6633CC", "#E67300", "#8B0707",
+        ];
+    
+        return managerOrder
+            .filter(managerId => byManager[managerId])
+            .map((managerId, idx) => ({
+                label: managerNames[managerId] || `Manager ${managerId}`,
+                data: byManager[managerId],
+                borderColor: palette[idx % palette.length],
+                backgroundColor: palette[idx % palette.length],
+                tension: 0.35
+            }));
+    }
     
     async function initRegularPlayoffChart(metric = "playoff_pct") {
         const canvas = document.getElementById("regular-playoff-chart");
@@ -408,20 +408,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         const rows = await fetchPlayoffOddsForSeason(year);
         if (!rows.length) return;
     
-        // Prüfen, ob bye_pct überhaupt sinnvolle Werte liefert
         const byeAvailable = hasByeOdds(rows);
     
-        // Toggle ein-/ausblenden
         const byeToggleContainer = toggleByePct.closest(".btn-group-sm");
         if (byeToggleContainer) {
             byeToggleContainer.classList.toggle("d-none", !byeAvailable);
         }
     
-        // Wenn Bye nicht verfügbar ist, auf playoff_pct umschalten
         const effectiveMetric = byeAvailable ? metric : "playoff_pct";
     
-        // Falls der Bye-Radio gerade ausgewählt war, aber Bye nicht verfügbar ist,
-        // den Playoff-Radio aktivieren
         if (!byeAvailable && toggleByePct.checked) {
             togglePlayoffPct.checked = true;
         }
@@ -804,10 +799,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    // ── Event Listeners ────────────────────────────────────────────
+    // ── Event Listeners (Optimiert mit Promise.all) ─────────────────
     seasonSelect.addEventListener("change", async (e) => {
         const year = parseInt(e.target.value, 10);
         if (!year) return;
+
         await Promise.all([
             loadBracket(year),
             loadRegSeason(year),
@@ -815,14 +811,9 @@ document.addEventListener("DOMContentLoaded", async function() {
             loadAwards(year),
             loadToty(year),
             loadDraftBoard(year),
+            (regularTogglePlayoff && regularTogglePlayoff.checked) ? initRegularPlayoffChart(toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct") : Promise.resolve(),
+            (regularToggleSchedule && regularToggleSchedule.checked) ? loadScheduleMatrix(year) : Promise.resolve()
         ]);
-        if (regularTogglePlayoff && regularTogglePlayoff.checked) {
-            const metric = toggleByePct && toggleByePct.checked ? "bye_pct" : "playoff_pct";
-            await initRegularPlayoffChart(metric);
-        }
-        if (regularToggleSchedule && regularToggleSchedule.checked) {
-          await loadScheduleMatrix(year);
-        }
     });
 
     weekSelect.addEventListener("change", async () => {
@@ -881,7 +872,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         const byeAvailable = hasByeOdds(rows);
     
         if (!byeAvailable) {
-            // Kein Bye verfügbar → zurück zu playoff_pct
             togglePlayoffPct.checked = true;
             await initRegularPlayoffChart("playoff_pct");
             return;
