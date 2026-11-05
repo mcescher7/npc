@@ -1,0 +1,58 @@
+name: Generate Fantasy Preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      week:
+        description: 'Spieltag (Woche)'
+        required: true
+        default: '6'
+        type: string
+      season:
+        description: 'Saison'
+        required: true
+        default: '2026'
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Abhängigkeiten installieren
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Spieltagsvorschau generieren
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/preview_agent.py ${{ inputs.week }}
+
+      - name: Text in GitHub Summary anzeigen (für schnelles Kopieren am Handy)
+        if: always()
+        run: |
+          FILE="output/preview_woche_${{ inputs.week }}_whatsapp.txt"
+          if [ -f "$FILE" ]; then
+            echo "### 🏈 WhatsApp Spieltagsvorschau Woche ${{ inputs.week }}" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            cat "$FILE" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Vorschau als Datei sichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-woche-${{ inputs.week }}
+          path: output/preview_woche_${{ inputs.week }}_whatsapp.txt
